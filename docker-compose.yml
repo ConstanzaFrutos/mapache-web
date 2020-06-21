@@ -1,0 +1,17 @@
+version: '3.2'
+
+services:
+  chotuve-web-interface:
+    command: npm start
+    container_name: ${CONTAINER_NAME}
+    build:
+      context: .
+      dockerfile: Dockerfile-development
+    environment:
+      env_file: .env
+    volumes:
+      - './mapache-web:/usr/src/app'
+      - '/usr/src/app/node_modules'
+    ports:
+      - '3000:3000'
+    stdin_open: true

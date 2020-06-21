@@ -1,0 +1,18 @@
+FROM node:8.11.4
+
+ADD ./mapache-web /usr/src/app
+
+WORKDIR /usr/src/app
+
+COPY ./mapache-web/package*.json /usr/src/app/
+
+# install dependencies
+RUN npm install
+RUN npm install react-scripts@3.4.1 -g
+
+# copy the rest of the files
+COPY . /usr/src/app/
+
+EXPOSE 3000
+
+CMD ["npm", "start"]

@@ -1,0 +1,20 @@
+.homeDiv {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    height: 35em;
+    width: 100%;
+    background: rgba(245, 245, 220, 0.7);
+}
+
+.psa-card {
+    display: flex;
+    align-self: center;
+    height: 20em;
+    width: 40em;
+}
+
+.psa-card .content {
+    align-content: center;
+}
+

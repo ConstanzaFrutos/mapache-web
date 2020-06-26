@@ -10,3 +10,9 @@ script:
 before-deploy:
   - cd mapache-web
   - yarn global add serve
+deploy:
+  provider: heroku
+  app: mapache-web
+  skip_cleanup: true
+  api_key:
+    secure: 4edcdfc6-61ca-4c1e-8d91-76e9de254ed0

@@ -9,3 +9,4 @@ script:
   - npm run build
 before-deploy:
   - cd mapache-web
+  - yarn global add serve

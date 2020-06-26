@@ -7,3 +7,5 @@ before-script:
 script:
   - npm install
   - npm run build
+before-deploy:
+  - cd mapache-web

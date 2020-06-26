@@ -1,0 +1,13 @@
+language: node_js
+
+node_js:
+  - '12'
+
+script:
+  - npm run build
+
+deploy:
+  provider: heroku
+  app: mapache-web
+  api_key:
+    secure: 4edcdfc6-61ca-4c1e-8d91-76e9de254ed0

@@ -4,11 +4,12 @@ ADD ./mapache-web /usr/src/app
 
 WORKDIR /usr/src/app
 
-RUN npm install
-RUN npm install react-scripts@3.4.1 -g
+RUN npm install yarn
+RUN yarn install
+RUN yarn global add react-scripts@3.4.1
 
 # build
-RUN npm run build
+RUN yarn run build
 
 ########################
 

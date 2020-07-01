@@ -13,8 +13,8 @@ import Requester from "../communication/Requester";
 
 import "../assets/css/controller/EmpleadosScreen.css";
 
-//const mapacheRecursosBaseUrl = "https://mapache-recursos.herokuapp.com/";
-const mapacheRecursosBaseUrl = "http://0.0.0.0:8080";
+const mapacheRecursosBaseUrl = "https://mapache-recursos.herokuapp.com/";
+//const mapacheRecursosBaseUrl = "http://0.0.0.0:8080";
 
 class EmpleadosScreen extends Component {
 
@@ -24,8 +24,11 @@ class EmpleadosScreen extends Component {
         this.requester = new Requester(mapacheRecursosBaseUrl);
 
         this.state = {
-            empleados: []
+            empleados: [],
+            rows: []
         }
+
+        this.createRows = this.createRows.bind(this);
     }
 
     componentDidMount() {
@@ -39,11 +42,26 @@ class EmpleadosScreen extends Component {
         })
         .then(response => {
             console.log(response);
+            let rows = this.createRows();
             if (response) {
                 this.setState({
-                    empleados: response
+                    empleados: response,
+                    rows: rows
                 });
             }
+        });
+    }
+
+    createRows() {
+        //legajo, nombre, apellido, contrato, seniority
+        return this.state.empleados.map( (empleado) => {
+            return createData(
+                empleado.legajo, 
+                empleado.nombre,
+                empleado.apellido, 
+                empleado.contrato,
+                empleado.seniority
+            );
         });
     }
 

@@ -13,8 +13,8 @@ import Requester from "../communication/Requester";
 
 import "../assets/css/controller/EmpleadosScreen.css";
 
-const mapacheRecursosBaseUrl = "https://mapache-recursos.herokuapp.com/";
-//const mapacheRecursosBaseUrl = "http://0.0.0.0:8080";
+//const mapacheRecursosBaseUrl = "https://mapache-recursos.herokuapp.com";
+const mapacheRecursosBaseUrl = "http://0.0.0.0:8080";
 
 class EmpleadosScreen extends Component {
 
@@ -42,7 +42,7 @@ class EmpleadosScreen extends Component {
         })
         .then(response => {
             console.log(response);
-            let rows = this.createRows();
+            let rows = this.createRows(response);
             if (response) {
                 this.setState({
                     empleados: response,
@@ -52,9 +52,9 @@ class EmpleadosScreen extends Component {
         });
     }
 
-    createRows() {
+    createRows(empleados) {
         //legajo, nombre, apellido, contrato, seniority
-        return this.state.empleados.map( (empleado) => {
+        return empleados.map( (empleado) => {
             return createData(
                 empleado.legajo, 
                 empleado.nombre,
@@ -75,21 +75,20 @@ class EmpleadosScreen extends Component {
                                 <TableRow>
                                     <TableCell>{title}</TableCell>
                                     {tableCells.map((cell) => {
-                                        if (cell != "legajo")
+                                        if (cell !== "legajo")
                                             return <TableCell align="right">{cell}</TableCell>
                                     })}
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {rows.map((row) => (
+                                {this.state.rows.map((row) => (
                                     <TableRow key={row.nombre}>
                                         <TableCell component="th" scope="row">
                                             {row.legajo}
                                         </TableCell>
 
                                         {tableCells.map((cell) => {
-                                            console.log(cell);
-                                            if (cell != "legajo")
+                                            if (cell !== "legajo")
                                                 return <TableCell align="right">
                                                             {row[cell]}
                                                         </TableCell>
@@ -122,27 +121,3 @@ const tableCells = [
 function createData(legajo, nombre, apellido, contrato, seniority) {
     return { legajo, nombre, apellido, contrato, seniority };
 }
-
-const rows = [
-    createData('1','Jane', 'Doe', "Full-time", "Senior"),
-    createData('2', 'Jon', 'Snow', "Junior", "Soporte"),
-    createData('3', 'Hermione', 'Granger', "Senior", "Full-time"),
-    createData('4', 'Anakin', 'Skywalker', "Senior", "Part-time"),
-];
-
-const empleados = [
-    {
-        legajo: "1",
-        nombre: "nombre",
-        apellido: "apellido",
-        seniority: "junior",
-        contrato: "full-time"
-    },
-    {
-        legajo: "2",
-        nombre: "nombre2",
-        apellido: "apellido2",
-        seniority: "junior",
-        contrato: "full-time"
-    }
-]

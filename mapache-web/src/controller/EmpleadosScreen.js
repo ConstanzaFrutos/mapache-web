@@ -1,13 +1,7 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
 
-import TableContainer from "@material-ui/core/TableContainer";
-import Paper from "@material-ui/core/Paper";
-import Table from "@material-ui/core/Table";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import TableCell from "@material-ui/core/TableCell";
-import TableBody from "@material-ui/core/TableBody";
+import { Tabla } from "../component/Tabla";
 
 import Requester from "../communication/Requester";
 
@@ -68,38 +62,11 @@ class EmpleadosScreen extends Component {
     render() {
         return (
             <div className="empleados-screen-div">
-                <div className="empleados-table">
-                    <TableContainer component={Paper}>
-                        <Table aria-label="simple table">
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell>{title}</TableCell>
-                                    {tableCells.map((cell) => {
-                                        if (cell !== "legajo")
-                                            return <TableCell align="right">{cell}</TableCell>
-                                    })}
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {this.state.rows.map((row) => (
-                                    <TableRow key={row.nombre}>
-                                        <TableCell component="th" scope="row">
-                                            {row.legajo}
-                                        </TableCell>
-
-                                        {tableCells.map((cell) => {
-                                            if (cell !== "legajo")
-                                                return <TableCell align="right">
-                                                            {row[cell]}
-                                                        </TableCell>
-                                        })}
-                                        
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                </div>
+                <Tabla 
+                    title = { title }
+                    tableCells={ tableCells }
+                    rows={ this.state.rows }
+                ></Tabla>
             </div>
         )
     }

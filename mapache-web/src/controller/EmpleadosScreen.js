@@ -78,11 +78,11 @@ export default withRouter(EmpleadosScreen);
 const title = "Empleado";
 
 const tableCells = [
-    "legajo",
-    "nombre",
-    "apellido", 
-    "contrato",
-    "seniority"
+    "Legajo",
+    "Nombre",
+    "Apellido", 
+    "Contrato",
+    "Seniority"
 ]
 
 function createData(legajo, nombre, apellido, contrato, seniority) {

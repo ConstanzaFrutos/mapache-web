@@ -1,0 +1,7 @@
+.tabla {
+    display: flex;
+    flex-direction: row;
+    align-self: center;
+    justify-content: center;
+    width: 80%;
+}

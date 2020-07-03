@@ -6,11 +6,3 @@
     width: 100%;
     background: rgba(245, 245, 220, 0.7);
 }
-
-.empleados-screen-div .empleados-table {
-    display: flex;
-    flex-direction: row;
-    align-self: center;
-    justify-content: center;
-    width: 80%;
-}

@@ -11,10 +11,6 @@ import TableBody from "@material-ui/core/TableBody";
 import "../assets/css/component/Tabla.css";
 
 export class Tabla extends Component {
-    
-    constructor(props) {
-        super(props);
-    }
 
     render() {
         return (
@@ -24,9 +20,10 @@ export class Tabla extends Component {
                         <TableHead>
                             <TableRow>
                                 <TableCell>{this.props.title}</TableCell>
-                                {this.props.tableCells.map((cell) => {
-                                    if (cell !== this.props.tableCells[0])
-                                        return <TableCell align="right">{cell}</TableCell>
+                                {this.props.tableCells.filter((cell) => {
+                                    return cell !== this.props.tableCells[0]
+                                }).map((cell) => {
+                                    return <TableCell align="right">{cell}</TableCell>
                                 })}
                             </TableRow>
                         </TableHead>
@@ -37,11 +34,12 @@ export class Tabla extends Component {
                                         {row.legajo}
                                     </TableCell>
 
-                                    {this.props.tableCells.map((cell) => {
-                                        if (cell !== this.props.tableCells[0])
-                                            return <TableCell align="right">
-                                                        {row[cell]}
-                                                    </TableCell>
+                                    {this.props.tableCells.filter((cell) => {
+                                        return cell !== this.props.tableCells[0]
+                                    }).map((cell) => {
+                                        return <TableCell align="right">
+                                                    {row[cell]}
+                                                </TableCell>
                                     })}
                                     
                                 </TableRow>

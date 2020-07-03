@@ -38,7 +38,7 @@ export class Tabla extends Component {
                                         return cell !== this.props.tableCells[0]
                                     }).map((cell) => {
                                         return <TableCell align="right">
-                                                    {row[cell]}
+                                                    {row[cell.toLowerCase()]}
                                                 </TableCell>
                                     })}
                                     

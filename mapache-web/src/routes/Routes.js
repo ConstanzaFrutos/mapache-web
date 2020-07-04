@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route } from "react-router-dom";
-import NavBar from "../component/NavBar";
+import NavBar from "../component/general/NavBar";
 import { Home } from "../controller/Home";
 import EmpleadosScreen from "../controller/EmpleadosScreen";
 import SoporteScreen from "../controller/SoporteScreen";
 import ProyectosScreen from "../controller/ProyectosScreen";
+
+import PerfilEmpleado from "../component/recursos/PerfilEmpleado";
 
 class Routes extends Component {
     render() {
@@ -15,6 +17,7 @@ class Routes extends Component {
                 <Route exact path={"/empleados"} component={ EmpleadosScreen }/>
                 <Route exact path={"/proyectos"} component={ ProyectosScreen }/>
                 <Route exact path={"/soporte"} component={ SoporteScreen }/>
+                <Route exact path={`/empleados/:legajo`} component={ PerfilEmpleado }/>
             </Router>
         )
     }

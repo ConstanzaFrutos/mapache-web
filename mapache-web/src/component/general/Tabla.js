@@ -8,7 +8,7 @@ import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 
-import "../assets/css/component/Tabla.css";
+import "../../assets/css/component/Tabla.css";
 
 export class Tabla extends Component {
 
@@ -29,9 +29,9 @@ export class Tabla extends Component {
                         </TableHead>
                         <TableBody>
                             {this.props.rows.map((row) => (
-                                <TableRow key={row.nombre}>
+                                <TableRow key={row.tableCells[0]}>
                                     <TableCell component="th" scope="row">
-                                        {row.legajo}
+                                        {row.tableCells[0]}
                                     </TableCell>
 
                                     {this.props.tableCells.filter((cell) => {

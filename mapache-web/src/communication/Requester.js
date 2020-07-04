@@ -35,11 +35,10 @@ class Requester {
         return response;
     }
 
-    delete (url, payload, callback) {
+    delete (url, callback) {
         let response = fetch(this.baseUrl + url, {
             method: 'DELETE',
-            headers: this.getHeaders(),
-            body: JSON.stringify(payload)
+            headers: this.getHeaders()
         })
         return response;
     }

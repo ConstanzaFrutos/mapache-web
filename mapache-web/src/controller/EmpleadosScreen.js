@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
+import { useHistory } from "react-router-dom";
 
 import { TablaAdministracion } from "../component/general/TablaAdministracion";
 import { Tabla } from "../component/general/Tabla";
@@ -7,6 +8,9 @@ import { Tabla } from "../component/general/Tabla";
 import Requester from "../communication/Requester";
 
 import "../assets/css/controller/EmpleadosScreen.css";
+
+// Icono para enviar a la tabla
+import InfoOutlined from '@material-ui/icons/InfoOutlined';
 
 //const mapacheRecursosBaseUrl = "https://mapache-recursos.herokuapp.com";
 const mapacheRecursosBaseUrl = "http://0.0.0.0:8080";
@@ -55,16 +59,15 @@ class EmpleadosScreen extends Component {
             });
     }
 
-    handleEdit(newData, oldData) {
+    handleEdit(oldData) {
+        // Esta funcion en el caso de los empleados 
+        // se usa para redirigir el perfil
         console.log("En edit");
-        /*this.requester.put('/empleados/' + oldData.legajo)
-        .then(response => {
-            if (response.ok){
-                return response.json();
-            } else {
-                console.log("Error al consultar empleados");
-            }
-        });*/
+        console.log(oldData);
+        
+        this.props.history.push({
+            pathname: `/empleados/${oldData.legajo}`
+        });
     }
 
     handleDelete(newData) {
@@ -108,6 +111,7 @@ class EmpleadosScreen extends Component {
                     handleAdd={ this.handleAdd }
                     handleEdit={ this.handleEdit }
                     handleDelete={ this.handleDelete } 
+                    editIcon={ editIcon }
                 ></TablaAdministracion>
             </div>
         )
@@ -122,23 +126,31 @@ const title = "Empleados";
 const columns = [
     {
         title: "Legajo", 
-        field: "legajo"
+        field: "legajo",
+        editable: "never"
     },
     {
         title: "Nombre", 
-        field: "nombre"
+        field: "nombre",
+        editable: "never"
     },
     {
         title: "Apellido", 
-        field: "apellido"
+        field: "apellido",
+        editable: "never"
     },
     {
         title: "Contrato", 
-        field: "contrato"
+        field: "contrato",
+        editable: "never"
     },
     {
         title: "Seniority", 
-        field: "seniority"
+        field: "seniority",
+        editable: "never"
     }
-]
+];
+
+const editIcon = InfoOutlined;
+
 

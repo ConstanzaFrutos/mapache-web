@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route } from "react-router-dom";
-import NavBar from "../component/NavBar";
+import NavBar from "../component/general/NavBar";
 import { Home } from "../controller/Home";
 import EmpleadosScreen from "../controller/EmpleadosScreen";
 import SoporteScreen from "../controller/SoporteScreen";

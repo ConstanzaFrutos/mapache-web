@@ -4,10 +4,8 @@ import { withRouter } from 'react-router';
 import "../../assets/css/component/recursos/PerfilEmpleado.css";
 
 import Avatar from '@material-ui/core/Avatar';
-import PhoneIcon from '@material-ui/icons/Phone';
 
 import Paper from '@material-ui/core/Paper';
-import { TabPanel } from "../general/TabPanel";
 
 import Requester from "../../communication/Requester";
 
@@ -67,22 +65,6 @@ class PerfilEmpleado extends Component {
     }
 
     render() {
-
-        let value = [
-            "Información",
-            "Carga de horas"
-        ]
-
-        let labels = [
-            "Información",
-            "Carga de horas"
-        ]
-
-        let icons = [
-            <PhoneIcon></PhoneIcon>,
-            <PhoneIcon></PhoneIcon>
-        ]
-
         return (
             <div className="perfil-empleado">
                 <div className={"foto-y-nombre"}>

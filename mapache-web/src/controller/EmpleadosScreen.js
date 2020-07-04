@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
-import { useHistory } from "react-router-dom";
 
 import { TablaAdministracion } from "../component/general/TablaAdministracion";
-import { Tabla } from "../component/general/Tabla";
 
 import Requester from "../communication/Requester";
 
@@ -12,8 +10,8 @@ import "../assets/css/controller/EmpleadosScreen.css";
 // Icono para enviar a la tabla
 import InfoOutlined from '@material-ui/icons/InfoOutlined';
 
-//const mapacheRecursosBaseUrl = "https://mapache-recursos.herokuapp.com";
-const mapacheRecursosBaseUrl = "http://0.0.0.0:8080";
+const mapacheRecursosBaseUrl = "https://mapache-recursos.herokuapp.com";
+//const mapacheRecursosBaseUrl = "http://0.0.0.0:8080";
 
 class EmpleadosScreen extends Component {
 

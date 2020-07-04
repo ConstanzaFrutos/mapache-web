@@ -2,23 +2,34 @@
     margin-top: 1em;
     margin-left: 1em;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
 }
 
 .foto-y-nombre {
     display: flex;
-    flex-direction: row;
-    align-self: center;
-    margin-top: 3em;
+    flex-direction: column;
+    align-self: flex-start;
+    align-items: center;
+    margin-top: 2em;
+    margin-left: 2em;
+    margin-right: 5em;
+}
+
+.foto-y-nombre .avatar {
+    background-color: #3497c4;
 }
 
 .foto-y-nombre .nombre {
     margin-top: 0.5em;
-    margin-left: 1em;
+    justify-content: center;
 }
 
 .perfil-empleado .perfil-empleado-body {
-    width: 50%;
+    width: 70%;
     align-self: center;
-    margin-top: 5em;
+    margin-top: 2em;
+}
+
+.perfil-empleado .perfil-empleado-body .informacion {
+    padding: 2em 2em 2em 2em;
 }

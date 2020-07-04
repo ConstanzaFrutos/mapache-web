@@ -58,6 +58,9 @@ export class TablaAdministracion extends Component {
             ThirdStateCheck: Remove,
         };
 
+        console.log('acciones')
+        console.log(this.props.editable)
+        console.log(this.props.editable==undefined)
         
         tabla = <MaterialTable
                     icons={ icons }
@@ -65,8 +68,7 @@ export class TablaAdministracion extends Component {
                     title={ this.props.title }
                     columns={ this.props.columns }
                     data={ this.props.data }
-                    editable={{
-                        onRowAdd: (newData) =>
+                    editable= { this.props.editable==undefined? ({onRowAdd: (newData) =>
                         new Promise((resolve) => {
                             resolve();
                             this.props.handleAdd(newData);  
@@ -82,11 +84,11 @@ export class TablaAdministracion extends Component {
                         new Promise((resolve) => {
                             resolve();
                             this.props.handleDelete(oldData);
-                        }),
-                    }}
+                        })}) : (this.props.editable) }
                     options={{
                         actionsColumnIndex: -1
                     }}
+                    actions = { this.props.actions }
                 >
                 </MaterialTable>
         

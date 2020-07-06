@@ -7,7 +7,7 @@ WORKDIR /usr/src/app
 RUN npm install yarn
 RUN yarn install
 RUN yarn global add react-scripts@3.4.1
-
+RUN yarn add axios
 # build
 RUN yarn run build
 

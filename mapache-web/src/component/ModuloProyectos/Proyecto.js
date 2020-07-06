@@ -2,6 +2,7 @@ import React, {Component} from "react";
 import { withRouter } from 'react-router';
 import {Button, Card, Col, Form} from "react-bootstrap";
 import axios from "axios";
+const URL = 'https://mapache-proyectos.herokuapp.com/';
 
 class Proyecto extends Component {
     constructor(props) {
@@ -11,8 +12,8 @@ class Proyecto extends Component {
         this.cambioProyecto = this.cambioProyecto.bind(this);
     }
 
-    estadoInicial = {id:'', nombre:'', tipo:"Implementación", descripcion: '', fechaDeInicio: '0000-00-00',
-        fechaDeFinalizacion: '0000-00-00'};
+    estadoInicial = {id:'', nombre:'', tipo:"Implementación", descripcion: '', fechaDeInicio: '',
+        fechaDeFinalizacion: ''};
 
     crearProyecto = event => {
         event.preventDefault();
@@ -23,7 +24,7 @@ class Proyecto extends Component {
             fechaDeInicio: this.state.fechaDeInicio,
             fechaDeFinalizacion: this.state.fechaDeFinalizacion
         };
-        axios.post("http://localhost:8080/proyectos", proyecto)
+        axios.post(URL+"proyectos", proyecto)
             .then(respuesta=> {
                 if(respuesta.data != null){
                     this.setState(this.estadoInicial);
@@ -43,7 +44,7 @@ class Proyecto extends Component {
     componentDidMount() {
         const proyectoId = +this.props.match.params.id;
         if(proyectoId){
-            axios.get("http://localhost:8080/proyectos/"+proyectoId)
+            axios.get(URL+"proyectos/"+proyectoId)
                 .then(respuesta => {
                     if(respuesta.data != null){
                         this.setState({
@@ -71,7 +72,7 @@ class Proyecto extends Component {
             fechaDeInicio: this.state.fechaDeInicio,
             fechaDeFinalizacion: this.state.fechaDeFinalizacion
         };
-        axios.put("http://localhost:8080/proyectos/"+proyecto.id, proyecto)
+        axios.put(URL+"proyectos/"+proyecto.id, proyecto)
             .then(respuesta=> {
                 if(respuesta.data != null){
                     this.setState(this.estadoInicial);
@@ -129,7 +130,7 @@ class Proyecto extends Component {
                                     <Form.Control
                                         autoComplete="off"
                                         type="date" name="fechaDeInicio"
-                                        value={fechaDeInicio.split('T')[0]}
+                                        value={fechaDeInicio ? fechaDeInicio.split('T')[0] : '0000-00-00'}
                                         onChange={this.cambioProyecto}
                                     />
                                 </Form.Group>
@@ -138,7 +139,7 @@ class Proyecto extends Component {
                                     <Form.Control
                                         autoComplete="off"
                                         type="date" name="fechaDeFinalizacion"
-                                        value={fechaDeFinalizacion.split('T')[0]}
+                                        value={fechaDeFinalizacion ? fechaDeFinalizacion.split('T')[0] : '0000-00-00'}
                                         onChange={this.cambioProyecto}
                                     />
                                 </Form.Group>

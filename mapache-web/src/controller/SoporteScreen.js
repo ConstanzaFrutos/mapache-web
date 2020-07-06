@@ -71,10 +71,10 @@ class SoporteScreen extends Component {
             }
         })
         .then(response => {
-            console.log(response.tickets);
-            if (response.tickets) {
+            console.log(response);
+            if (response) {
                 this.setState({
-                    tickets: response.tickets
+                    tickets: response
                 });
             }
         });

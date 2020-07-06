@@ -34,7 +34,7 @@ class VisualizarTicket extends Component {
                 if (response.ok){
                     return response.json();
                 } else {
-                    console.log("Error al consultar empleado con legajo: ");
+                    console.log("Error al consultar ticket con id: ");
                 }
             })
             .then(response => {

@@ -30,25 +30,24 @@
 }
 
 .perfil-empleado .perfil-empleado-body .informacion {
-    padding: 2em 2em 2em 2em;
+    padding: 5%;
+    align-items: center;
 }
 
 .perfil-empleado .perfil-empleado-body .add {
-    padding: 2em 2em 2em 2em;
+    padding: 5%;
 }
 
 .fechas-paragraph {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
-    width: 80%;
+    justify-content: space-around;
 }
 
 .dropdown-paragraph {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
-    width: 80%;
+    justify-content: space-around;
 }
 
 .contrato-paragraph {

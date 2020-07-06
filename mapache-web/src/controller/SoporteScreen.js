@@ -35,29 +35,17 @@ class SoporteScreen extends Component {
         this.props.history.push({
             pathname: `/soporte/tickets/nuevo`
         });
-
-        /*
-        this.requester.post('/tickets', ticket)
-            .then(response => {
-                if (response.ok){
-                    return response.json();
-                } else {
-                    console.log("Error al consultar empleados");
-                }
-            });
-*/
     }
 
-    handleEdit(newData, oldData) {
+    handleEdit(oldData) {
+        // Esta funcion en el caso de los empleados 
+        // se usa para redirigir el perfil
         console.log("En edit");
-        /*this.requester.put('/empleados/' + oldData.legajo)
-        .then(response => {
-            if (response.ok){
-                return response.json();
-            } else {
-                console.log("Error al consultar empleados");
-            }
-        });*/
+        console.log(oldData);
+        
+        this.props.history.push({
+            pathname: `/soporte/${oldData.id}`
+        });
     }
 
     handleDelete(newData) {
@@ -66,8 +54,9 @@ class SoporteScreen extends Component {
         .then(response => {
             if (response.ok){
                 console.log(`Ticket ${newData.id} fue eliminado de manera exitosa`);
+                this.componentDidMount();
             } else {
-                console.log("Error al consultar tickets");
+                console.log("Error al borrar tickets");
             }
         });
     }
@@ -78,7 +67,7 @@ class SoporteScreen extends Component {
             if (response.ok){
                 return response.json();
             } else {
-                console.log("Error al consultar empleados");
+                console.log("Error al consultar tickets");
             }
         })
         .then(response => {
@@ -93,7 +82,7 @@ class SoporteScreen extends Component {
 
     render() {
         return (
-            <div className="soporte-screen-div">
+            <div className="tickets-screen-div">
 
                 <TablaAdministracion 
                     title={ title }
@@ -107,7 +96,9 @@ class SoporteScreen extends Component {
                         onRowDelete: (oldData) =>
                         new Promise((resolve) => {
                             resolve();
-                            this.props.handleDelete(oldData);
+
+                            this.handleDelete(oldData);
+
                         }),
                     }}
                     actions={[
@@ -122,8 +113,9 @@ class SoporteScreen extends Component {
                             icon: editIcon,
                             tooltip: "Edit ticket",
                             onClick: (event, rowData) => {
+                              this.handleEdit(rowData)  
                               console.log(rowData)
-                              console.log("Prueba");
+                              console.log("PruebaEdit");
                             }
                           }
                       ]}

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
-import axios from 'axios';
+
 
 
 import "../../assets/css/component/recursos/PerfilEmpleado.css";
@@ -48,17 +48,18 @@ class CrearTicket extends Component {
       tipo: this.state.tipo,
       severidad: this.state.severidad,
     };
-    
-    axios.post(`http://localhost:5000/tickets`,  ticket )
-      .then(res => {
-        console.log(res);
-        console.log(res.data);
-        this.props.history.push({
-          pathname: `/soporte/`
-      });
-      }
-    )
 
+    this.requester.post('/tickets', ticket)
+    .then(response => {
+        if (response.ok){
+
+            this.props.history.push({
+                pathname: `/soporte/`
+            });
+        } else {
+            console.log("al crear el ticket");
+        }
+    });
   }
 
 render() {

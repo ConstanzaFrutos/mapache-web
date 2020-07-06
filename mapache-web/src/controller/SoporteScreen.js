@@ -29,15 +29,14 @@ class SoporteScreen extends Component {
         this.handleDelete = this.handleDelete.bind(this);
     }
 
-    handleAdd(newData) {
-        console.log(newData);
-        let ticket = {
-            "nombre": newData.nombre,
-            "descripcion": newData.descripcion,
-            "tipo": newData.tipo,
-            "severidad": newData.severidad
-        }
+    handleAdd() {
+        console.log('PruebaADD')
 
+        this.props.history.push({
+            pathname: `/soporte/tickets/nuevo`
+        });
+
+        /*
         this.requester.post('/tickets', ticket)
             .then(response => {
                 if (response.ok){
@@ -46,6 +45,7 @@ class SoporteScreen extends Component {
                     console.log("Error al consultar empleados");
                 }
             });
+*/
     }
 
     handleEdit(newData, oldData) {
@@ -115,8 +115,8 @@ class SoporteScreen extends Component {
                           icon: Add,
                           tooltip: "Create ticket",
                           position: "toolbar",
-                          onClick: (event, rowData) => {
-                              console.log('Prueba')
+                          onClick: () => {
+                              this.handleAdd()
                           }},
                         {
                             icon: editIcon,

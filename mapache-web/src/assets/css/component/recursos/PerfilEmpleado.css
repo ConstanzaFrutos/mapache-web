@@ -1,8 +1,7 @@
 .perfil-empleado {
-    margin-top: 1em;
-    margin-left: 1em;
     display: flex;
     flex-direction: row;
+    justify-content: center;
 }
 
 .foto-y-nombre {
@@ -10,9 +9,9 @@
     flex-direction: column;
     align-self: flex-start;
     align-items: center;
-    margin-top: 2em;
-    margin-left: 2em;
-    margin-right: 5em;
+    padding-top: 2em;
+    padding-left: 2em;
+    padding-right: 5em;
 }
 
 .foto-y-nombre .avatar {
@@ -25,11 +24,33 @@
 }
 
 .perfil-empleado .perfil-empleado-body {
-    width: 70%;
-    align-self: center;
-    margin-top: 2em;
+    width: 50%;
+    align-self: flex-start;
+    padding-top: 2em;
 }
 
 .perfil-empleado .perfil-empleado-body .informacion {
     padding: 2em 2em 2em 2em;
+}
+
+.perfil-empleado .perfil-empleado-body .add {
+    padding: 2em 2em 2em 2em;
+}
+
+.fechas-paragraph {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 80%;
+}
+
+.dropdown-paragraph {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 80%;
+}
+
+.contrato-paragraph {
+    width: 30%;
 }

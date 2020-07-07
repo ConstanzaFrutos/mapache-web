@@ -332,6 +332,10 @@ export default withRouter(PerfilEmpleado);
 
 const roles = [
     {
+        'name': "No asignado",
+        'value': "SIN_ROL"
+    },
+    {
         'name': "UX",
         'value': "UX"
     },
@@ -366,20 +370,28 @@ const rolesSeniority = [
 
 const seniorities = [
     {
+        'name': "No asignada",
+        'value': "SIN_SENIORITY"
+    },
+    {
         'name': "Junior",
-        'value': "Junior"
+        'value': "JUNIOR"
     },
     {
         'name': "Semi-Senior",
-        'value': "Semi-Senior"
+        'value': "SEMI_SENIOR"
     },
     {
         'name': "Senior",
-        'value': "Senior"
+        'value': "SENIOR"
     }
 ]
 
 const contratos = [
+    {
+        'name': "No asignado",
+        'value': "SIN_CONTRATO"   
+    },
     {
         'name': "Full-Time",
         'value': "FULL_TIME"

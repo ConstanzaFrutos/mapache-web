@@ -7,7 +7,7 @@ class ProyectosScreen extends Component {
 
     render() {
         return (
-            <div className="proyectos-screen-div">
+            <div>
                 <NavBarProyecto/>
                 <ListadoProyectos/>
             </div>

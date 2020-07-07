@@ -4,6 +4,8 @@ import {ButtonGroup, Table, Button} from "react-bootstrap";
 import {Link} from "react-router-dom";
 import Paper from "@material-ui/core/Paper";
 import TableContainer from "@material-ui/core/TableContainer";
+import "../../assets/css/ModuloProyectos/TablasProyectos.css";
+import "../../assets/css/controller/ProyectosScreen.css";
 const URL = 'https://mapache-proyectos.herokuapp.com/';
 
 export default class ListadoProyectos extends Component {
@@ -62,48 +64,52 @@ export default class ListadoProyectos extends Component {
 
     render() {
         return (
-            <TableContainer component={Paper}>
-                <Table  aria-label="simple table">
-                    <thead>
-                    <tr>
-                        <th>Id</th>
-                        <th>Nombre</th>
-                        <th>Estado</th>
-                        <th>Tipo de Proyecto</th>
-                        <th>Acciones</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {this.state.proyectos.length === 0 ?
-                        <tr align="center">
-                            <td colSpan="4">No exite ningun proyecto</td>
-                        </tr> :
-                        this.state.proyectos.map((proyecto) => (
-                            <tr key={proyecto.id}>
-                                <td>{proyecto.id}</td>
-                                <td>{proyecto.nombre}</td>
-                                <td
-                                    style={{color: this.definirColor(proyecto.estado)}}>
-                                    {proyecto.estado}
-                                </td>
-                                <td>{proyecto.tipoDeProyecto}</td>
-                                <td>
-                                    <ButtonGroup>
-                                        <Link to={"/proyectos/edit/"+proyecto.id}><Button size="sm" variant="outline-primary">
-                                            Edit
-                                        </Button>
-                                        </Link>
-                                        <Button size="sm" variant="outline-primary" onClick={this.eliminarProyecto.bind(this,proyecto.id)}>
-                                            Delete
-                                        </Button>
-                                    </ButtonGroup>
-                                </td>
+            <div className="proyectos-screen-div">
+                <div className="tablaProyectos">
+                    <TableContainer component={Paper}>
+                        <Table  aria-label="simple table">
+                            <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Nombre</th>
+                                <th>Estado</th>
+                                <th>Tipo de Proyecto</th>
+                                <th>Acciones</th>
                             </tr>
-                        ))
-                    }
-                    </tbody>
-                </Table>
-            </TableContainer>
+                            </thead>
+                            <tbody>
+                            {this.state.proyectos.length === 0 ?
+                                <tr align="center">
+                                    <td colSpan="4">No exite ningun proyecto</td>
+                                </tr> :
+                                this.state.proyectos.map((proyecto) => (
+                                    <tr key={proyecto.id}>
+                                        <td>{proyecto.id}</td>
+                                        <td>{proyecto.nombre}</td>
+                                        <td
+                                            style={{color: this.definirColor(proyecto.estado)}}>
+                                            {proyecto.estado}
+                                        </td>
+                                        <td>{proyecto.tipoDeProyecto}</td>
+                                        <td>
+                                            <ButtonGroup>
+                                                <Link to={"/proyectos/edit/"+proyecto.id}><Button size="sm" variant="outline-primary">
+                                                    Edit
+                                                </Button>
+                                                </Link>
+                                                <Button size="sm" variant="outline-primary" onClick={this.eliminarProyecto.bind(this,proyecto.id)}>
+                                                    Delete
+                                                </Button>
+                                            </ButtonGroup>
+                                        </td>
+                                    </tr>
+                                ))
+                            }
+                            </tbody>
+                        </Table>
+                    </TableContainer>
+                </div>
+            </div>
         );
     }
 }

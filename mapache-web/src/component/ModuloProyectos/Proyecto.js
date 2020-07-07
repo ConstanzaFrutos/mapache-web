@@ -2,6 +2,8 @@ import React, {Component} from "react";
 import { withRouter } from 'react-router';
 import {Button, Card, Col, Form} from "react-bootstrap";
 import axios from "axios";
+import "../../assets/css/controller/ProyectosScreen.css";
+import "../../assets/css/ModuloProyectos/TablasProyectos.css";
 const URL = 'https://mapache-proyectos.herokuapp.com/';
 
 class Proyecto extends Component {
@@ -86,10 +88,10 @@ class Proyecto extends Component {
     render() {
         const {nombre, tipo, descripcion, fechaDeInicio, fechaDeFinalizacion} = this.state;
         return(
-            <div className={"proyectoDiv"}>
-                <Card className={"proyecto-card"}>
+            <div className="proyectos-screen-div">
+                <Card className="tablaProyectos">
                     <Form id="formularioProyecto" onSubmit={this.state.id ? this.actualizarProyecto : this.crearProyecto}>
-                        <Card.Header>Agregar proyecto</Card.Header>
+                        <Card.Header>{this.state.id ? "Editar Proyecto": "Crear Proyecto"}</Card.Header>
                         <Card.Body>
                             <Form.Row>
                                 <Form.Group as={Col}>

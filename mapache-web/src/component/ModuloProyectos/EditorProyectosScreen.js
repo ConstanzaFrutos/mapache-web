@@ -5,7 +5,7 @@ import Proyecto from "./Proyecto";
 export default class EditorProyectosScreen extends Component {
     render() {
         return(
-            <div className="editorproyectos-screen-div">
+            <div>
                 <NavBarProyecto/>
                 <Proyecto/>
             </div>

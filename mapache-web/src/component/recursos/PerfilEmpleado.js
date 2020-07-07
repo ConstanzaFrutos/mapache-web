@@ -172,7 +172,7 @@ class PerfilEmpleado extends Component {
             fechaNacimiento: this.state.empleado.fechaNacimiento
         }            
         if (!empleado.seniority)
-            empleado.seniority = 'Junior';
+            empleado.seniority = seniorities[0].value;
         console.log(empleado);
         this.requester.post('/empleados/', empleado)
             .then(response => {

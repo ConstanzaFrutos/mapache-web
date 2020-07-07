@@ -34,12 +34,14 @@ class PerfilEmpleado extends Component {
 
         this.formatearFecha = this.formatearFecha.bind(this);
         this.procesarInfo = this.procesarInfo.bind(this);
-        
-        this.handleDateChange = this.handleDateChange.bind(this);
+
+        this.handleTextInput = this.handleTextInput.bind(this);
 
         this.handleSeniorityChange = this.handleSeniorityChange.bind(this);
         this.handleContratoChange = this.handleContratoChange.bind(this);
         this.handleRolChange = this.handleRolChange.bind(this);
+
+        this.handleDateInput = this.handleDateInput.bind(this);
 
         this.handleSave = this.handleSave.bind(this);
     }
@@ -85,13 +87,6 @@ class PerfilEmpleado extends Component {
         return `${dia}/${mes}/${año}`;
     }
 
-    handleDateChange = (date) => {
-        console.log(date);
-        this.setState({
-            fechaNacimientoSeleccionada: date
-        });
-    };
-
     handleSeniorityChange(event) {
         let empleado = (Object.is(this.state.empleado, {})) ? 
             {} : Object.assign({}, this.state.empleado);
@@ -99,6 +94,7 @@ class PerfilEmpleado extends Component {
         this.setState({
             empleado: empleado
         });
+        console.log(this.state.empleado);
     }
 
     handleRolChange(event) {
@@ -112,7 +108,7 @@ class PerfilEmpleado extends Component {
             empleado: empleado,
             renderDropdownSeniority: renderDropdownSeniority
         });
-        console.log(this.state);
+        console.log(this.state.empleado);
     }
 
     handleContratoChange(event) {
@@ -122,17 +118,51 @@ class PerfilEmpleado extends Component {
         this.setState({
             empleado: empleado
         });
+        console.log(this.state.empleado);
+    }
+
+    handleDateInput(event, label) {
+        console.log(event.target.value);
+        let empleado = (Object.is(this.state.empleado, {})) ? 
+            {} : Object.assign({}, this.state.empleado);
+        if (label === "Fecha de nacimiento") {
+            empleado.fechaNacimiento = event.target.value;            
+        } else if (label === "Antigüedad") {
+            empleado.antiguedad = event.target.value;
+        }
+        this.setState({
+            empleado: empleado
+        });
+        console.log(this.state.empleado);
+    }
+
+    handleTextInput(event, label) {
+        let empleado = (Object.is(this.state.empleado, {})) ? 
+            {} : Object.assign({}, this.state.empleado);
+        if (label === "Legajo") {
+            empleado.legajo = event.target.value;            
+        } else if (label === "Nombre") {
+            empleado.nombre = event.target.value;
+        } else if (label === "Apellido") {
+            empleado.apellido = event.target.value;
+        } else if (label === "DNI") {
+            empleado.dni = event.target.value;
+        }
+        this.setState({
+            empleado: empleado
+        });
     }
 
     handleSave() {
-        this.requester.post('/empleados', this.state.empleado)
+        console.log(this.state.empleado);
+        /*this.requester.post('/empleados', this.state.empleado)
             .then(response => {
                 if (response.ok){
                     console.log(response.json());
                 } else {
-                    console.log("Error al consultar empleado con legajo: ");
+                    console.log("Error al agregar empleado");
                 }
-            });
+            });*/
     }
 
     render() {
@@ -171,14 +201,47 @@ class PerfilEmpleado extends Component {
                     </div>
         } else if (this.props.location.state.modo === "add") {
             data = <div className="add">
-                        <p><TextField required id="standard-required" label="Legajo" /></p>
-                        <p><TextField required id="standard-required" label="Nombre y Apellido" /></p>
-                        <p><TextField required id="standard-required" label="DNI" /></p>
+                        <p>
+                            <TextField 
+                                required 
+                                id="standard-required" 
+                                label="Legajo" 
+                                onChange={ (e) => this.handleTextInput(e, "Legajo") }
+                            />
+                        </p>
+                        <p className="nombre-y-apellido">
+                            <TextField 
+                                required 
+                                id="standard-required" 
+                                label="Nombre" 
+                                onChange={ (e) => this.handleTextInput(e, "Nombre") }
+                            />
+                            <TextField 
+                                required 
+                                id="standard-required" 
+                                label="Apellido" 
+                                onChange={ (e) => this.handleTextInput(e, "Apellido") }
+                            />
+                        </p>
+                        <p>
+                            <TextField 
+                                required 
+                                id="standard-required" 
+                                label="DNI" 
+                                onChange={ (e) => this.handleTextInput(e, "DNI") }
+                            />
+                        </p>
 
                         <br></br>
                         <p className="fechas-paragraph">
-                            <DatePicker label="Fecha de nacimiento"></DatePicker>
-                            <DatePicker label="Antigüedad"></DatePicker>
+                            <DatePicker 
+                                label="Fecha de nacimiento"
+                                handleDateInput={ this.handleDateInput }
+                            ></DatePicker>
+                            <DatePicker 
+                                label="Antigüedad"
+                                handleDateInput={ this.handleDateInput }
+                            ></DatePicker>
                         </p>
                         <br></br>
                         <p className="dropdown-paragraph">

@@ -4,11 +4,11 @@ import { withRouter } from 'react-router';
 import "../../assets/css/component/recursos/PerfilEmpleado.css";
 
 import Avatar from '@material-ui/core/Avatar';
-
 import Paper from '@material-ui/core/Paper';
 import TextField from '@material-ui/core/TextField';
 
-import { dropdown, Dropdown } from "../general/Dropdown";
+import { DatePicker } from "../general/DatePicker";
+import { Dropdown } from "../general/Dropdown";
 
 import Requester from "../../communication/Requester";
 
@@ -182,29 +182,8 @@ class PerfilEmpleado extends Component {
 
                         <br></br>
                         <p className="fechas-paragraph">
-                            <form className="fecha-nacimiento" noValidate>
-                                <TextField
-                                    id="date"
-                                    label="Fecha de nacimiento"
-                                    type="date"
-                                    defaultValue={"06/07/2020"}
-                                    InputLabelProps={{
-                                        shrink: true,
-                                    }}
-                                />
-                            </form>
-
-                            <form className="antiguedad" noValidate>
-                                <TextField
-                                    id="date"
-                                    label="Antigüedad"
-                                    type="date"
-                                    defaultValue={"06/07/2020"}
-                                    InputLabelProps={{
-                                        shrink: true,
-                                    }}
-                                />
-                            </form>
+                            <DatePicker label="Fecha de nacimiento"></DatePicker>
+                            <DatePicker label="Antigüedad"></DatePicker>
                         </p>
                         <br></br>
                         <p className="dropdown-paragraph">

@@ -41,6 +41,8 @@
 .nombre-y-apellido {
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
+    width: 90%;
 }
 
 .fechas-paragraph {

@@ -31,30 +31,6 @@ class EmpleadosScreen extends Component {
     }
 
     handleAdd(newData) {
-        console.log(newData);
-        /*let empleado = {
-            "activo": true,
-            "apellido": newData.apellido,
-            "contrato": newData.contrato,
-            "dni": "",
-            "fechaNacimiento": "1990-06-02",
-            "legajo": newData.legajo,
-            "nombre": newData.nombre,
-            "proyectos": [
-              
-            ],
-            "rol": "DESARROLLADOR",
-            "seniority": newData.seniority
-        }
-
-        this.requester.post('/empleados/', empleado)
-            .then(response => {
-                if (response.ok){
-                    return response.json();
-                } else {
-                    console.log("Error al consultar empleados");
-                }
-            });*/
         this.props.history.push({
             pathname: `/empleados/${newData.legajo}`,
             state: {

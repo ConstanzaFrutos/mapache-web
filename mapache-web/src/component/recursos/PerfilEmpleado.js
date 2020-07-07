@@ -126,30 +126,15 @@ class PerfilEmpleado extends Component {
 
     
     render() {
-        
-        let nombreYApellido = this.state.empleado.apellido + ", " + this.state.empleado.nombre;
-
         let data = null;
-        console.log(this.props.location.state.modo);
-
         let avatar = null;
 
-        let seniority = seniorities[0];
-        if (this.state.empleado.seniority) {
-            seniority = this.state.empleado.seniority;
-        }
-
-        let contrato = contratos[0];
-        if (this.state.empleado.contrato) {
-            contrato = this.state.empleado.contrato;
-        }
-
-        let rol = roles[0];
-        if (this.state.empleado.rol) {
-            rol = this.state.empleado.rol;
-        }
+        let seniority = this.state.empleado.seniority ? this.state.empleado.seniority : seniorities[0];
+        let contrato = this.state.empleado.contrato ? this.state.empleado.contrato : contratos[0];
+        let rol = this.state.empleado.rol ? this.state.empleado.rol : roles[0];
 
         if (this.props.location.state.modo === "info") {
+            let nombreYApellido = this.state.empleado.apellido + ", " + this.state.empleado.nombre;
             avatar = <div className={"foto-y-nombre"}>
                         <Avatar className="avatar">
                             {this.state.iniciales}

@@ -38,6 +38,11 @@
     padding: 5%;
 }
 
+.nombre-y-apellido {
+    display: flex;
+    flex-direction: row;
+}
+
 .fechas-paragraph {
     display: flex;
     flex-direction: row;
@@ -52,4 +57,9 @@
 
 .contrato-paragraph {
     width: 30%;
+}
+
+.save-profile-icon {
+    display: flex;
+    float: right;
 }

@@ -8,7 +8,7 @@ import ProyectosScreen from "../controller/ProyectosScreen";
 
 import PerfilEmpleado from "../component/recursos/PerfilEmpleado";
 import CrearTicket from '../component/soporte/CrearTicket';
-import VisualizarTicket from '../component/soporte/VisualizarTicket';
+import EditarTicket from '../component/soporte/EditarTicket';
 
 class Routes extends Component {
     render() {
@@ -21,7 +21,7 @@ class Routes extends Component {
                 <Route exact path={"/soporte"} component={ SoporteScreen }/>
                 <Route exact path={`/empleados/:legajo`} component={ PerfilEmpleado }/>
                 <Route exact path={`/soporte/tickets/nuevo`} component={ CrearTicket }/>
-                <Route exact path={`/soporte/:id_ticket`} component={ VisualizarTicket }/>
+                <Route exact path={`/soporte/:id_ticket`} component={ EditarTicket }/>
             </Router>
         )
     }

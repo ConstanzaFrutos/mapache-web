@@ -3,8 +3,6 @@ import { withRouter } from 'react-router';
 
 import "../../assets/css/component/recursos/PerfilEmpleado.css";
 
-
-
 import Paper from '@material-ui/core/Paper';
 
 import Requester from "../../communication/Requester";

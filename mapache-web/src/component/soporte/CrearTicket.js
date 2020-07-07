@@ -51,7 +51,8 @@ class CrearTicket extends Component {
       nombre:'',
       tipo:'Error',
       severidad:'Baja',
-      descripcion:''
+      descripcion:'',
+      pasos:''
     }
   }
 
@@ -68,6 +69,9 @@ class CrearTicket extends Component {
   handleChangeDescripcion = event => {
     this.setState({ descripcion: event.target.value });
   }
+  handleChangePasos = event => {
+    this.setState({ pasos: event.target.value });
+  }
 
   handleSubmit = event => {
     event.preventDefault();
@@ -77,6 +81,7 @@ class CrearTicket extends Component {
       descripcion: this.state.descripcion,
       tipo: this.state.tipo,
       severidad: this.state.severidad,
+      pasos: this.pasos
     };
 
     this.requester.post('/tickets', ticket)
@@ -92,16 +97,12 @@ class CrearTicket extends Component {
     });
   }
 
-/*
-          <label>
-            tipo:
-            <input type="text" name="tipo" onChange={this.handleChangeTipo} />
-          </label>
-*/
 
 render() {
     return (  
       <div class='form-crear-ticket'>
+        <h2>Nuevo Ticket</h2>
+        <br/>
         <form noValidate autoComplete="off" onSubmit={this.handleSubmit}>
           <div>
             <TextField id="nombre" variant="outlined" name="nombre" label="Nombre" onChange={this.handleChangeNombre}/>
@@ -116,6 +117,12 @@ render() {
             ))}
           </TextField>
           </div>
+          <br/>
+          {this.state.tipo==='Error'
+            ?<div>
+              <TextField id="pasos" variant="outlined" name="pasos" label="Pasos para reproducir" style={{width: '600px'}} multiline rows={6} onChange={this.handleChangePasos}/>
+             </div>
+          : null}
           <br/>
           <div>
             <TextField id="severidad" name="severidad" variant="outlined" select label="Severidad" value={this.state.severidad} onChange={this.handleChangeSeveridad}>

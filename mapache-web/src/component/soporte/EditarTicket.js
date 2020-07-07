@@ -12,50 +12,31 @@ const mapacheSoporteBaseUrl = "http://localhost:5000";
 
 const tipos = [
     {
-      value: "Error",
+      value: "error",
       label: "Error"
     },
     {
-      value: "Consulta",
+      value: "consulta",
       label: "Consulta"
     },
     {
-      value: "Mejora",
+      value: "mejora",
       label: "Mejora"
     }
   ]
   
 const severidades = [
     {
-      value: "Alta",
+      value: "alta",
       label: "Alta"
     },
     {
-      value: "Media",
+      value: "media",
       label: "Media"
     },
     {
-      value: "Baja",
+      value: "baja",
       label: "Baja"
-    }
-  ]
-
-  const clientes = [
-    {
-      value: -1,
-      label: "Ninguno"
-    },  
-    {
-      value: 1,
-      label: "VGC"
-    },
-    {
-      value: 1,
-      label: "VGC"
-    },
-    {
-      value: 1,
-      label: "VGC"
     }
   ]
 
@@ -80,19 +61,19 @@ const severidades = [
 
 const estados = [
     {
-        value: 'Nuevo',
+        value: 'nuevo',
         label: 'Nuevo'
     },
     {
-        value: 'En Progreso',
+        value: 'en progreso',
         label: 'En Progreso'
     },
     {
-        value: 'Esperando informacion del cliente',
-        label: 'Esperando informacion del cliente'
+        value: 'esperando informacion',
+        label: 'Esperando informacion'
     },
     {
-        value: 'Cerrado',
+        value: 'cerrado',
         label: 'Cerrado'
     }
 ]
@@ -104,10 +85,12 @@ class VisualizarTicket extends Component {
 
         this.requester = new Requester(mapacheSoporteBaseUrl);
 
+        this.clientes = [{'id': -1, 'razon_social': 'Ninguno'}]
+
         this.state = {
             "cliente": {
-                "id": 1,
-                "nombre": "VGC"
+                "id": -1,
+                "razon_social": ""
             },
             "descripcion": "",
             "estado": "",
@@ -118,7 +101,7 @@ class VisualizarTicket extends Component {
             "id": "",
             "nombre": "",
             "pasos": "",
-            "id_responsable": "",
+            "id_responsable": -1,
             "severidad": "",
             "tipo": ""
         }
@@ -141,19 +124,19 @@ class VisualizarTicket extends Component {
         this.setState({ pasos: event.target.value });
       }
       handleChangeCliente = event => {
-        this.setState({ cliente: {"id": event.target.value, "nombre": event.target.label} });
+        this.setState({ cliente: {"id": event.target.value, "razon_social": event.target.label} });
       }
       handleChangeResponsable = event => {
-        this.setState({ responsable: {"id": event.target.value, "nombre": event.target.label} });
+        this.setState({ id_responsable: event.target.value});
       }
       handleChangeEstado = event => {
-        this.setState({ estado: {"id": event.target.value, "nombre": event.target.label} });
+        this.setState({ estado: event.target.value});
       }
 
 
       handleSubmit = event => {
         event.preventDefault();
-    
+        console.log('TICKET: ', this.state)
         this.requester.put('/tickets/' + this.state.id, this.state)
         .then(response => {
             if (response.ok){
@@ -172,26 +155,25 @@ class VisualizarTicket extends Component {
         console.log("Params: ", this.props);
         console.log(`id_ticket: ${id_ticket}`);
         
-        //this.requester.get('/tickets/' + id_ticket)
-        this.requester.get('/tickets')
+        this.requester.get('/clientes')
+        .then(response => {
+          if (response.ok){
+              return response.json();
+          } else {
+              console.log("Error al consultar ticket con id: ");
+          }
+        })
+        .then(response => {
+            console.log(response);
+            if (response) {
+                this.clientes = response
+            }
+        });
+        this.requester.get('/tickets/' + id_ticket)
+        //this.requester.get('/tickets')
             .then(response => {
                 if (response.ok){
-                    //return response.json();
-                    return {
-                        "cliente": {"id": -1, "nombre": null},
-                        "descripcion": "Este ticket se creo con motivo de arreglar la consulta",
-                        "estado": "Nuevo",
-                        "fecha_creacion": "2020-07-06 22:50:34",
-                        "fecha_finalizacion": null,
-                        "fecha_limite": "2020-07-13 22:50:34",
-                        "fecha_ultima_actualizacion": "2020-07-06 22:50:34",
-                        "id": 1,
-                        "nombre": "Ticket consulta",
-                        "pasos": null,
-                        "id_responsable": null,
-                        "severidad": "Alta",
-                        "tipo": "Consulta"
-                    }
+                    return response.json();
                 } else {
                     console.log("Error al consultar ticket con id: ");
                 }
@@ -199,21 +181,14 @@ class VisualizarTicket extends Component {
             .then(response => {
                 console.log(response);
                 if (response) {
-                    this.setState({
-                            "cliente": {"id": -1, "nombre": null},
-                            "descripcion": "Este ticket se creo con motivo de arreglar la consulta",
-                            "estado": "Nuevo",
-                            "fecha_creacion": "2020-07-06 22:50:34",
-                            "fecha_finalizacion": null,
-                            "fecha_limite": "2020-07-13 22:50:34",
-                            "fecha_ultima_actualizacion": "2020-07-06 22:50:34",
-                            "id": 1,
-                            "nombre": "Ticket consulta",
-                            "pasos": null,
-                            "id_responsable": -1,
-                            "severidad": "Alta",
-                            "tipo": "Consulta"
-                    });
+                    if (response.cliente==null) {
+                      response.cliente = {"id": -1, "nombre": ""}
+                    }
+                    console.log(response.id_responsable)
+                    if (response.id_responsable==null) {
+                      response.id_responsable = -1
+                    }
+                    this.setState(response);
                 }
             });
     }
@@ -262,9 +237,9 @@ class VisualizarTicket extends Component {
                 
                 <Grid item sm={4} md={4} xl={4} lg={4} xs={4}>
                     <TextField id="cliente" name="cliente" variant="outlined" select label="Cliente" value={this.state.cliente.id} onChange={this.handleChangeCliente}>
-                    {clientes.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                        {option.label}
+                    {this.clientes.map((option) => (
+                    <MenuItem key={option.id} value={option.id}>
+                        {option.razon_social}
                     </MenuItem>
                     ))}
                     </TextField>
@@ -296,11 +271,11 @@ class VisualizarTicket extends Component {
                     </Grid>
                 : null}
 
-                {this.state.tipo==='Error'
+                {this.state.tipo==='error'
                     ?<Grid item sm={12} md={12} xl={12} lg={12} xs={12}>
                     <TextField id="pasos" variant="outlined" label="Pasos" name="pasos" value={this.state.pasos} style={{width: '600px'}} multiline rows={6} onChange={this.handleChangePasos}/>
                     </Grid>
-                : null}
+                : ''}
 
                 <Grid item sm={12} md={12} xl={12} lg={12} xs={12}>
                     <TextField id="descripcion" label="Descripcion" style={{width: '600px'}} value={this.state.descripcion} name="descripcion" multiline rows={8} variant="outlined" onChange={this.handleChangeDescripcion}/>

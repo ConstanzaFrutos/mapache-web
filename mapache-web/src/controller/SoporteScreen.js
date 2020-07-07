@@ -90,8 +90,9 @@ class SoporteScreen extends Component {
                     data={ this.state.tickets }
                     handleAdd={ this.handleAdd }
                     handleEdit={ this.handleEdit }
-                    handleDelete={ this.handleDelete }
+                    //handleDelete={ this.handleDelete }
                     editIcon={ editIcon }
+                    /*
                     editable={{
                         onRowDelete: (oldData) =>
                         new Promise((resolve) => {
@@ -101,6 +102,8 @@ class SoporteScreen extends Component {
 
                         }),
                     }}
+                    */
+                    editable = { null }
                     actions={[
                         {
                           icon: Add,

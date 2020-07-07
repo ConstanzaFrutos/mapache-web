@@ -40,6 +40,24 @@ const severidades = [
   }
 ]
 
+const responsables = [
+  {
+      value: -1,
+      label: "Ninguno"
+  },
+  {
+    value: 1,
+    label: "Martin Perez"
+  },
+  {
+    value: 2,
+    label: "Joaquin Lapa"
+  },
+  {
+    value: 3,
+    label: "Roman Riquelme"
+  }
+]
 
 class CrearTicket extends Component {
   
@@ -47,12 +65,20 @@ class CrearTicket extends Component {
     super(props);
 
     this.requester = new Requester(mapacheSoporteBaseUrl);
+
+    this.clientes = [{"id":-1, "razon_social": "Ninguno"}]
+
     this.state={
       nombre:'',
-      tipo:'Error',
+      tipo:'Consulta',
       severidad:'Baja',
       descripcion:'',
-      pasos:''
+      pasos:'',
+      cliente: {
+        id: -1,
+        razon_social: ""
+      },
+      id_responsable: -1
     }
   }
 
@@ -72,6 +98,12 @@ class CrearTicket extends Component {
   handleChangePasos = event => {
     this.setState({ pasos: event.target.value });
   }
+  handleChangeCliente = event => {
+    this.setState({ cliente: {"id": event.target.value, "razon_social": event.target.label} });
+  }
+  handleChangeResponsable = event => {
+    this.setState({ id_responsable: event.target.value});
+  }
 
   handleSubmit = event => {
     event.preventDefault();
@@ -81,7 +113,9 @@ class CrearTicket extends Component {
       descripcion: this.state.descripcion,
       tipo: this.state.tipo,
       severidad: this.state.severidad,
-      pasos: this.pasos
+      pasos: this.state.pasos,
+      cliente: this.state.cliente,
+      id_responsable: this.state.id_responsable
     };
 
     this.requester.post('/tickets', ticket)
@@ -98,6 +132,28 @@ class CrearTicket extends Component {
   }
 
 
+
+  componentDidMount() {
+        this.requester.get('/clientes')
+        .then(response => {
+          if (response.ok){
+              return response.json();
+          } else {
+              console.log("Error al consultar ticket con id: ");
+          }
+        })
+        .then(response => {
+            console.log(response);
+            if (response) {
+                this.clientes = response
+                console.log('cambiando')
+                console.log(response[0].id)
+                this.setState({cliente: {'id': response[0].id, 'razon_social': response[0].razon_social}})
+                this.state.cliente.id = response[0].id
+            }
+        });
+    }
+
 render() {
     return (  
       <div class='form-crear-ticket'>
@@ -109,7 +165,15 @@ render() {
           </div>
           <br/>
           <div>
-            <TextField id="tipo" name="tipo" variant="outlined" select label="Tipo" value={this.state.tipo} onChange={this.handleChangeTipo}>
+          <TextField id="cliente" name="cliente" variant="outlined" select label="Cliente" value={this.state.cliente.id} onChange={this.handleChangeCliente}>
+                    {this.clientes.map((option) => (
+                    <MenuItem key={option.id} value={option.id}>
+                        {option.razon_social}
+                    </MenuItem>
+                    ))}
+          </TextField>
+          &nbsp;&nbsp;&nbsp;
+          <TextField id="tipo" name="tipo" variant="outlined" select label="Tipo" value={this.state.tipo} onChange={this.handleChangeTipo}>
             {tipos.map((option) => (
               <MenuItem key={option.value} value={option.value}>
                 {option.label}
@@ -117,6 +181,7 @@ render() {
             ))}
           </TextField>
           </div>
+
           <br/>
           {this.state.tipo==='Error'
             ?<div>
@@ -132,6 +197,14 @@ render() {
               </MenuItem>
             ))}
             </TextField>
+            &nbsp;&nbsp;&nbsp;
+            <TextField id="responsable" name="responsable" variant="outlined" select label="Responsable" value={this.state.id_responsable} onChange={this.handleChangeResponsable}>
+                    {responsables.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                    </MenuItem>
+                    ))}
+          </TextField>
           </div>
           <br />
           <div>

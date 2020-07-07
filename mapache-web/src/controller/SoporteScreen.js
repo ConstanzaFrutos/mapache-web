@@ -44,7 +44,7 @@ class SoporteScreen extends Component {
         console.log(oldData);
         
         this.props.history.push({
-            pathname: `/soporte/${oldData.id}`
+            pathname: `/tickets/${oldData.id}`
         });
     }
 

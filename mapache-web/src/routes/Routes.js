@@ -21,7 +21,7 @@ class Routes extends Component {
                 <Route exact path={"/soporte"} component={ SoporteScreen }/>
                 <Route exact path={`/empleados/:legajo`} component={ PerfilEmpleado }/>
                 <Route exact path={`/soporte/tickets/nuevo`} component={ CrearTicket }/>
-                <Route exact path={`/soporte/:id_ticket`} component={ EditarTicket }/>
+                <Route exact path={`/tickets/:id_ticket`} component={ EditarTicket }/>
             </Router>
         )
     }

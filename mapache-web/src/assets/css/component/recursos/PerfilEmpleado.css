@@ -59,7 +59,11 @@
     width: 30%;
 }
 
-.save-profile-icon {
+.iconos-agregar-empleado {
     display: flex;
+    flex-direction: row;
     float: right;
+    width: 10%;
+    justify-content: space-between;
 }
+

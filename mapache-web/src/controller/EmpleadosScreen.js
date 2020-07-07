@@ -10,8 +10,8 @@ import "../assets/css/controller/EmpleadosScreen.css";
 // Icono para enviar a la tabla
 import InfoOutlined from '@material-ui/icons/InfoOutlined';
 
-const mapacheRecursosBaseUrl = "https://mapache-recursos.herokuapp.com";
-//const mapacheRecursosBaseUrl = "http://0.0.0.0:8080";
+//const mapacheRecursosBaseUrl = "https://mapache-recursos.herokuapp.com";
+const mapacheRecursosBaseUrl = "http://0.0.0.0:8080";
 
 class EmpleadosScreen extends Component {
 
@@ -32,7 +32,7 @@ class EmpleadosScreen extends Component {
 
     handleAdd(newData) {
         console.log(newData);
-        let empleado = {
+        /*let empleado = {
             "activo": true,
             "apellido": newData.apellido,
             "contrato": newData.contrato,
@@ -54,7 +54,13 @@ class EmpleadosScreen extends Component {
                 } else {
                     console.log("Error al consultar empleados");
                 }
-            });
+            });*/
+        this.props.history.push({
+            pathname: `/empleados/${newData.legajo}`,
+            state: {
+                modo: "add"
+            }
+        });    
     }
 
     handleEdit(oldData) {
@@ -64,7 +70,10 @@ class EmpleadosScreen extends Component {
         console.log(oldData);
         
         this.props.history.push({
-            pathname: `/empleados/${oldData.legajo}`
+            pathname: `/empleados/${oldData.legajo}`,
+            state: {
+                modo: "info"
+            }
         });
     }
 
@@ -138,13 +147,8 @@ const columns = [
         editable: "never"
     },
     {
-        title: "Contrato", 
-        field: "contrato",
-        editable: "never"
-    },
-    {
-        title: "Seniority", 
-        field: "seniority",
+        title: "Rol", 
+        field: "rol",
         editable: "never"
     }
 ];

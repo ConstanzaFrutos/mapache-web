@@ -7,6 +7,7 @@ import Avatar from '@material-ui/core/Avatar';
 import Paper from '@material-ui/core/Paper';
 import TextField from '@material-ui/core/TextField';
 import Save from '@material-ui/icons/Save'
+import Clear from '@material-ui/icons/Clear'
 
 import { DatePicker } from "../general/DatePicker";
 import { Dropdown } from "../general/Dropdown";
@@ -44,6 +45,7 @@ class PerfilEmpleado extends Component {
         this.handleDateInput = this.handleDateInput.bind(this);
 
         this.handleSave = this.handleSave.bind(this);
+        this.handleCancelSave = this.handleCancelSave.bind(this);
     }
 
     componentDidMount() {
@@ -155,30 +157,24 @@ class PerfilEmpleado extends Component {
     }
 
     handleSave() {
-        /*
-        {
-            "activo": true,
-            "apellido": "string",
-            "contrato": "string",
-            "dni": "string",
-            "fechaNacimiento": "string",
-            "legajo": "string",
-            "nombre": "string",
-            "proyectos": [
-                
-            ],
-            "rol": "LIDER_RRHH",
-            "seniority": "string"
-            }
-        */
-        let empleado = (Object.is(this.state.empleado, {})) ? 
-            {} : Object.assign({}, this.state.empleado);
-        empleado.activo = true;
-        empleado.proyectos = [];
+        /*let empleado = (Object.is(this.state.empleado, {})) ? 
+            {} : Object.assign({}, this.state.empleado);*/
+        let empleado = {
+            activo: true,
+            apellido: this.state.empleado.apellido,
+            nombre: this.state.empleado.nombre,
+            dni: this.state.empleado.dni,
+            legajo: this.state.empleado.legajo,
+            proyectos: [],
+            rol: this.state.empleado.rol,
+            seniority: this.state.empleado.seniority,
+            contrato: this.state.empleado.contrato,
+            fechaNacimiento: this.state.empleado.fechaNacimiento
+        }            
         if (!empleado.seniority)
             empleado.seniority = 'Junior';
-        console.log(this.state.empleado);
-        this.requester.post('/empleados', this.state.empleado)
+        console.log(empleado);
+        this.requester.post('/empleados/', empleado)
             .then(response => {
                 if (response.ok){
                     console.log(response.json());
@@ -186,6 +182,12 @@ class PerfilEmpleado extends Component {
                     console.log("Error al agregar empleado");
                 }
             });
+    }
+
+    handleCancelSave() {
+        this.props.history.push({
+            pathname: `/empleados`
+        }); 
     }
 
     render() {
@@ -295,10 +297,16 @@ class PerfilEmpleado extends Component {
                             >
                             </Dropdown> 
                         </p>
-                        <Save 
-                            className="save-profile-icon" 
-                            onClick={ this.handleSave }
-                        ></Save>
+                        <div className="iconos-agregar-empleado">
+                            <Save 
+                                className="save-profile-icon" 
+                                onClick={ this.handleSave }
+                            ></Save>
+                            <Clear 
+                                className="clear-profile-icon" 
+                                onClick={ this.handleCancelSave }
+                            ></Clear>
+                        </div>
                         <br></br>
                         
                     </div>

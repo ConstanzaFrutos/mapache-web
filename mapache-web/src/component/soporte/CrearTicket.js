@@ -149,7 +149,6 @@ class CrearTicket extends Component {
                 console.log('cambiando')
                 console.log(response[0].id)
                 this.setState({cliente: {'id': response[0].id, 'razon_social': response[0].razon_social}})
-                this.state.cliente.id = response[0].id
             }
         });
     }

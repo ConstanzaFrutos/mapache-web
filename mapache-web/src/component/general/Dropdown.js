@@ -25,9 +25,9 @@ export class Dropdown extends Component {
                         >
                             { 
                                 this.props.values.map((value) => {
-                                    return <MenuItem value={ value }
+                                    return <MenuItem value={ value.value }
                                             >
-                                                { value }
+                                                { value.name }
                                             </MenuItem>
                                 }) 
                             }

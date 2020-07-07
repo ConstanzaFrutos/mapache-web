@@ -115,6 +115,7 @@ class PerfilEmpleado extends Component {
         let empleado = (Object.is(this.state.empleado, {})) ? 
             {} : Object.assign({}, this.state.empleado);
         empleado.contrato = event.target.value;
+        console.log(event.target.value)
         this.setState({
             empleado: empleado
         });
@@ -154,24 +155,46 @@ class PerfilEmpleado extends Component {
     }
 
     handleSave() {
+        /*
+        {
+            "activo": true,
+            "apellido": "string",
+            "contrato": "string",
+            "dni": "string",
+            "fechaNacimiento": "string",
+            "legajo": "string",
+            "nombre": "string",
+            "proyectos": [
+                
+            ],
+            "rol": "LIDER_RRHH",
+            "seniority": "string"
+            }
+        */
+        let empleado = (Object.is(this.state.empleado, {})) ? 
+            {} : Object.assign({}, this.state.empleado);
+        empleado.activo = true;
+        empleado.proyectos = [];
+        if (!empleado.seniority)
+            empleado.seniority = 'Junior';
         console.log(this.state.empleado);
-        /*this.requester.post('/empleados', this.state.empleado)
+        this.requester.post('/empleados', this.state.empleado)
             .then(response => {
                 if (response.ok){
                     console.log(response.json());
                 } else {
                     console.log("Error al agregar empleado");
                 }
-            });*/
+            });
     }
 
     render() {
         let data = null;
         let avatar = null;
 
-        let seniority = this.state.empleado.seniority ? this.state.empleado.seniority : seniorities[0];
-        let contrato = this.state.empleado.contrato ? this.state.empleado.contrato : contratos[0];
-        let rol = this.state.empleado.rol ? this.state.empleado.rol : roles[0];
+        let seniority = this.state.empleado.seniority ? this.state.empleado.seniority : seniorities[0].value;
+        let contrato = this.state.empleado.contrato ? this.state.empleado.contrato : contratos[0].value;
+        let rol = this.state.empleado.rol ? this.state.empleado.rol : roles[0].value;
 
         if (this.props.location.state.modo === "info") {
             let nombreYApellido = this.state.empleado.apellido + ", " + this.state.empleado.nombre;
@@ -300,29 +323,61 @@ export default withRouter(PerfilEmpleado);
 
 
 const roles = [
-    "UX",
-    "QA",
-    "Desarrollador",
-    "Lider de Proyecto",
-    "Arquitecto",
-    "Producto"
+    {
+        'name': "UX",
+        'value': "UX"
+    },
+    {
+        'name': "QA",
+        'value': "QA"
+    },
+    {
+        'name': "Desarrollador",
+        'value': "DESARROLLADOR"
+    },
+    {
+        'name': "Líder de Proyecto",
+        'value': "LIDER_PROYECTO"
+    },
+    {
+        'name': "Arquitecto",
+        'value': "ARQUITECTO"
+    },
+    {
+        'name': "Líder de RRHH",
+        'value': "LIDER_RRHH"
+    }
 ]
 
 const rolesSeniority = [
     "UX",
     "QA",
-    "Desarrollador",
-    "Arquitecto"
+    "DESARROLLADOR",
+    "ARQUITECTO"
 ]
 
 const seniorities = [
-    "Junior",
-    "Semi-Senior",
-    "Senior"
+    {
+        'name': "Junior",
+        'value': "Junior"
+    },
+    {
+        'name': "Semi-Senior",
+        'value': "Semi-Senior"
+    },
+    {
+        'name': "Senior",
+        'value': "Senior"
+    }
 ]
 
 const contratos = [
-    "Full-time",
-    "Part-time",
-    "Soporte"
+    {
+        'name': "Full-Time",
+        'value': "FULL_TIME"
+    },
+    {
+        'name': "Part-Time",
+        'value': "PART_TIME"
+    }
 ]

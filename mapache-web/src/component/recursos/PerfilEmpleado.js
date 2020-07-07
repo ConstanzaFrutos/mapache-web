@@ -6,6 +6,7 @@ import "../../assets/css/component/recursos/PerfilEmpleado.css";
 import Avatar from '@material-ui/core/Avatar';
 import Paper from '@material-ui/core/Paper';
 import TextField from '@material-ui/core/TextField';
+import Save from '@material-ui/icons/Save'
 
 import { DatePicker } from "../general/DatePicker";
 import { Dropdown } from "../general/Dropdown";
@@ -39,6 +40,8 @@ class PerfilEmpleado extends Component {
         this.handleSeniorityChange = this.handleSeniorityChange.bind(this);
         this.handleContratoChange = this.handleContratoChange.bind(this);
         this.handleRolChange = this.handleRolChange.bind(this);
+
+        this.handleSave = this.handleSave.bind(this);
     }
 
     componentDidMount() {
@@ -49,9 +52,6 @@ class PerfilEmpleado extends Component {
     
     procesarInfo() {
         let legajo = this.props.match.params.legajo;
-        console.log("Params: ", this.props);
-        console.log(`Legajo: ${legajo}`);
-
         this.requester.get('/empleados/' + legajo)
             .then(response => {
                 if (response.ok){
@@ -124,7 +124,17 @@ class PerfilEmpleado extends Component {
         });
     }
 
-    
+    handleSave() {
+        this.requester.post('/empleados', this.state.empleado)
+            .then(response => {
+                if (response.ok){
+                    console.log(response.json());
+                } else {
+                    console.log("Error al consultar empleado con legajo: ");
+                }
+            });
+    }
+
     render() {
         let data = null;
         let avatar = null;
@@ -199,6 +209,12 @@ class PerfilEmpleado extends Component {
                             >
                             </Dropdown> 
                         </p>
+                        <Save 
+                            className="save-profile-icon" 
+                            onClick={ this.handleSave }
+                        ></Save>
+                        <br></br>
+                        
                     </div>
         }
 

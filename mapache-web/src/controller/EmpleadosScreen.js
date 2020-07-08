@@ -31,30 +31,12 @@ class EmpleadosScreen extends Component {
     }
 
     handleAdd(newData) {
-        console.log(newData);
-        let empleado = {
-            "activo": true,
-            "apellido": newData.apellido,
-            "contrato": newData.contrato,
-            "dni": "",
-            "fechaNacimiento": "1990-06-02",
-            "legajo": newData.legajo,
-            "nombre": newData.nombre,
-            "proyectos": [
-              
-            ],
-            "rol": "DESARROLLADOR",
-            "seniority": newData.seniority
-        }
-
-        this.requester.post('/empleados/', empleado)
-            .then(response => {
-                if (response.ok){
-                    return response.json();
-                } else {
-                    console.log("Error al consultar empleados");
-                }
-            });
+        this.props.history.push({
+            pathname: `/empleados/${newData.legajo}`,
+            state: {
+                modo: "add"
+            }
+        });    
     }
 
     handleEdit(oldData) {
@@ -64,7 +46,10 @@ class EmpleadosScreen extends Component {
         console.log(oldData);
         
         this.props.history.push({
-            pathname: `/empleados/${oldData.legajo}`
+            pathname: `/empleados/${oldData.legajo}`,
+            state: {
+                modo: "info"
+            }
         });
     }
 
@@ -138,13 +123,8 @@ const columns = [
         editable: "never"
     },
     {
-        title: "Contrato", 
-        field: "contrato",
-        editable: "never"
-    },
-    {
-        title: "Seniority", 
-        field: "seniority",
+        title: "Rol", 
+        field: "rol",
         editable: "never"
     }
 ];

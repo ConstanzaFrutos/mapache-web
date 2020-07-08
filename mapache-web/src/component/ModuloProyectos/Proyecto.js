@@ -27,15 +27,23 @@ class Proyecto extends Component {
             fechaDeFinalizacion: this.state.fechaDeFinalizacion,
             estado: this.state.estado
         };
-        axios.post(URL+"proyectos", proyecto)
-            .then(respuesta=> {
-                if(respuesta.data != null){
-                    this.setState(this.estadoInicial);
-                    alert("El proyecto se creo exitosamente");
-                } else {
-                    alert("El proyecto no pudo ser creado");
+        (async() => {
+            try {
+                await axios.post(URL+"proyectos", proyecto)
+                    .then(respuesta => {
+                        if(respuesta.data){
+                            this.setState(this.estadoInicial);
+                            alert("El proyecto se creo exitosamente");
+                        }
+                    })
+            } catch (err) {
+                let mensaje = "Error: " + err.response.status;
+                if(err.response.message){
+                    mensaje += ': ' + err.response.message;
                 }
-            })
+                alert(mensaje);
+            }
+        })();
     }
 
     cambioProyecto = event => {
@@ -46,24 +54,35 @@ class Proyecto extends Component {
 
     componentDidMount() {
         const proyectoId = +this.props.match.params.id;
-        if(proyectoId){
-            axios.get(URL+"proyectos/"+proyectoId)
-                .then(respuesta => {
-                    if(respuesta.data != null){
-                        this.setState({
-                            id: respuesta.data.id,
-                            nombre: respuesta.data.nombre,
-                            tipo: respuesta.data.tipoDeProyecto,
-                            descripcion: respuesta.data.descripcion,
-                            fechaDeInicio: respuesta.data.fechaDeInicio,
-                            fechaDeFinalizacion: respuesta.data.fechaDeFinalizacion,
-                            estado: respuesta.data.estado
-                        });
-                    }
-                }).catch((error) => {
-                    console.error("Error - "+error);
-            });
+        if(!proyectoId){
+            return;
         }
+        (async() => {
+            try {
+                axios.get(URL+"proyectos/"+proyectoId)
+                        .then(respuesta => {
+                            if(respuesta.data != null){
+                                this.setState({
+                                    id: respuesta.data.id,
+                                    nombre: respuesta.data.nombre,
+                                    tipo: respuesta.data.tipoDeProyecto,
+                                    descripcion: respuesta.data.descripcion,
+                                    fechaDeInicio: respuesta.data.fechaDeInicio,
+                                    fechaDeFinalizacion: respuesta.data.fechaDeFinalizacion,
+                                    estado: respuesta.data.estado
+                                });
+                            }
+                        }).catch((error) => {
+                            console.error("Error - "+error);
+                    });
+            } catch (err) {
+                let mensaje = "Error: " + err.response.status;
+                if(err.response.message){
+                    mensaje += ': ' + err.response.message;
+                }
+                alert(mensaje);
+            }
+        })();
     }
 
     actualizarProyecto = event => {
@@ -77,15 +96,26 @@ class Proyecto extends Component {
             fechaDeFinalizacion: this.state.fechaDeFinalizacion,
             estado: this.state.estado
         };
-        axios.put(URL+"proyectos/"+proyecto.id, proyecto)
-            .then(respuesta=> {
-                if(respuesta.data != null){
-                    this.setState(this.estadoInicial);
-                    alert("El proyecto: " + proyecto.id+ " se actualizo exitosamente");
-                } else {
-                    alert("El proyecto no pudo ser actualizado");
+        (async() => {
+            try {
+                axios.put(URL+"proyectos/"+proyecto.id, proyecto)
+                    .then(respuesta=> {
+                        alert(respuesta.status);
+                        if(respuesta.data != null){
+                            this.setState(this.estadoInicial);
+                            alert("El proyecto: " + proyecto.id+ " se actualizo exitosamente");
+                        } else {
+                            alert("El proyecto no pudo ser actualizado");
+                        }
+                    })
+            } catch (err) {
+                let mensaje = "Error: " + err.response.status;
+                if(err.response.message){
+                    mensaje += ': ' + err.response.message;
                 }
-            })
+                alert(mensaje);
+            }
+        })();
     };
 
     definirColor(estado){
@@ -177,7 +207,6 @@ class Proyecto extends Component {
                                                   required autoComplete="off"
                                                   type="text" name="estado"
                                                   style={{color: this.definirColor(estado)}}>
-                                        >
                                         <option value="No iniciado">No Iniciado</option>
                                         <option  value="Activo">Activo</option>
                                         <option value="Suspendido">Suspendido</option>

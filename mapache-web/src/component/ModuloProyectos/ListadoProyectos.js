@@ -17,28 +17,58 @@ export default class ListadoProyectos extends Component {
     }
 
     componentDidMount() {
-        axios.get(URL+'proyectos')
-            .then(respuesta => respuesta.data)
-            .then((data) => {
-                this.setState({proyectos : data})
-            });
+        (async() => {
+            try {
+                axios.get(URL+'proyectos')
+                    .then(respuesta => respuesta.data)
+                    .then((data) => {
+                        this.setState({proyectos : data})
+                    });
+            } catch (err) {
+                let mensaje = "Error: " + err.response.status;
+                if(err.response.message){
+                    mensaje += ': ' + err.response.message;
+                }
+                alert(mensaje);
+            }
+        })();
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        axios.get(URL+'proyectos')
-            .then(respuesta => respuesta.data)
-            .then((data) => {
-                this.setState({proyectos : data})
-            });
+        (async() => {
+            try {
+                axios.get(URL+'proyectos')
+                    .then(respuesta => respuesta.data)
+                    .then((data) => {
+                        this.setState({proyectos : data})
+                    });
+            } catch (err) {
+                let mensaje = "Error: " + err.response.status;
+                if(err.response.message){
+                    mensaje += ': ' + err.response.message;
+                }
+                alert(mensaje);
+            }
+        })();
     }
 
     eliminarProyecto = (proyectoId) => {
-        axios.delete(URL+'proyectos/'+proyectoId)
-            .then(respuesta => {
-                if(respuesta.data != null){
-                    alert("El proyecto fue eliminado correctamente");
+        (async() => {
+            try {
+                axios.delete(URL+'proyectos/'+proyectoId)
+                    .then(respuesta => {
+                        if(respuesta.data != null){
+                            alert("El proyecto fue eliminado correctamente");
+                        }
+                    });
+            } catch (err) {
+                let mensaje = "Error: " + err.response.status;
+                if(err.response.message){
+                    mensaje += ': ' + err.response.message;
                 }
-            });
+                alert(mensaje);
+            }
+        })();
     }
 
     definirColor(estado){

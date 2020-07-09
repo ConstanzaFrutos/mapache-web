@@ -7,8 +7,8 @@ import Requester from "../../communication/Requester";
 
 import "../../assets/css/component/soporte/Ticket.css";
 
-//const mapacheRecursosBaseUrl = "https://mapache-recursos.herokuapp.com";
-const mapacheSoporteBaseUrl = "http://localhost:5000";
+const mapacheSoporteBaseUrl = "https://psa-api-support.herokuapp.com";
+//const mapacheSoporteBaseUrl = "http://localhost:5000";
 
 const tipos = [
   {
@@ -146,8 +146,6 @@ class CrearTicket extends Component {
             console.log(response);
             if (response) {
                 this.clientes = response
-                console.log('cambiando')
-                console.log(response[0].id)
                 this.setState({cliente: {'id': response[0].id, 'razon_social': response[0].razon_social}})
             }
         });

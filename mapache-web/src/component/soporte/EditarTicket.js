@@ -7,8 +7,8 @@ import Grid from '@material-ui/core/Grid';
 import "../../assets/css/component/recursos/PerfilEmpleado.css";
 import Requester from "../../communication/Requester";
 
-//const mapacheSoporteBaseUrl = "https://mapache-recursos.herokuapp.com";
-const mapacheSoporteBaseUrl = "http://localhost:5000";
+const mapacheSoporteBaseUrl = "https://psa-api-support.herokuapp.com";
+//const mapacheSoporteBaseUrl = "http://localhost:5000";
 
 const tipos = [
     {
@@ -136,7 +136,6 @@ class VisualizarTicket extends Component {
 
       handleSubmit = event => {
         event.preventDefault();
-        console.log('TICKET: ', this.state)
         this.requester.put('/tickets/' + this.state.id, this.state)
         .then(response => {
             if (response.ok){
@@ -152,8 +151,6 @@ class VisualizarTicket extends Component {
 
     componentDidMount() {
         let id_ticket = this.props.match.params.id_ticket;
-        console.log("Params: ", this.props);
-        console.log(`id_ticket: ${id_ticket}`);
         
         this.requester.get('/clientes')
         .then(response => {
@@ -256,13 +253,14 @@ class VisualizarTicket extends Component {
                 </Grid>
                 <Grid item sm={4} md={4} xl={4} lg={4} xs={4}>
                     <TextField id="fecha_creacion" disabled value={this.state.fecha_creacion} variant="outlined" name="fecha_creacion" label="Fecha de creación" />
-                    &nbsp;
-                    &nbsp;
-                    <TextField id="fecha_limite" disabled value={this.state.fecha_limite} variant="outlined" name="fecha_limite" label="Fecha límite"/>
                 </Grid>
                 
                 <Grid item sm={4} md={4} xl={4} lg={4} xs={4}>
                     <TextField id="fecha_ultima_actualizacion" disabled value={this.state.fecha_ultima_actualizacion} variant="outlined" name="fecha_ultima_actualizacion" label="Fecha de última actualización"/>
+                </Grid>
+
+                <Grid item xl={12} lg={12}>
+                  <TextField id="fecha_limite" disabled value={this.state.fecha_limite} variant="outlined" name="fecha_limite" label="Fecha límite"/>
                 </Grid>
                 
                 {this.state.fecha_finalizacion!==null

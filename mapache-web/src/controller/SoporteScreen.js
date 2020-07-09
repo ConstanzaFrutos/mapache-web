@@ -9,8 +9,8 @@ import "../assets/css/controller/SoporteScreen.css";
 
 import InfoOutlined from '@material-ui/icons/InfoOutlined';
 
-//const mapacheRecursosBaseUrl = "https://mapache-recursos.herokuapp.com";
-const mapacheSoporteBaseUrl = "http://localhost:5000";
+const mapacheSoporteBaseUrl = "https://psa-api-support.herokuapp.com";
+//const mapacheSoporteBaseUrl = "http://localhost:5000";
 
 class SoporteScreen extends Component {
 
@@ -30,8 +30,6 @@ class SoporteScreen extends Component {
     }
 
     handleAdd() {
-        console.log('PruebaADD')
-
         this.props.history.push({
             pathname: `/soporte/tickets/nuevo`
         });
@@ -39,21 +37,16 @@ class SoporteScreen extends Component {
 
     handleEdit(oldData) {
         // Esta funcion en el caso de los empleados 
-        // se usa para redirigir el perfil
-        console.log("En edit");
-        console.log(oldData);
-        
+        // se usa para redirigir el perfil      
         this.props.history.push({
             pathname: `/tickets/${oldData.id}`
         });
     }
 
     handleDelete(newData) {
-        console.log("En delete");
         this.requester.delete('/tickets/' + newData.id)
         .then(response => {
             if (response.ok){
-                console.log(`Ticket ${newData.id} fue eliminado de manera exitosa`);
                 this.componentDidMount();
             } else {
                 console.log("Error al borrar tickets");

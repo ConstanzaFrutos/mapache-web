@@ -9,8 +9,8 @@ import "../assets/css/controller/SoporteScreen.css";
 
 import InfoOutlined from '@material-ui/icons/InfoOutlined';
 
-//const mapacheRecursosBaseUrl = "https://mapache-recursos.herokuapp.com";
-const mapacheSoporteBaseUrl = "http://localhost:5000";
+const mapacheSoporteBaseUrl = "https://psa-api-support.herokuapp.com";
+//const mapacheSoporteBaseUrl = "http://localhost:5000";
 
 class SoporteScreen extends Component {
 
@@ -29,45 +29,27 @@ class SoporteScreen extends Component {
         this.handleDelete = this.handleDelete.bind(this);
     }
 
-    handleAdd(newData) {
-        console.log(newData);
-        let ticket = {
-            "nombre": newData.nombre,
-            "descripcion": newData.descripcion,
-            "tipo": newData.tipo,
-            "severidad": newData.severidad
-        }
-
-        this.requester.post('/tickets', ticket)
-            .then(response => {
-                if (response.ok){
-                    return response.json();
-                } else {
-                    console.log("Error al consultar empleados");
-                }
-            });
+    handleAdd() {
+        this.props.history.push({
+            pathname: `/soporte/tickets/nuevo`
+        });
     }
 
-    handleEdit(newData, oldData) {
-        console.log("En edit");
-        /*this.requester.put('/empleados/' + oldData.legajo)
-        .then(response => {
-            if (response.ok){
-                return response.json();
-            } else {
-                console.log("Error al consultar empleados");
-            }
-        });*/
+    handleEdit(oldData) {
+        // Esta funcion en el caso de los empleados 
+        // se usa para redirigir el perfil      
+        this.props.history.push({
+            pathname: `/tickets/${oldData.id}`
+        });
     }
 
     handleDelete(newData) {
-        console.log("En delete");
         this.requester.delete('/tickets/' + newData.id)
         .then(response => {
             if (response.ok){
-                console.log(`Ticket ${newData.id} fue eliminado de manera exitosa`);
+                this.componentDidMount();
             } else {
-                console.log("Error al consultar tickets");
+                console.log("Error al borrar tickets");
             }
         });
     }
@@ -78,14 +60,14 @@ class SoporteScreen extends Component {
             if (response.ok){
                 return response.json();
             } else {
-                console.log("Error al consultar empleados");
+                console.log("Error al consultar tickets");
             }
         })
         .then(response => {
-            console.log(response.tickets);
-            if (response.tickets) {
+            console.log(response);
+            if (response) {
                 this.setState({
-                    tickets: response.tickets
+                    tickets: response
                 });
             }
         });
@@ -93,7 +75,7 @@ class SoporteScreen extends Component {
 
     render() {
         return (
-            <div className="soporte-screen-div">
+            <div className="tickets-screen-div">
 
                 <TablaAdministracion 
                     title={ title }
@@ -101,29 +83,35 @@ class SoporteScreen extends Component {
                     data={ this.state.tickets }
                     handleAdd={ this.handleAdd }
                     handleEdit={ this.handleEdit }
-                    handleDelete={ this.handleDelete }
+                    //handleDelete={ this.handleDelete }
                     editIcon={ editIcon }
+                    /*
                     editable={{
                         onRowDelete: (oldData) =>
                         new Promise((resolve) => {
                             resolve();
-                            this.props.handleDelete(oldData);
+
+                            this.handleDelete(oldData);
+
                         }),
                     }}
+                    */
+                    editable = { null }
                     actions={[
                         {
                           icon: Add,
                           tooltip: "Create ticket",
                           position: "toolbar",
-                          onClick: (event, rowData) => {
-                              console.log('Prueba')
+                          onClick: () => {
+                              this.handleAdd()
                           }},
                         {
                             icon: editIcon,
                             tooltip: "Edit ticket",
                             onClick: (event, rowData) => {
+                              this.handleEdit(rowData)  
                               console.log(rowData)
-                              console.log("Prueba");
+                              console.log("PruebaEdit");
                             }
                           }
                       ]}

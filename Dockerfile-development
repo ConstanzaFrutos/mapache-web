@@ -10,6 +10,7 @@ COPY ./mapache-web/package*.json /usr/src/app/
 RUN npm install yarn
 RUN yarn install
 RUN yarn global add react-scripts@3.4.1
+RUN yarn add axios
 
 # copy the rest of the files
 COPY . /usr/src/app/

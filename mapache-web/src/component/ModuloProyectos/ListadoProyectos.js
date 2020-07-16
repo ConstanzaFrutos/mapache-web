@@ -16,49 +16,40 @@ export default class ListadoProyectos extends Component {
         };
     }
 
+    obtenerProyectos(){
+        (async() => {
+            try {
+                axios.get(URL+'proyectos')
+                    .then(respuesta => respuesta.data)
+                    .then((data) => {
+                        this.setState({proyectos : data})
+                    });
+            } catch (err) {
+                let mensaje = "Error: " + err.response.status;
+                if(err.response.message){
+                    mensaje += ': ' + err.response.message;
+                }
+                alert(mensaje);
+            }
+        })();
+    }
+
     componentDidMount() {
-        (async() => {
-            try {
-                axios.get(URL+'proyectos')
-                    .then(respuesta => respuesta.data)
-                    .then((data) => {
-                        this.setState({proyectos : data})
-                    });
-            } catch (err) {
-                let mensaje = "Error: " + err.response.status;
-                if(err.response.message){
-                    mensaje += ': ' + err.response.message;
-                }
-                alert(mensaje);
-            }
-        })();
+        this.obtenerProyectos();
     }
 
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        (async() => {
-            try {
-                axios.get(URL+'proyectos')
-                    .then(respuesta => respuesta.data)
-                    .then((data) => {
-                        this.setState({proyectos : data})
-                    });
-            } catch (err) {
-                let mensaje = "Error: " + err.response.status;
-                if(err.response.message){
-                    mensaje += ': ' + err.response.message;
-                }
-                alert(mensaje);
-            }
-        })();
-    }
-
-    eliminarProyecto = (proyectoId) => {
+    eliminarProyecto = (proyectoId, estado) => {
+        if(estado !== "No iniciado"){
+            alert("Los proyecto ya iniciados no se pueden eliminar");
+            return;
+        }
         (async() => {
             try {
                 axios.delete(URL+'proyectos/'+proyectoId)
                     .then(respuesta => {
                         if(respuesta.data != null){
                             alert("El proyecto fue eliminado correctamente");
+                            this.obtenerProyectos();
                         }
                     });
             } catch (err) {
@@ -127,7 +118,7 @@ export default class ListadoProyectos extends Component {
                                                     Edit
                                                 </Button>
                                                 </Link>
-                                                <Button size="sm" variant="outline-primary" onClick={this.eliminarProyecto.bind(this,proyecto.id)}>
+                                                <Button size="sm" variant="outline-primary" onClick={this.eliminarProyecto.bind(this,proyecto.id, proyecto.estado)}>
                                                     Delete
                                                 </Button>
                                             </ButtonGroup>

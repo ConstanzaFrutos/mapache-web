@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import { withRouter } from 'react-router';
 import {Button, Card, Col, Form} from "react-bootstrap";
+import { Redirect } from "react-router-dom";
 import axios from "axios";
 import "../../assets/css/controller/ProyectosScreen.css";
 import "../../assets/css/ModuloProyectos/TablaCrearProyecto.css";
@@ -15,7 +16,7 @@ class Proyecto extends Component {
     }
 
     estadoInicial = {id:'', nombre:'', tipo:"Implementación", descripcion: '', fechaDeInicio: '',
-        fechaDeFinalizacion: '', estado: 'No iniciado'};
+        fechaDeFinalizacion: '', estado: 'No iniciado', redirect: false};
 
     crearProyecto = event => {
         event.preventDefault();
@@ -34,6 +35,7 @@ class Proyecto extends Component {
                         if(respuesta.data){
                             this.setState(this.estadoInicial);
                             alert("El proyecto se creo exitosamente");
+                            this.setState({redirect: true});
                         }
                     })
             } catch (err) {
@@ -103,7 +105,8 @@ class Proyecto extends Component {
                         alert(respuesta.status);
                         if(respuesta.data != null){
                             this.setState(this.estadoInicial);
-                            alert("El proyecto: " + proyecto.id+ " se actualizo exitosamente");
+                            alert("El proyecto: " + proyecto.nombre+ " se actualizo exitosamente");
+                            this.setState({redirect: true});
                         } else {
                             alert("El proyecto no pudo ser actualizado");
                         }
@@ -140,6 +143,10 @@ class Proyecto extends Component {
     }
 
     render() {
+        const redirectToReferrer = this.state.redirect;
+        if (redirectToReferrer === true) {
+            return <Redirect to="/proyectos" />
+        }
         const {nombre, tipo, descripcion, fechaDeInicio, fechaDeFinalizacion, estado} = this.state;
         return(
             <div className="proyectos-screen-div" style={{width:"100%", height:"100%"}}>
@@ -171,13 +178,14 @@ class Proyecto extends Component {
                                 </Form.Group>
                             </Form.Row>
                             <Form.Group>
-                                <Form.Label>Descripcion</Form.Label>
+                                <Form.Label>Descripcion (Max 300 caracteres)</Form.Label>
                                 <Form.Control
                                     autoComplete="off"
                                     type="text" name="descripcion"
                                     value={descripcion}
                                     onChange={this.cambioProyecto}
                                     as="textarea" rows="5"
+                                    maxLength = {300}
                                 />
                             </Form.Group>
                             <Form.Row>

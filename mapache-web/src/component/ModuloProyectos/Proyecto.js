@@ -102,7 +102,6 @@ class Proyecto extends Component {
             try {
                 axios.put(URL+"proyectos/"+proyecto.id, proyecto)
                     .then(respuesta=> {
-                        alert(respuesta.status);
                         if(respuesta.data != null){
                             this.setState(this.estadoInicial);
                             alert("El proyecto: " + proyecto.nombre+ " se actualizo exitosamente");
@@ -178,14 +177,14 @@ class Proyecto extends Component {
                                 </Form.Group>
                             </Form.Row>
                             <Form.Group>
-                                <Form.Label>Descripcion (Max 300 caracteres)</Form.Label>
+                                <Form.Label>Descripcion (Max 250 caracteres)</Form.Label>
                                 <Form.Control
                                     autoComplete="off"
                                     type="text" name="descripcion"
                                     value={descripcion}
                                     onChange={this.cambioProyecto}
                                     as="textarea" rows="5"
-                                    maxLength = {300}
+                                    maxLength = {250}
                                 />
                             </Form.Group>
                             <Form.Row>

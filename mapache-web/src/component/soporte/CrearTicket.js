@@ -8,8 +8,8 @@ import Grid from '@material-ui/core/Grid';
 
 import "../../assets/css/component/soporte/Ticket.css";
 
-//const mapacheSoporteBaseUrl = "https://psa-api-support.herokuapp.com";
-const mapacheSoporteBaseUrl = "http://localhost:5000";
+const mapacheSoporteBaseUrl = "https://psa-api-support.herokuapp.com";
+//const mapacheSoporteBaseUrl = "http://localhost:5000";
 
 const tipos = [
   {
@@ -158,23 +158,26 @@ render() {
       <div class='form-crear-ticket'>
         <form noValidate autoComplete="off" onSubmit={this.handleSubmit}>
         <Grid container spacing={3} direction="row" justify="flex-start" alignItems="flex-start">
-          <Grid item lg={12} xl={12}>
-            <h2>Nuevo Ticket</h2>
+          <Grid item sm={12} md={12} xl={12} lg={12} xs={12}>
+            <div class="centrado">
+              <h2>Nuevo Ticket</h2>
+            </div>
           </Grid>
-          <Grid item lg={12} xl={12}>
-            <TextField id="nombre" variant="outlined" name="nombre" label="Nombre" onChange={this.handleChangeNombre}/>
+          <Grid item sm={12} md={12} xl={12} lg={12} xs={12}>
+            <TextField id="nombre" fullWidth variant="outlined" name="nombre" label="Nombre" onChange={this.handleChangeNombre}/>
           </Grid>
           <br/>
-          <Grid item lg={12} xl={12}>
-            <TextField id="cliente" name="cliente" variant="outlined" select label="Cliente" value={this.state.cliente.id} onChange={this.handleChangeCliente}>
+          <Grid item lg={6} xl={6}>
+            <TextField id="cliente" fullWidth name="cliente" variant="outlined" select label="Cliente" value={this.state.cliente.id} onChange={this.handleChangeCliente}>
                       {this.clientes.map((option) => (
                       <MenuItem key={option.id} value={option.id}>
                           {option.razon_social}
                       </MenuItem>
                       ))}
             </TextField>
-            &nbsp;&nbsp;&nbsp;
-            <TextField id="tipo" name="tipo" variant="outlined" select label="Tipo" value={this.state.tipo} onChange={this.handleChangeTipo}>
+          </Grid>
+          <Grid item lg={6} xl={6}>
+            <TextField id="tipo" fullWidth name="tipo" variant="outlined" select label="Tipo" value={this.state.tipo} onChange={this.handleChangeTipo}>
               {tipos.map((option) => (
                 <MenuItem key={option.value} value={option.value}>
                   {option.label}
@@ -183,25 +186,25 @@ render() {
             </TextField>
           </Grid>
 
-          <br/>
           {this.state.tipo==='Error'
             ?
-            <Grid item lg={12} xl={12}>
-              <TextField id="pasos" variant="outlined" name="pasos" label="Pasos para reproducir" style={{width: '600px'}} multiline rows={6} onChange={this.handleChangePasos}/>
+            <Grid item sm={12} md={12} xl={12} lg={12} xs={12}>
+              <TextField id="pasos" fullWidth variant="outlined" name="pasos" label="Pasos para reproducir" style={{width: '600px'}} multiline rows={6} onChange={this.handleChangePasos}/>
             </Grid>
           : null}
           
           <br/>
-          <Grid item lg={12} xl={12}>
-            <TextField id="severidad" name="severidad" variant="outlined" select label="Severidad" value={this.state.severidad} onChange={this.handleChangeSeveridad}>
+          <Grid item lg={6} xl={6}>
+            <TextField id="severidad" fullWidth name="severidad" variant="outlined" select label="Severidad" value={this.state.severidad} onChange={this.handleChangeSeveridad}>
               {severidades.map((option) => (
                 <MenuItem key={option.value} value={option.value}>
                   {option.label}
                 </MenuItem>
               ))}
               </TextField>
-              &nbsp;&nbsp;&nbsp;
-              <TextField id="responsable" name="responsable" variant="outlined" select label="Responsable" value={this.state.id_responsable} onChange={this.handleChangeResponsable}>
+          </Grid>
+          <Grid item lg={6} xl={6}>
+              <TextField id="responsable" fullWidth name="responsable" variant="outlined" select label="Responsable" value={this.state.id_responsable} onChange={this.handleChangeResponsable}>
                       {responsables.map((option) => (
                       <MenuItem key={option.value} value={option.value}>
                           {option.label}
@@ -209,15 +212,15 @@ render() {
                       ))}
             </TextField>
           </Grid>
-          <br />
-          <Grid item lg={12} xl={12}>
-            <TextField id="descripcion" style={{width: '600px'}} name="descripcion" label="Descripcion" multiline rows={8} variant="outlined" onChange={this.handleChangeDescripcion}/>
+          <Grid item sm={12} md={12} xl={12} lg={12} xs={12}>
+            <TextField id="descripcion" name="descripcion" label="Descripcion" fullWidth multiline rows={8} variant="outlined" onChange={this.handleChangeDescripcion}/>
           </Grid>
-          <br />
-          <Grid item lg={12} xl={12}>
+          <Grid item sm={12} md={12} xl={12} lg={12} xs={12}>
+          <div class="centrado">
           <Button variant="contained" color="primary" type="submit">
             Agregar
           </Button>
+          </div>
           </Grid>
           </Grid>
         </form>

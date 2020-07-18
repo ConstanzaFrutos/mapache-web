@@ -9,8 +9,8 @@ import "../assets/css/controller/ClientesScreen.css";
 
 import InfoOutlined from '@material-ui/icons/InfoOutlined';
 
-//const mapacheSoporteBaseUrl = "https://psa-api-support.herokuapp.com";
-const mapacheSoporteBaseUrl = "http://localhost:5000";
+const mapacheSoporteBaseUrl = "https://psa-api-support.herokuapp.com";
+//const mapacheSoporteBaseUrl = "http://localhost:5000";
 
 class ClientesScreen extends Component {
 
@@ -76,7 +76,6 @@ class ClientesScreen extends Component {
     render() {
         return (
             <div className="clientes-screen-div">
-
                 <TablaAdministracion 
                     title={ title }
                     columns={ columns }
@@ -129,10 +128,6 @@ const title = "Clientes";
 
 const columns = [
     {
-        title: "id", 
-        field: "id"
-    },
-    {
         title: "Razon Social", 
         field: "razon_social"
     },
@@ -143,6 +138,10 @@ const columns = [
     {
         title: "Fecha de creación", 
         field: "fecha_desde_que_es_cliente"
+    },
+    {
+        title: "estado",
+        field: "estado"
     }
 ]
 

@@ -1,10 +1,17 @@
 .form-crear-ticket {
-    padding-left: 30px;
-    padding-top: 30px;
-    height: 35em;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: auto;
+    /* height: 35em; */
+    width: 30%;
     background: rgba(245, 245, 220, 0.7);
+    padding-top: 40px;
 }
 
 .centrado {
     text-align: center;
+}
+
+.full-width {
+    width: '100%';
 }

@@ -140,7 +140,7 @@ const columns = [
         field: "fecha_desde_que_es_cliente"
     },
     {
-        title: "estado",
+        title: "Estado",
         field: "estado"
     }
 ]

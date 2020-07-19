@@ -34,6 +34,7 @@ class PerfilEmpleado extends Component {
         }
 
         this.formatearFecha = this.formatearFecha.bind(this);
+        this.procesarAntiguedad = this.procesarAntiguedad.bind(this);
         this.procesarInfo = this.procesarInfo.bind(this);
 
         this.handleTextInput = this.handleTextInput.bind(this);
@@ -70,12 +71,13 @@ class PerfilEmpleado extends Component {
                 iniciales = iniciales.toUpperCase();
                 let fechaNacimientoFormateada = this.formatearFecha(response.fechaNacimiento);
                 console.log(fechaNacimientoFormateada);
-                //let antiguedadFormateada = this.formatearFecha(response.antiguedad);
+                let antiguedadFormateada = this.procesarAntiguedad(response.fechaIngreso);
                 if (response) {
                     this.setState({
                         empleado: response,
                         iniciales: iniciales,
-                        fechaNacimientoFormateada: fechaNacimientoFormateada
+                        fechaNacimientoFormateada: fechaNacimientoFormateada,
+                        antiguedadFormateada: antiguedadFormateada
                     });
                 }
             });
@@ -87,6 +89,15 @@ class PerfilEmpleado extends Component {
         let dia = fecha[2];
 
         return `${dia}/${mes}/${año}`;
+    }
+
+    procesarAntiguedad(fechaIngreso) {
+        let fechaActual = new Date();
+
+        let años = fechaActual.getFullYear() - fechaIngreso[0];
+        let meses = fechaActual.getMonth() - fechaIngreso[1];
+
+        return (años > 0) ? `${años} años y ${meses} meses` : `${meses} meses`;
     }
 
     handleSeniorityChange(event) {
@@ -220,7 +231,7 @@ class PerfilEmpleado extends Component {
                         <br></br>
                         <p>Contrato: { this.state.empleado.contrato }</p>
                         <br></br>
-                        <p>Antigüedad: { this.state.empleado.antiguedad }</p>
+                        <p>Antigüedad: { this.state.antiguedadFormateada }</p>
                         <br></br>
                         <p>Rol: { this.state.empleado.rol }</p>
                     </div>

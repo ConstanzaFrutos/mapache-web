@@ -26,12 +26,13 @@ class PerfilEmpleado extends Component {
 
         this.state = {
             empleado: {},
+            empleadoFormateado: {},
             iniciales: "",
-            fechaNacimientoFormateada: "",
-            antiguedadFormateada: "",
             fechaNacimientoSeleccionada: new Date(),
             renderDropdownSeniority: false
         }
+
+        this.formatearEmpleado = this.formatearEmpleado.bind(this);
 
         this.formatearFecha = this.formatearFecha.bind(this);
         this.procesarAntiguedad = this.procesarAntiguedad.bind(this);
@@ -69,18 +70,40 @@ class PerfilEmpleado extends Component {
                 console.log(response);
                 let iniciales = response.nombre.charAt(0) + response.apellido.charAt(0);
                 iniciales = iniciales.toUpperCase();
-                let fechaNacimientoFormateada = this.formatearFecha(response.fechaNacimiento);
-                console.log(fechaNacimientoFormateada);
-                let antiguedadFormateada = this.procesarAntiguedad(response.fechaIngreso);
+                
+                let empleadoFormateado = this.formatearEmpleado(response);
+
                 if (response) {
                     this.setState({
                         empleado: response,
-                        iniciales: iniciales,
-                        fechaNacimientoFormateada: fechaNacimientoFormateada,
-                        antiguedadFormateada: antiguedadFormateada
+                        empleadoFormateado: empleadoFormateado,
+                        iniciales: iniciales
                     });
                 }
             });
+    }
+
+    formatearEmpleado(empleado) {
+        let fechaNacimientoFormateada = this.formatearFecha(empleado.fechaNacimiento);
+        let antiguedad = this.procesarAntiguedad(empleado.fechaIngreso);
+        let rol = roles.find(rol => rol.value === empleado.rol).name;
+        let seniority = seniorities.find(seniority => seniority.value === empleado.seniority).name;
+        let contrato = contratos.find(contrato => contrato.value === empleado.contrato).name;
+
+        let empleadoFormateado = {
+            activo: empleado.activo,
+            apellido: empleado.apellido,
+            nombre: empleado.nombre,
+            dni: empleado.dni,
+            legajo: empleado.legajo,
+            rol: rol,
+            seniority: seniority,
+            contrato: contrato, 
+            fechaNacimiento: fechaNacimientoFormateada,
+            antiguedad: antiguedad
+        };
+
+        return empleadoFormateado;
     }
 
     formatearFecha(fecha) {
@@ -223,17 +246,17 @@ class PerfilEmpleado extends Component {
             data = <div className="informacion">
                         <p>Nombre y Apellido: { this.state.empleado.nombre + ", " + this.state.empleado.apellido }</p>
                         <p>DNI: { this.state.empleado.dni }</p>
-                        <p>Fecha de nacimiento: { this.state.fechaNacimientoFormateada }</p>
+                        <p>Fecha de nacimiento: { this.state.empleadoFormateado.fechaNacimiento }</p>
                         <br></br>
-                        <p>Legajo: { this.state.empleado.legajo }</p>
+                        <p>Legajo: { this.state.empleadoFormateado.legajo }</p>
                         <br></br>
-                        <p>Seniority: { this.state.empleado.seniority }</p>
+                        <p>Seniority: { this.state.empleadoFormateado.seniority }</p>
                         <br></br>
-                        <p>Contrato: { this.state.empleado.contrato }</p>
+                        <p>Contrato: { this.state.empleadoFormateado.contrato }</p>
                         <br></br>
-                        <p>Antigüedad: { this.state.antiguedadFormateada }</p>
+                        <p>Antigüedad: { this.state.empleadoFormateado.antiguedad }</p>
                         <br></br>
-                        <p>Rol: { this.state.empleado.rol }</p>
+                        <p>Rol: { this.state.empleadoFormateado.rol }</p>
                     </div>
         } else if (this.props.location.state.modo === "add") {
             data = <div className="add">

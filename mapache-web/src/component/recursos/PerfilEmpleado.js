@@ -366,6 +366,7 @@ class PerfilEmpleado extends Component {
                             <TextField 
                                 required 
                                 id="standard-required" 
+                                autoComplete="off"
                                 label="Legajo" 
                                 onChange={ (e) => this.handleTextInput(e, "Legajo") }
                             />
@@ -374,12 +375,14 @@ class PerfilEmpleado extends Component {
                             <TextField 
                                 required 
                                 id="standard-required" 
+                                autoComplete="off"
                                 label="Nombre" 
                                 onChange={ (e) => this.handleTextInput(e, "Nombre") }
                             />
                             <TextField 
                                 required 
                                 id="standard-required" 
+                                autoComplete="off"
                                 label="Apellido" 
                                 onChange={ (e) => this.handleTextInput(e, "Apellido") }
                             />
@@ -389,6 +392,7 @@ class PerfilEmpleado extends Component {
                                 required 
                                 id="standard-required" 
                                 label="DNI" 
+                                autoComplete="off"
                                 onChange={ (e) => this.handleTextInput(e, "DNI") }
                             />
                         </p>
@@ -463,14 +467,14 @@ class PerfilEmpleado extends Component {
                             <TextField 
                                 id="standard-required" 
                                 label="Nombre" 
-                                autocomplete="off"
+                                autoComplete="off"
                                 defaultValue={ this.state.empleado.nombre }
                                 onChange={ (e) => this.handleTextInput(e, "Nombre") }
                             />
                             <TextField 
                                 id="standard-required" 
                                 label="Apellido" 
-                                autocomplete="off"
+                                autoComplete="off"
                                 defaultValue={ this.state.empleado.apellido }
                                 onChange={ (e) => this.handleTextInput(e, "Apellido") }
                             />
@@ -479,6 +483,7 @@ class PerfilEmpleado extends Component {
                             <TextField 
                                 id="standard-required" 
                                 label="DNI" 
+                                autoComplete="off"
                                 defaultValue={ this.state.empleado.dni }
                                 onChange={ (e) => this.handleTextInput(e, "DNI") }
                             />

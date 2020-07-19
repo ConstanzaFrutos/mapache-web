@@ -35,7 +35,7 @@ export class Confirmation extends Component {
                     <Button 
                         onClick={ this.props.handleAceptar } 
                         variant="outlined" 
-                        color="primary" 
+                        color="default" 
                         autoFocus
                     >
                         Aceptar

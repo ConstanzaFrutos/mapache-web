@@ -12,6 +12,7 @@ import Clear from '@material-ui/icons/Clear'
 
 import { DatePicker } from "../general/DatePicker";
 import { Dropdown } from "../general/Dropdown";
+import { Alerta } from "../general/Alerta";
 
 import Requester from "../../communication/Requester";
 
@@ -621,3 +622,8 @@ const contratos = [
         'value': "PART_TIME"
     }
 ]
+
+// Opciones alerta
+
+const success = "success";
+const error = "error";

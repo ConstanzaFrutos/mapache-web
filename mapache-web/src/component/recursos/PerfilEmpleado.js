@@ -137,9 +137,12 @@ class PerfilEmpleado extends Component {
         let fechaActual = new Date();
 
         let años = fechaActual.getFullYear() - fechaIngreso[0];
-        let meses = fechaActual.getMonth() - fechaIngreso[1];
+        let meses = fechaActual.getMonth() - fechaIngreso[1] + 1;
+        console.log("mes actual ", fechaActual.getMonth());
+        console.log("meses ", meses);
 
-        return (años > 0) ? `${años} años y ${meses} meses` : `${meses} meses`;
+        return (años > 0) ? `${años} años y ${meses} meses` : 
+               (meses > 0) ? `${meses} meses` : "Ingreso este mes";
     }
 
     handleSeniorityChange(event) {
@@ -242,6 +245,7 @@ class PerfilEmpleado extends Component {
         let empleado = (Object.is(this.state.empleado, {})) ? 
             {} : Object.assign({}, this.state.empleado);
         empleado.activo = true;
+        console.log("Empleado a actualizar ", empleado);
                   
         if (!empleado.seniority)
             empleado.seniority = seniorities[0].value;

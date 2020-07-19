@@ -13,6 +13,7 @@ import Add from '@material-ui/icons/Add';
 import Delete from '@material-ui/icons/Delete';
 
 import { Confirmation } from "../component/general/Confirmation";
+import { Alerta } from "../component/general/Alerta";
 
 //const mapacheRecursosBaseUrl = "https://mapache-recursos.herokuapp.com";
 const mapacheRecursosBaseUrl = "http://0.0.0.0:8080";
@@ -27,16 +28,21 @@ class EmpleadosScreen extends Component {
         this.state = {
             empleados: [],
             confirmarEliminacion: false,
-            empleadoSeleccionado: null
+            empleadoSeleccionado: null,
+            mostrarAlerta: false,
+            tipoAlerta: "",
+            mensajeAlerta: ""
         }
 
-        
         this.handleAdd = this.handleAdd.bind(this);
         this.handleEdit = this.handleEdit.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
 
         this.handleCancelar = this.handleCancelar.bind(this);
         this.handleAceptar = this.handleAceptar.bind(this);
+
+        this.mostrarAlerta = this.mostrarAlerta.bind(this);
+        this.handleCloseAlerta = this.handleCloseAlerta.bind(this);
     }
 
     handleAdd() {
@@ -89,6 +95,20 @@ class EmpleadosScreen extends Component {
         });
     }
 
+    mostrarAlerta(mensaje, tipo) {
+        this.setState({
+            mostrarAlerta: true,
+            tipoAlerta: tipo,
+            mensajeAlerta: mensaje
+        });
+    }
+
+    handleCloseAlerta() {
+        this.setState({
+            mostrarAlerta: false
+        });
+    }
+
     handleCancelar() {
         console.log("Cancela");
         this.setState({
@@ -104,14 +124,32 @@ class EmpleadosScreen extends Component {
         this.requester.delete('/empleados/' + this.state.empleadoSeleccionado.legajo)
         .then(response => {
             if (response.ok){
+                this.mostrarAlerta(
+                    `Empleado ${this.state.empleadoSeleccionado.legajo} fue eliminado de manera exitosa`,
+                    success
+                );
                 console.log(`Empleado ${this.state.empleadoSeleccionado.legajo} fue eliminado de manera exitosa`);
             } else {
-                console.log("Error al consultar empleados");
+                this.mostrarAlerta(
+                    `Error al eliminar al empleado ${this.state.empleadoSeleccionado.legajo}`,
+                    error
+                );
             }
         });
     }
 
     render() {
+        let alerta = null;
+        if (this.state.mostrarAlerta) {
+            alerta = <Alerta
+                        open={ true }
+                        mensaje={ this.state.mensajeAlerta }
+                        tipo={ this.state.tipoAlerta }
+                        handleClose={ this.handleCloseAlerta }
+                     >
+                     </Alerta>
+        }
+
         return (
             <div className="empleados-screen-div">
                 <Confirmation 
@@ -157,6 +195,7 @@ class EmpleadosScreen extends Component {
                         }
                       ]}
                 ></TablaAdministracion>
+                { alerta }
             </div>
         )
     }
@@ -192,4 +231,7 @@ const columns = [
 
 const editIcon = InfoOutlined;
 
+// Opciones alerta
 
+const success = "success";
+const error = "error";

@@ -626,6 +626,4 @@ const contratos = [
 ]
 
 // Opciones alerta
-
-const success = "success";
 const error = "error";

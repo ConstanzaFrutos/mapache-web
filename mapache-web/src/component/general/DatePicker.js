@@ -11,13 +11,6 @@ export class DatePicker extends Component {
     }
 
     render() {
-
-        let defaultValue = this.getCurrentDate();
-        if (this.props.defaultValue) {
-            defaultValue = this.props.defaultValue;
-            console.log(this.props.defaultValue);
-        }
-
         return (
             <div className="datepicker">
                 <form className="fecha-nacimiento" noValidate>
@@ -25,7 +18,7 @@ export class DatePicker extends Component {
                         id="date"
                         label={ this.props.label }
                         type="date"
-                        defaultValue={ defaultValue }
+                        
                         InputLabelProps={{
                             shrink: true,
                         }}

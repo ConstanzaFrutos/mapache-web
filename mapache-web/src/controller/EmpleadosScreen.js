@@ -210,7 +210,8 @@ const columns = [
     {
         title: "Legajo", 
         field: "legajo",
-        editable: "never"
+        editable: "never",
+        defaultSort: "asc"
     },
     {
         title: "Nombre", 

@@ -7,10 +7,17 @@ export class DatePicker extends Component {
     getCurrentDate() {
         let currentDate = new Date();
         
-        return `${currentDate.getMonth}/${currentDate.getDay}/${currentDate.getFullYear}`;
+        return `${currentDate.getFullYear}-${currentDate.getMonth}-${currentDate.getDay}`;
     }
 
     render() {
+
+        let defaultValue = this.getCurrentDate();
+        if (this.props.defaultValue) {
+            defaultValue = this.props.defaultValue;
+            console.log(this.props.defaultValue);
+        }
+
         return (
             <div className="datepicker">
                 <form className="fecha-nacimiento" noValidate>
@@ -18,7 +25,7 @@ export class DatePicker extends Component {
                         id="date"
                         label={ this.props.label }
                         type="date"
-                        defaultValue={ this.getCurrentDate }
+                        defaultValue={ defaultValue }
                         InputLabelProps={{
                             shrink: true,
                         }}

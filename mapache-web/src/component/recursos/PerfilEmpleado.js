@@ -16,8 +16,8 @@ import { Alerta } from "../general/Alerta";
 
 import Requester from "../../communication/Requester";
 
-//const mapacheRecursosBaseUrl = "https://mapache-recursos.herokuapp.com";
-const mapacheRecursosBaseUrl = "http://0.0.0.0:8080";
+const mapacheRecursosBaseUrl = "https://mapache-recursos.herokuapp.com";
+//const mapacheRecursosBaseUrl = "http://0.0.0.0:8080";
 
 class PerfilEmpleado extends Component {
 
@@ -459,12 +459,14 @@ class PerfilEmpleado extends Component {
                             <TextField 
                                 id="standard-required" 
                                 label="Nombre" 
+                                autocomplete="off"
                                 defaultValue={ this.state.empleado.nombre }
                                 onChange={ (e) => this.handleTextInput(e, "Nombre") }
                             />
                             <TextField 
                                 id="standard-required" 
                                 label="Apellido" 
+                                autocomplete="off"
                                 defaultValue={ this.state.empleado.apellido }
                                 onChange={ (e) => this.handleTextInput(e, "Apellido") }
                             />

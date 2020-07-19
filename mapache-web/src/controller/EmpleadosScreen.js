@@ -15,8 +15,8 @@ import Delete from '@material-ui/icons/Delete';
 import { Confirmation } from "../component/general/Confirmation";
 import { Alerta } from "../component/general/Alerta";
 
-//const mapacheRecursosBaseUrl = "https://mapache-recursos.herokuapp.com";
-const mapacheRecursosBaseUrl = "http://0.0.0.0:8080";
+const mapacheRecursosBaseUrl = "https://mapache-recursos.herokuapp.com";
+//const mapacheRecursosBaseUrl = "http://0.0.0.0:8080";
 
 class EmpleadosScreen extends Component {
 

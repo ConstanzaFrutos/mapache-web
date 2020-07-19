@@ -6,7 +6,7 @@ export class DatePicker extends Component {
 
     getCurrentDate() {
         let currentDate = new Date();
-        console.log(`${currentDate.getMonth}/${currentDate.getDay}/${currentDate.getFullYear}`);
+        
         return `${currentDate.getMonth}/${currentDate.getDay}/${currentDate.getFullYear}`;
     }
 

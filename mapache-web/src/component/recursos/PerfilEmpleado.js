@@ -237,14 +237,21 @@ class PerfilEmpleado extends Component {
                         </p>
                     </div>
 
+            let seniorityInfo = null;
+            if (this.state.empleadoFormateado.seniority !== "No asignada") {
+                seniorityInfo = <div>
+                                    <br></br>
+                                    <p>Seniority: { this.state.empleadoFormateado.seniority }</p>
+                                </div>
+            }
+
             data = <div className="informacion">
                         <p>Nombre y Apellido: { this.state.empleado.nombre + ", " + this.state.empleado.apellido }</p>
                         <p>DNI: { this.state.empleado.dni }</p>
                         <p>Fecha de nacimiento: { this.state.empleadoFormateado.fechaNacimiento }</p>
                         <br></br>
                         <p>Legajo: { this.state.empleadoFormateado.legajo }</p>
-                        <br></br>
-                        <p>Seniority: { this.state.empleadoFormateado.seniority }</p>
+                        { seniorityInfo }
                         <br></br>
                         <p>Contrato: { this.state.empleadoFormateado.contrato }</p>
                         <br></br>

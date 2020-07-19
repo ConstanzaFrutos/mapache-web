@@ -164,8 +164,8 @@ class PerfilEmpleado extends Component {
             {} : Object.assign({}, this.state.empleado);
         if (label === "Fecha de nacimiento") {
             empleado.fechaNacimiento = event.target.value;            
-        } else if (label === "Antigüedad") {
-            empleado.antiguedad = event.target.value;
+        } else if (label === "Fecha de Ingreso") {
+            empleado.fechaIngreso = event.target.value;
         }
         this.setState({
             empleado: empleado
@@ -191,22 +191,13 @@ class PerfilEmpleado extends Component {
     }
 
     handleSave() {
-        /*let empleado = (Object.is(this.state.empleado, {})) ? 
-            {} : Object.assign({}, this.state.empleado);*/
-        let empleado = {
-            activo: true,
-            apellido: this.state.empleado.apellido,
-            nombre: this.state.empleado.nombre,
-            dni: this.state.empleado.dni,
-            legajo: this.state.empleado.legajo,
-            proyectos: [],
-            rol: this.state.empleado.rol,
-            seniority: this.state.empleado.seniority,
-            contrato: this.state.empleado.contrato,
-            fechaNacimiento: this.state.empleado.fechaNacimiento
-        }            
+        let empleado = (Object.is(this.state.empleado, {})) ? 
+            {} : Object.assign({}, this.state.empleado);
+        empleado.activo = true;
+                  
         if (!empleado.seniority)
             empleado.seniority = seniorities[0].value;
+        
         console.log(empleado);
         this.requester.post('/empleados/', empleado)
             .then(response => {
@@ -216,6 +207,9 @@ class PerfilEmpleado extends Component {
                     console.log("Error al agregar empleado");
                 }
             });
+        this.props.history.push({
+            pathname: `/empleados`
+        }); 
     }
 
     handleCancelSave() {
@@ -298,7 +292,7 @@ class PerfilEmpleado extends Component {
                                 handleDateInput={ this.handleDateInput }
                             ></DatePicker>
                             <DatePicker 
-                                label="Antigüedad"
+                                label="Fecha de Ingreso"
                                 handleDateInput={ this.handleDateInput }
                             ></DatePicker>
                         </p>

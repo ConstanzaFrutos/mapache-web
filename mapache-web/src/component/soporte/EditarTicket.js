@@ -196,15 +196,17 @@ class VisualizarTicket extends Component {
 
         return (
             <div class='form-crear-ticket'>
-            <h2>Editar Ticket</h2>
+            <div class="centrado">
+              <h2>Editar Ticket</h2>
+            </div>
             <br/>
             <form noValidate autoComplete="off" onSubmit={this.handleSubmit}>
              <Grid container spacing={3} direction="row" justify="flex-start" alignItems="flex-start">
                 <Grid item lg={12} xl={12}>
-                    <TextField id="nombre" value={this.state.nombre} variant="outlined" name="nombre" label="Nombre" onChange={this.handleChangeNombre}/>
+                    <TextField id="nombre" fullWidth value={this.state.nombre} variant="outlined" name="nombre" label="Nombre" onChange={this.handleChangeNombre}/>
                 </Grid>
                 <Grid item sm={6} md={6} xl={6} lg={4} xs={6}>
-                    <TextField id="tipo" name="tipo" variant="outlined" select label="Tipo" value={this.state.tipo} onChange={this.handleChangeTipo}>
+                    <TextField id="tipo" fullWidth name="tipo" variant="outlined" select label="Tipo" value={this.state.tipo} onChange={this.handleChangeTipo}>
                     {tipos.map((option) => (
                     <MenuItem key={option.value} value={option.value}>
                         {option.label}
@@ -213,7 +215,7 @@ class VisualizarTicket extends Component {
                     </TextField>
                 </Grid>
                 <Grid item sm={6} md={6} xl={6} lg={4} xs={6}>
-                    <TextField id="estado" name="estado" variant="outlined" select label="Estado" value={this.state.estado} onChange={this.handleChangeEstado}>
+                    <TextField id="estado" fullWidth  name="estado" variant="outlined" select label="Estado" value={this.state.estado} onChange={this.handleChangeEstado}>
                     {estados.map((option) => (
                     <MenuItem key={option.value} value={option.value}>
                         {option.label}
@@ -223,7 +225,7 @@ class VisualizarTicket extends Component {
                 </Grid>                
 
                 <Grid item sm={6} md={6} xl={6} lg={4} xs={6}>
-                    <TextField id="severidad" name="severidad" label="Severidad" variant="outlined" select value={this.state.severidad} onChange={this.handleChangeSeveridad}>
+                    <TextField id="severidad" fullWidth name="severidad" label="Severidad" variant="outlined" select value={this.state.severidad} onChange={this.handleChangeSeveridad}>
                     {severidades.map((option) => (
                     <MenuItem key={option.value} value={option.value}>
                         {option.label}
@@ -232,8 +234,8 @@ class VisualizarTicket extends Component {
                     </TextField>
                 </Grid>
                 
-                <Grid item sm={4} md={4} xl={4} lg={4} xs={4}>
-                    <TextField id="cliente" name="cliente" variant="outlined" select label="Cliente" value={this.state.cliente.id} onChange={this.handleChangeCliente}>
+                <Grid item sm={6} md={6} xl={6} lg={6} xs={6}>
+                    <TextField id="cliente" fullWidth name="cliente" variant="outlined" select label="Cliente" value={this.state.cliente.id} onChange={this.handleChangeCliente}>
                     {this.clientes.map((option) => (
                     <MenuItem key={option.id} value={option.id}>
                         {option.razon_social}
@@ -243,7 +245,7 @@ class VisualizarTicket extends Component {
                 </Grid>
                 
                 <Grid item sm={6} md={6} xl={6} lg={6} xs={6}>
-                    <TextField id="responsable" name="responsable" variant="outlined" select label="Responsable" value={this.state.id_responsable} onChange={this.handleChangeResponsable}>
+                    <TextField id="responsable" fullWidth name="responsable" variant="outlined" select label="Responsable" value={this.state.id_responsable} onChange={this.handleChangeResponsable}>
                     {responsables.map((option) => (
                     <MenuItem key={option.value} value={option.value}>
                         {option.label}
@@ -251,38 +253,40 @@ class VisualizarTicket extends Component {
                     ))}
                     </TextField>
                 </Grid>
-                <Grid item sm={4} md={4} xl={4} lg={4} xs={4}>
-                    <TextField id="fecha_creacion" disabled value={this.state.fecha_creacion} variant="outlined" name="fecha_creacion" label="Fecha de creación" />
+                <Grid item sm={6} md={6} xl={6} lg={6} xs={6}>
+                    <TextField id="fecha_creacion" fullWidth disabled value={this.state.fecha_creacion} variant="outlined" name="fecha_creacion" label="Fecha de creación" />
                 </Grid>
                 
-                <Grid item sm={4} md={4} xl={4} lg={4} xs={4}>
-                    <TextField id="fecha_ultima_actualizacion" disabled value={this.state.fecha_ultima_actualizacion} variant="outlined" name="fecha_ultima_actualizacion" label="Fecha de última actualización"/>
+                <Grid item sm={6} md={6} xl={6} lg={6} xs={6}>
+                    <TextField id="fecha_ultima_actualizacion" fullWidth disabled value={this.state.fecha_ultima_actualizacion} variant="outlined" name="fecha_ultima_actualizacion" label="Fecha de última actualización"/>
                 </Grid>
 
                 <Grid item xl={12} lg={12}>
-                  <TextField id="fecha_limite" disabled value={this.state.fecha_limite} variant="outlined" name="fecha_limite" label="Fecha límite"/>
+                  <TextField id="fecha_limite" disabled fullWidth value={this.state.fecha_limite} variant="outlined" name="fecha_limite" label="Fecha límite"/>
                 </Grid>
                 
                 {this.state.fecha_finalizacion!==null
                     ?<Grid item sm={6} md={6} xl={6} lg={6} xs={6}>
-                    <TextField id="fecha_finalizacion" disabled value={this.state.fecha_finalizacion} variant="outlined" name="fecha_finalizacion" label="Fecha de finalización"/>
+                    <TextField id="fecha_finalizacion" fullWidth disabled value={this.state.fecha_finalizacion} variant="outlined" name="fecha_finalizacion" label="Fecha de finalización"/>
                     </Grid>
                 : null}
 
                 {this.state.tipo==='error'
                     ?<Grid item sm={12} md={12} xl={12} lg={12} xs={12}>
-                    <TextField id="pasos" variant="outlined" label="Pasos" name="pasos" value={this.state.pasos} style={{width: '600px'}} multiline rows={6} onChange={this.handleChangePasos}/>
+                    <TextField id="pasos" variant="outlined" fullWidth label="Pasos" name="pasos" value={this.state.pasos} style={{width: '600px'}} multiline rows={6} onChange={this.handleChangePasos}/>
                     </Grid>
                 : ''}
 
                 <Grid item sm={12} md={12} xl={12} lg={12} xs={12}>
-                    <TextField id="descripcion" label="Descripcion" style={{width: '600px'}} value={this.state.descripcion} name="descripcion" multiline rows={8} variant="outlined" onChange={this.handleChangeDescripcion}/>
+                    <TextField id="descripcion" label="Descripcion" fullWidth value={this.state.descripcion} name="descripcion" multiline rows={8} variant="outlined" onChange={this.handleChangeDescripcion}/>
                 </Grid>
                 
                 <Grid item sm={12} md={12} xl={12} lg={12} xs={12}>
-                <Button variant="contained" color="primary" type="submit">
-                    Guardar
-                </Button>
+                  <div class="centrado">
+                    <Button variant="contained" color="primary" type="submit">
+                        Guardar
+                    </Button>
+                  </div>
                 </Grid>
                 
               </Grid>

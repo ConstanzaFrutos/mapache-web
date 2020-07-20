@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-
+import { forwardRef } from 'react';
 import MaterialTable from 'material-table';
 import Search from '@material-ui/icons/Search'
 import SaveAlt from '@material-ui/icons/SaveAlt'
@@ -14,6 +14,7 @@ import Close from '@material-ui/icons/Close';
 import FilterList from '@material-ui/icons/FilterList'
 import Remove from '@material-ui/icons/Remove'
 import Delete from '@material-ui/icons/Delete';
+import ArrowDownward from '@material-ui/icons/ArrowDownward';
 
 import "../../assets/css/component/Tabla.css";
 
@@ -55,6 +56,7 @@ export class TablaAdministracion extends Component {
             PreviousPage: ChevronLeft,
             Search: Search,
             ResetSearch: Clear,
+            SortArrow: forwardRef((props, ref) => <ArrowDownward {...props} ref={ref} />),
             ThirdStateCheck: Remove,
         };
 
@@ -94,8 +96,10 @@ export class TablaAdministracion extends Component {
         
         
         return (
-            <div className="tabla">
-                { tabla }
+            <div class="center-v">
+                <div className="tabla">
+                    { tabla }
+                </div>
             </div>
         )
     }

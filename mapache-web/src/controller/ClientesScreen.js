@@ -5,14 +5,14 @@ import { TablaAdministracion } from "../component/general/TablaAdministracion";
 import Add from '@material-ui/icons/Add'
 import Requester from "../communication/Requester";
 
-import "../assets/css/controller/SoporteScreen.css";
+import "../assets/css/controller/ClientesScreen.css";
 
 import InfoOutlined from '@material-ui/icons/InfoOutlined';
 
 const mapacheSoporteBaseUrl = "https://psa-api-support.herokuapp.com";
 //const mapacheSoporteBaseUrl = "http://localhost:5000";
 
-class SoporteScreen extends Component {
+class ClientesScreen extends Component {
 
     constructor(props) {
         super(props);
@@ -31,7 +31,7 @@ class SoporteScreen extends Component {
 
     handleAdd() {
         this.props.history.push({
-            pathname: `/soporte/tickets/nuevo`
+            pathname: `/clientes/nuevo`
         });
     }
 
@@ -39,35 +39,35 @@ class SoporteScreen extends Component {
         // Esta funcion en el caso de los empleados 
         // se usa para redirigir el perfil      
         this.props.history.push({
-            pathname: `/tickets/${oldData.id}`
+            pathname: `/clientes/${oldData.id}`
         });
     }
 
     handleDelete(newData) {
-        this.requester.delete('/tickets/' + newData.id)
+        this.requester.delete('/clientes/' + newData.id)
         .then(response => {
             if (response.ok){
                 this.componentDidMount();
             } else {
-                console.log("Error al borrar tickets");
+                console.log("Error al borrar clientes");
             }
         });
     }
 
     componentDidMount() {
-        this.requester.get('/tickets')
+        this.requester.get('/clientes')
         .then(response => {
             if (response.ok){
                 return response.json();
             } else {
-                console.log("Error al consultar tickets");
+                console.log("Error al consultar clientes");
             }
         })
         .then(response => {
             console.log(response);
             if (response) {
                 this.setState({
-                    tickets: response
+                    clientes: response
                 });
             }
         });
@@ -75,12 +75,11 @@ class SoporteScreen extends Component {
 
     render() {
         return (
-            <div className="tickets-screen-div">
-
+            <div className="clientes-screen-div">
                 <TablaAdministracion 
                     title={ title }
                     columns={ columns }
-                    data={ this.state.tickets }
+                    data={ this.state.clientes }
                     handleAdd={ this.handleAdd }
                     handleEdit={ this.handleEdit }
                     //handleDelete={ this.handleDelete }
@@ -100,14 +99,14 @@ class SoporteScreen extends Component {
                     actions={[
                         {
                           icon: Add,
-                          tooltip: "Create ticket",
+                          tooltip: "Crear cliente",
                           position: "toolbar",
                           onClick: () => {
                               this.handleAdd()
                           }},
                         {
                             icon: editIcon,
-                            tooltip: "Edit ticket",
+                            tooltip: "Editar cliente",
                             onClick: (event, rowData) => {
                               this.handleEdit(rowData)  
                               console.log(rowData)
@@ -123,26 +122,26 @@ class SoporteScreen extends Component {
 }
 
 
-export default withRouter(SoporteScreen);
+export default withRouter(ClientesScreen);
 
-const title = "Ticket";
+const title = "Clientes";
 
 const columns = [
     {
-        title: "Nombre", 
-        field: "nombre"
+        title: "Razon Social", 
+        field: "razon_social"
     },
     {
-        title: "Tipo", 
-        field: "tipo"
+        title: "CUIT", 
+        field: "CUIT"
     },
     {
-        title: "Estado", 
+        title: "Fecha de creación", 
+        field: "fecha_desde_que_es_cliente"
+    },
+    {
+        title: "Estado",
         field: "estado"
-    },
-    {
-        title: "Severidad", 
-        field: "severidad"
     }
 ]
 

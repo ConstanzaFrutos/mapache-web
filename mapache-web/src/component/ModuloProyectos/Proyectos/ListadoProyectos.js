@@ -101,7 +101,7 @@ export default class ListadoProyectos extends Component {
                             <tbody>
                             {this.state.proyectos.length === 0 ?
                                 <tr align="center">
-                                    <td colSpan="4">No exite ningun proyecto</td>
+                                    <td colSpan="4">No existe ningun proyecto</td>
                                 </tr> :
                                 this.state.proyectos.map((proyecto) => (
                                     <tr key={proyecto.id}>

@@ -24,10 +24,13 @@ class TabCargarHoras extends Component {
             empleado: {},
             proyectos: {},
             tareas: {},
+            actividadSeleccionada: null,
+            mostrarDropdownTareas: true,
             tareaSeleccionada: null,
             horaSeleccionada: null
         }
 
+        this.seleccionarActividad = this.seleccionarActividad.bind(this);
         this.seleccionarTarea = this.seleccionarTarea.bind(this);
         this.seleccionarHora = this.seleccionarHora.bind(this);
     }
@@ -56,8 +59,19 @@ class TabCargarHoras extends Component {
             });
     }
     
+    seleccionarActividad(event) {
+        let mostrarDropdownTareas = event.target.value === "TAREA" ? true : false;
+        
+        console.log("Seleccionando actividad ", event.target.value);
+        this.setState({
+            actividadSeleccionada: event.target.value,
+            mostrarDropdownTareas: mostrarDropdownTareas
+        });
+    }
+
     seleccionarTarea(event) {
         console.log("Seleccionando tarea ", event.target.value);
+        
         this.setState({
             tareaSeleccionada: event.target.value
         });
@@ -82,6 +96,7 @@ class TabCargarHoras extends Component {
                     </p>
                 </div>
 
+        let actividad = this.state.actividadSeleccionada ? this.state.actividadSeleccionada : actividades[0].value;
         let tarea = this.state.tareaSeleccionada ? this.state.tareaSeleccionada : tareas[0].value;
         let hora = this.state.horaSeleccionada ? this.state.horaSeleccionada : horasDropdown[0].value;
 
@@ -96,6 +111,15 @@ class TabCargarHoras extends Component {
                         <div className="seleccion-tarea-div">
                             <Dropdown
                                 renderDropdown={ true }
+                                label="Actividad"
+                                value={ actividad }
+                                values={ actividades }
+                                handleChange={ this.seleccionarActividad }
+                            >
+                            </Dropdown> 
+                            
+                            <Dropdown
+                                renderDropdown={ this.state.mostrarDropdownTareas }
                                 label="Tarea"
                                 value={ tarea }
                                 values={ tareas }
@@ -124,20 +148,32 @@ class TabCargarHoras extends Component {
 
 export default withRouter(TabCargarHoras);
 
+const actividades = [
+    {
+        name: "Tarea",
+        value: "TAREA"
+    },
+    {
+        name: "Enfermedad",
+        value: "ENFERMEDAD"
+    },
+    {
+        name: "Vacaciones",
+        value: "VACACIONES"
+    }
+]
+
 const tareas = [
     {
         name: "cargar horas",
-        categoria: "tarea",
         value: "cargar horas"
     },
     {
         name: "cargar proyectos",
-        categoria: "tarea",
         value: "cargar proyectos"
     },
     {
         name: "enfermedad",
-        categoria: "licencia enfermedad",
         value: "enfermad"
     }
 ]

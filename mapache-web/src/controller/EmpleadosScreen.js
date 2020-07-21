@@ -9,6 +9,11 @@ import "../assets/css/controller/EmpleadosScreen.css";
 
 // Icono para enviar a la tabla
 import InfoOutlined from '@material-ui/icons/InfoOutlined';
+import Add from '@material-ui/icons/Add';
+import Delete from '@material-ui/icons/Delete';
+
+import { Confirmation } from "../component/general/Confirmation";
+import { Alerta } from "../component/general/Alerta";
 
 const mapacheRecursosBaseUrl = "https://mapache-recursos.herokuapp.com";
 //const mapacheRecursosBaseUrl = "http://0.0.0.0:8080";
@@ -21,18 +26,28 @@ class EmpleadosScreen extends Component {
         this.requester = new Requester(mapacheRecursosBaseUrl);
 
         this.state = {
-            empleados: []
+            empleados: [],
+            confirmarEliminacion: false,
+            empleadoSeleccionado: null,
+            mostrarAlerta: false,
+            tipoAlerta: "",
+            mensajeAlerta: ""
         }
 
-        
         this.handleAdd = this.handleAdd.bind(this);
         this.handleEdit = this.handleEdit.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
+
+        this.handleCancelar = this.handleCancelar.bind(this);
+        this.handleAceptar = this.handleAceptar.bind(this);
+
+        this.mostrarAlerta = this.mostrarAlerta.bind(this);
+        this.handleCloseAlerta = this.handleCloseAlerta.bind(this);
     }
 
-    handleAdd(newData) {
+    handleAdd() {
         this.props.history.push({
-            pathname: `/empleados/${newData.legajo}`,
+            pathname: `/empleados/${0}`,
             state: {
                 modo: "add"
             }
@@ -55,13 +70,9 @@ class EmpleadosScreen extends Component {
 
     handleDelete(newData) {
         console.log("En delete");
-        this.requester.delete('/empleados/' + newData.legajo)
-        .then(response => {
-            if (response.ok){
-                console.log(`Empleado ${newData.legajo} fue eliminado de manera exitosa`);
-            } else {
-                console.log("Error al consultar empleados");
-            }
+        this.setState({
+            confirmarEliminacion: true,
+            empleadoSeleccionado: newData
         });
     }
 
@@ -84,9 +95,70 @@ class EmpleadosScreen extends Component {
         });
     }
 
+    mostrarAlerta(mensaje, tipo) {
+        this.setState({
+            mostrarAlerta: true,
+            tipoAlerta: tipo,
+            mensajeAlerta: mensaje
+        });
+    }
+
+    handleCloseAlerta() {
+        this.setState({
+            mostrarAlerta: false
+        });
+    }
+
+    handleCancelar() {
+        console.log("Cancela");
+        this.setState({
+            confirmarEliminacion: false
+        });
+    }
+
+    handleAceptar() {
+        console.log("Acepta");
+        this.setState({
+            confirmarEliminacion: false
+        });
+        this.requester.delete('/empleados/' + this.state.empleadoSeleccionado.legajo)
+        .then(response => {
+            if (response.ok){
+                this.mostrarAlerta(
+                    `Empleado ${this.state.empleadoSeleccionado.legajo} fue eliminado de manera exitosa`,
+                    success
+                );
+                console.log(`Empleado ${this.state.empleadoSeleccionado.legajo} fue eliminado de manera exitosa`);
+            } else {
+                this.mostrarAlerta(
+                    `Error al eliminar al empleado ${this.state.empleadoSeleccionado.legajo}`,
+                    error
+                );
+            }
+        });
+    }
+
     render() {
+        let alerta = null;
+        if (this.state.mostrarAlerta) {
+            alerta = <Alerta
+                        open={ true }
+                        mensaje={ this.state.mensajeAlerta }
+                        tipo={ this.state.tipoAlerta }
+                        handleClose={ this.handleCloseAlerta }
+                     >
+                     </Alerta>
+        }
+
         return (
             <div className="empleados-screen-div">
+                <Confirmation 
+                    open={ this.state.confirmarEliminacion } 
+                    title="Confirmar eliminación empleado"
+                    message="¿Esta seguro que desea eliminar al empleado?"
+                    handleCancelar={ this.handleCancelar }
+                    handleAceptar={ this.handleAceptar }
+                ></Confirmation>
                 <TablaAdministracion 
                     title={ title }
                     columns={ columns }
@@ -95,7 +167,35 @@ class EmpleadosScreen extends Component {
                     handleEdit={ this.handleEdit }
                     handleDelete={ this.handleDelete } 
                     editIcon={ editIcon }
+                    editable = { null }
+                    actions={[
+                        {
+                            icon: Add,
+                            tooltip: "Agregar empleado",
+                            position: "toolbar",
+                            onClick: () => {
+                                this.handleAdd()
+                            }
+                        },
+                        {
+                            icon: editIcon,
+                            tooltip: "Consultar perfil de empleado",
+                            onClick: (event, rowData) => {
+                                this.handleEdit(rowData)  
+                                console.log(rowData)
+                            }
+                        },
+                        {
+                            icon: Delete,
+                            tooltip: "Eliminar empleado",
+                            onClick: (event, rowData) => {
+                                this.handleDelete(rowData)  
+                                console.log(rowData)
+                            }
+                        }
+                      ]}
                 ></TablaAdministracion>
+                { alerta }
             </div>
         )
     }
@@ -110,7 +210,8 @@ const columns = [
     {
         title: "Legajo", 
         field: "legajo",
-        editable: "never"
+        editable: "never",
+        defaultSort: "asc"
     },
     {
         title: "Nombre", 
@@ -131,4 +232,7 @@ const columns = [
 
 const editIcon = InfoOutlined;
 
+// Opciones alerta
 
+const success = "success";
+const error = "error";

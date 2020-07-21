@@ -38,6 +38,10 @@
     padding: 5%;
 }
 
+.perfil-empleado .perfil-empleado-body .edit {
+    padding: 5%;
+}
+
 .nombre-y-apellido {
     display: flex;
     flex-direction: row;
@@ -62,6 +66,14 @@
 }
 
 .iconos-agregar-empleado {
+    display: flex;
+    flex-direction: row;
+    float: right;
+    width: 10%;
+    justify-content: space-between;
+}
+
+.iconos-informacion-empleado {
     display: flex;
     flex-direction: row;
     float: right;

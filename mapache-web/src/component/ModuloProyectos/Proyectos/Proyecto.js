@@ -1,10 +1,11 @@
 import React, {Component} from "react";
 import { withRouter } from 'react-router';
-import {Button, Card, Col, Form} from "react-bootstrap";
+import {Button,ButtonGroup, Card, Col, Form} from "react-bootstrap";
 import { Redirect } from "react-router-dom";
 import axios from "axios";
-import "../../assets/css/controller/ProyectosScreen.css";
-import "../../assets/css/ModuloProyectos/TablaCrearProyecto.css";
+import {Link} from "react-router-dom";
+import "../../../assets/css/controller/ProyectosScreen.css";
+import "../../../assets/css/ModuloProyectos/TablaCrearProyecto.css";
 const URL = 'https://mapache-proyectos.herokuapp.com/';
 
 class Proyecto extends Component {
@@ -224,9 +225,17 @@ class Proyecto extends Component {
                             </Form.Row>
                         </Card.Body>
                         <Card.Footer>
-                            <Button variant="success" type="submit">
-                                {this.state.id ? "Actualizar" : "Crear Proyecto"}
-                            </Button>
+                            <ButtonGroup>
+                                <Button variant="success" type="submit">
+                                    {this.state.id ? "Actualizar" : "Crear Proyecto"}
+                                </Button>
+                                {this.state.id ?
+                                    <Link to={"/proyectos/"+this.state.id+"/fases"}><Button>
+                                        Fases
+                                    </Button>
+                                    </Link> : null
+                                }
+                            </ButtonGroup>
                         </Card.Footer>
                     </Form>
                 </Card>

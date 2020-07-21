@@ -4,8 +4,8 @@ import {ButtonGroup, Table, Button} from "react-bootstrap";
 import {Link} from "react-router-dom";
 import Paper from "@material-ui/core/Paper";
 import TableContainer from "@material-ui/core/TableContainer";
-import "../../assets/css/ModuloProyectos/TablasProyectos.css";
-import "../../assets/css/controller/ProyectosScreen.css";
+import "../../../assets/css/ModuloProyectos/TablasProyectos.css";
+import "../../../assets/css/controller/ProyectosScreen.css";
 const URL = 'https://mapache-proyectos.herokuapp.com/';
 
 export default class ListadoProyectos extends Component {
@@ -114,7 +114,7 @@ export default class ListadoProyectos extends Component {
                                         <td>{proyecto.tipoDeProyecto}</td>
                                         <td>
                                             <ButtonGroup>
-                                                <Link to={"/proyectos/edit/"+proyecto.id}><Button size="sm" variant="outline-primary">
+                                                <Link to={"/proyectos/"+proyecto.id}><Button size="sm" variant="outline-primary">
                                                     Edit
                                                 </Button>
                                                 </Link>

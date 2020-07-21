@@ -13,6 +13,7 @@ import Clear from '@material-ui/icons/Clear'
 import { DatePicker } from "../general/DatePicker";
 import { Dropdown } from "../general/Dropdown";
 import { Alerta } from "../general/Alerta";
+import NavBarPerfilEmpleado from "./NavBarPerfilEmpleado";
 
 import Requester from "../../communication/Requester";
 
@@ -547,11 +548,14 @@ class PerfilEmpleado extends Component {
 
         return (
             <div className="perfil-empleado">
+                <NavBarPerfilEmpleado />
+                <div className="perfil-empleado-body">
                     { avatar }
-                <div className={ "perfil-empleado-body" }>
-                    <Paper square className="paper-informacion">
-                        { data }
-                    </Paper>
+                    <div className={ "perfil-empleado-paper" }>
+                        <Paper square className="paper-informacion">
+                            { data }
+                        </Paper>
+                    </div>
                 </div>
             </div>
         )

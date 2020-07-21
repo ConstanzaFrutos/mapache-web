@@ -8,8 +8,9 @@ import Grid from '@material-ui/core/Grid';
 
 import "../../assets/css/component/soporte/Ticket.css";
 
-const mapacheSoporteBaseUrl = "https://psa-api-support.herokuapp.com";
-//const mapacheSoporteBaseUrl = "http://localhost:5000";
+//const mapacheSoporteBaseUrl = "https://psa-api-support.herokuapp.com";
+const mapacheSoporteBaseUrl = "http://localhost:5000";
+const mapacheRecursosBaseUrl = "https://mapache-recursos.herokuapp.com"
 
 const tipos = [
   {
@@ -41,33 +42,16 @@ const severidades = [
   }
 ]
 
-const responsables = [
-  {
-      value: -1,
-      label: "Ninguno"
-  },
-  {
-    value: 1,
-    label: "Martin Perez"
-  },
-  {
-    value: 2,
-    label: "Joaquin Lapa"
-  },
-  {
-    value: 3,
-    label: "Roman Riquelme"
-  }
-]
-
 class CrearTicket extends Component {
   
   constructor(props){
     super(props);
 
     this.requester = new Requester(mapacheSoporteBaseUrl);
+    this.requesterRecursos = new Requester(mapacheRecursosBaseUrl);
 
     this.clientes = [{"id":-1, "razon_social": "Ninguno"}]
+    this.responsables = [{"legajo": -1, "nombre": "Ninguno", "apellido": ""}]
 
     this.state={
       nombre:'',
@@ -79,7 +63,7 @@ class CrearTicket extends Component {
         id: -1,
         razon_social: ""
       },
-      id_responsable: -1
+      legajo_responsable: -1
     }
   }
 
@@ -103,7 +87,7 @@ class CrearTicket extends Component {
     this.setState({ cliente: {"id": event.target.value, "razon_social": event.target.label} });
   }
   handleChangeResponsable = event => {
-    this.setState({ id_responsable: event.target.value});
+    this.setState({ legajo_responsable: event.target.value});
   }
 
   handleSubmit = event => {
@@ -116,7 +100,7 @@ class CrearTicket extends Component {
       severidad: this.state.severidad,
       pasos: this.state.pasos,
       cliente: this.state.cliente,
-      id_responsable: this.state.id_responsable
+      legajo_responsable: this.state.legajo_responsable
     };
 
     this.requester.post('/tickets', ticket)
@@ -149,6 +133,23 @@ class CrearTicket extends Component {
                 console.log(response);
                 this.clientes = response
                 this.setState({cliente: {'id': response[0].id, 'razon_social': response[0].razon_social}})
+            }
+        });
+
+        this.requesterRecursos.get('/empleados/')
+        .then(response => {
+          if (response.ok){
+              return response.json();
+          } else {
+              console.log("Error al consultar ticket con id: ");
+          }
+        })
+        .then(response => {
+            console.log(response);
+            if (response) {
+                console.log(response);
+                this.responsables = this.responsables.concat(response)
+                this.setState({responsable: {'id': response[0].id, 'nombre': response[0].nombre + " " + response[0].apellido}})
             }
         });
     }
@@ -204,10 +205,10 @@ render() {
               </TextField>
           </Grid>
           <Grid item lg={6} xl={6}>
-              <TextField id="responsable" fullWidth name="responsable" variant="outlined" select label="Responsable" value={this.state.id_responsable} onChange={this.handleChangeResponsable}>
-                      {responsables.map((option) => (
-                      <MenuItem key={option.value} value={option.value}>
-                          {option.label}
+            <TextField id="responsable" fullWidth name="responsable" variant="outlined" select label="Responsable" value={this.state.legajo_responsable} onChange={this.handleChangeResponsable}>
+                      {this.responsables.map((option) => (
+                      <MenuItem key={option.legajo} value={option.legajo}>
+                          {option.nombre + " " + option.apellido}
                       </MenuItem>
                       ))}
             </TextField>

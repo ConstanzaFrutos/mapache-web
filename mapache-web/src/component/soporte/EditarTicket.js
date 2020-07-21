@@ -6,9 +6,15 @@ import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import "../../assets/css/component/recursos/PerfilEmpleado.css";
 import Requester from "../../communication/Requester";
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
-const mapacheSoporteBaseUrl = "https://psa-api-support.herokuapp.com";
-//const mapacheSoporteBaseUrl = "http://localhost:5000";
+//const mapacheSoporteBaseUrl = "https://psa-api-support.herokuapp.com";
+const mapacheSoporteBaseUrl = "http://localhost:5000";
+const mapacheRecursosBaseUrl = "https://mapache-recursos.herokuapp.com"
 
 const tipos = [
     {
@@ -40,24 +46,6 @@ const severidades = [
     }
   ]
 
-  const responsables = [
-    {
-        value: -1,
-        label: "Ninguno"
-    },
-    {
-      value: 1,
-      label: "Martin Perez"
-    },
-    {
-      value: 2,
-      label: "Joaquin Lapa"
-    },
-    {
-      value: 3,
-      label: "Roman Riquelme"
-    }
-  ]
 
 const estados = [
     {
@@ -84,59 +72,90 @@ class VisualizarTicket extends Component {
         super(props);
 
         this.requester = new Requester(mapacheSoporteBaseUrl);
-
-        this.clientes = [{'id': -1, 'razon_social': 'Ninguno'}]
+        this.requesterRecursos = new Requester(mapacheRecursosBaseUrl);
 
         this.state = {
-            "cliente": {
+            "clientes": [],
+            "responsables": [{"legajo": "-1", "nombre": "Ninguno", "apellido": ""}],
+            "modal": false,
+            "ticket": {
+              "cliente": {
                 "id": -1,
                 "razon_social": ""
-            },
-            "descripcion": "",
-            "estado": "",
-            "fecha_creacion": "",
-            "fecha_finalizacion": null,
-            "fecha_limite": "",
-            "fecha_ultima_actualizacion": "",
-            "id": "",
-            "nombre": "",
-            "pasos": "",
-            "id_responsable": -1,
-            "severidad": "",
-            "tipo": ""
+              },
+              "descripcion": "",
+              "estado": "",
+              "fecha_creacion": "",
+              "fecha_finalizacion": null,
+              "fecha_limite": "",
+              "fecha_ultima_actualizacion": "",
+              "id": "",
+              "nombre": "",
+              "pasos": "",
+              "legajo_responsable": -1,
+              "severidad": "",
+              "tipo": ""
+            }
         }
 
     }
 
     handleChangeNombre = event => {
-        this.setState({ nombre: event.target.value });
+        let tk = this.state.ticket
+        tk.nombre = event.target.value
+        this.setState({ ticket: tk });
       }
       handleChangeTipo = event => {
-        this.setState({ tipo: event.target.value });
+        let tk = this.state.ticket
+        tk.tipo = event.target.value
+        this.setState({ ticket: tk });
       }
       handleChangeSeveridad = event => {
-        this.setState({ severidad: event.target.value });
+        let tk = this.state.ticket
+        tk.severidad = event.target.value
+        this.setState({ ticket: tk });
       }
       handleChangeDescripcion = event => {
-        this.setState({ descripcion: event.target.value });
+        let tk = this.state.ticket
+        tk.descripcion = event.target.value
+        this.setState({ ticket: tk });
       }
       handleChangePasos = event => {
-        this.setState({ pasos: event.target.value });
+        let tk = this.state.ticket
+        tk.pasos = event.target.value
+        this.setState({ ticket: tk });
       }
       handleChangeCliente = event => {
-        this.setState({ cliente: {"id": event.target.value, "razon_social": event.target.label} });
+        let tk = this.state.ticket
+        tk.cliente = {"id": event.target.value, "razon_social": event.target.label}
+        this.setState({ ticket: tk });
       }
       handleChangeResponsable = event => {
-        this.setState({ id_responsable: event.target.value});
+        let tk = this.state.ticket
+        tk.legajo_responsable = event.target.value
+        this.setState({ ticket: tk });
       }
       handleChangeEstado = event => {
-        this.setState({ estado: event.target.value});
+        let tk = this.state.ticket
+        tk.estado = event.target.value
+        this.setState({ ticket: tk });
       }
 
+
+      crearTarea = event => {
+        console.log('Creando tarea');
+        this.setState({modal: true});
+      }
+
+      handleClose = event => {
+        console.log('Cerrando');
+        this.setState({modal: false});
+      }
 
       handleSubmit = event => {
         event.preventDefault();
-        this.requester.put('/tickets/' + this.state.id, this.state)
+        console.log(this.state.ticket)
+        this.requester.put('/tickets/' + this.state.ticket.id, this.state.ticket)
         .then(response => {
             if (response.ok){
     
@@ -163,9 +182,25 @@ class VisualizarTicket extends Component {
         .then(response => {
             console.log(response);
             if (response) {
-                this.clientes = response
+                this.setState({clientes: response})
             }
         });
+
+        this.requesterRecursos.get('/empleados/')
+            .then(response => {
+              if (response.ok){
+                  return response.json();
+              } else {
+                  console.log("Error al consultar ticket con id: ");
+              }
+            })
+            .then(response => {
+                console.log(response);
+                if (response) {
+                    this.setState({responsables: [...this.state.responsables, ...response]})
+                }
+            });
+
         this.requester.get('/tickets/' + id_ticket)
         //this.requester.get('/tickets')
             .then(response => {
@@ -179,20 +214,20 @@ class VisualizarTicket extends Component {
                 console.log(response);
                 if (response) {
                     if (response.cliente==null) {
-                      response.cliente = {"id": -1, "nombre": ""}
+                      response.cliente = {"id": -1, "razon_social": ""}
                     }
-                    console.log(response.id_responsable)
-                    if (response.id_responsable==null) {
-                      response.id_responsable = -1
+                    console.log(response.legajo_responsable)
+                    if (response.legajo_responsable==null) {
+                      response.legajo_responsable = -1
                     }
-                    this.setState(response);
+                    this.setState({ticket: response});
                 }
             });
     }
 
     render() {
 
-        console.log('STATE', this.state.severidad)
+        console.log('STATE', this.state.ticket.severidad)
 
         return (
             <div class='form-crear-ticket'>
@@ -203,10 +238,10 @@ class VisualizarTicket extends Component {
             <form noValidate autoComplete="off" onSubmit={this.handleSubmit}>
              <Grid container spacing={3} direction="row" justify="flex-start" alignItems="flex-start">
                 <Grid item lg={12} xl={12}>
-                    <TextField id="nombre" fullWidth value={this.state.nombre} variant="outlined" name="nombre" label="Nombre" onChange={this.handleChangeNombre}/>
+                    <TextField id="nombre" fullWidth value={this.state.ticket.nombre} variant="outlined" name="nombre" label="Nombre" onChange={this.handleChangeNombre}/>
                 </Grid>
                 <Grid item sm={6} md={6} xl={6} lg={4} xs={6}>
-                    <TextField id="tipo" fullWidth name="tipo" variant="outlined" select label="Tipo" value={this.state.tipo} onChange={this.handleChangeTipo}>
+                    <TextField id="tipo" fullWidth name="tipo" variant="outlined" select label="Tipo" value={this.state.ticket.tipo} onChange={this.handleChangeTipo}>
                     {tipos.map((option) => (
                     <MenuItem key={option.value} value={option.value}>
                         {option.label}
@@ -215,7 +250,7 @@ class VisualizarTicket extends Component {
                     </TextField>
                 </Grid>
                 <Grid item sm={6} md={6} xl={6} lg={4} xs={6}>
-                    <TextField id="estado" fullWidth  name="estado" variant="outlined" select label="Estado" value={this.state.estado} onChange={this.handleChangeEstado}>
+                    <TextField id="estado" fullWidth  name="estado" variant="outlined" select label="Estado" value={this.state.ticket.estado} onChange={this.handleChangeEstado}>
                     {estados.map((option) => (
                     <MenuItem key={option.value} value={option.value}>
                         {option.label}
@@ -225,7 +260,7 @@ class VisualizarTicket extends Component {
                 </Grid>                
 
                 <Grid item sm={6} md={6} xl={6} lg={4} xs={6}>
-                    <TextField id="severidad" fullWidth name="severidad" label="Severidad" variant="outlined" select value={this.state.severidad} onChange={this.handleChangeSeveridad}>
+                    <TextField id="severidad" fullWidth name="severidad" label="Severidad" variant="outlined" select value={this.state.ticket.severidad} onChange={this.handleChangeSeveridad}>
                     {severidades.map((option) => (
                     <MenuItem key={option.value} value={option.value}>
                         {option.label}
@@ -235,8 +270,8 @@ class VisualizarTicket extends Component {
                 </Grid>
                 
                 <Grid item sm={6} md={6} xl={6} lg={6} xs={6}>
-                    <TextField id="cliente" fullWidth name="cliente" variant="outlined" select label="Cliente" value={this.state.cliente.id} onChange={this.handleChangeCliente}>
-                    {this.clientes.map((option) => (
+                    <TextField id="cliente" fullWidth name="cliente" variant="outlined" select label="Cliente" value={this.state.ticket.cliente.id} onChange={this.handleChangeCliente}>
+                    {this.state.clientes.map((option) => (
                     <MenuItem key={option.id} value={option.id}>
                         {option.razon_social}
                     </MenuItem>
@@ -245,43 +280,51 @@ class VisualizarTicket extends Component {
                 </Grid>
                 
                 <Grid item sm={6} md={6} xl={6} lg={6} xs={6}>
-                    <TextField id="responsable" fullWidth name="responsable" variant="outlined" select label="Responsable" value={this.state.id_responsable} onChange={this.handleChangeResponsable}>
-                    {responsables.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                        {option.label}
+                    <TextField id="responsable" fullWidth name="responsable" variant="outlined" select label="Responsable" value={this.state.ticket.legajo_responsable} onChange={this.handleChangeResponsable}>
+                    {this.state.responsables.map((option) => (
+                    <MenuItem key={option.legajo} value={option.legajo}>
+                        {option.nombre + " " + option.apellido}
                     </MenuItem>
                     ))}
                     </TextField>
                 </Grid>
                 <Grid item sm={6} md={6} xl={6} lg={6} xs={6}>
-                    <TextField id="fecha_creacion" fullWidth disabled value={this.state.fecha_creacion} variant="outlined" name="fecha_creacion" label="Fecha de creación" />
+                    <TextField id="fecha_creacion" fullWidth disabled value={this.state.ticket.fecha_creacion} variant="outlined" name="fecha_creacion" label="Fecha de creación" />
                 </Grid>
                 
                 <Grid item sm={6} md={6} xl={6} lg={6} xs={6}>
-                    <TextField id="fecha_ultima_actualizacion" fullWidth disabled value={this.state.fecha_ultima_actualizacion} variant="outlined" name="fecha_ultima_actualizacion" label="Fecha de última actualización"/>
+                    <TextField id="fecha_ultima_actualizacion" fullWidth disabled value={this.state.ticket.fecha_ultima_actualizacion} variant="outlined" name="fecha_ultima_actualizacion" label="Fecha de última actualización"/>
                 </Grid>
 
                 <Grid item xl={12} lg={12}>
-                  <TextField id="fecha_limite" disabled fullWidth value={this.state.fecha_limite} variant="outlined" name="fecha_limite" label="Fecha límite"/>
+                  <TextField id="fecha_limite" disabled fullWidth value={this.state.ticket.fecha_limite} variant="outlined" name="fecha_limite" label="Fecha límite"/>
                 </Grid>
                 
-                {this.state.fecha_finalizacion!==null
+                {this.state.ticket.fecha_finalizacion!==null
                     ?<Grid item sm={6} md={6} xl={6} lg={6} xs={6}>
-                    <TextField id="fecha_finalizacion" fullWidth disabled value={this.state.fecha_finalizacion} variant="outlined" name="fecha_finalizacion" label="Fecha de finalización"/>
+                    <TextField id="fecha_finalizacion" fullWidth disabled value={this.state.ticket.fecha_finalizacion} variant="outlined" name="fecha_finalizacion" label="Fecha de finalización"/>
                     </Grid>
                 : null}
 
-                {this.state.tipo==='error'
+                {this.state.ticket.tipo==='error'
                     ?<Grid item sm={12} md={12} xl={12} lg={12} xs={12}>
-                    <TextField id="pasos" variant="outlined" fullWidth label="Pasos" name="pasos" value={this.state.pasos} style={{width: '600px'}} multiline rows={6} onChange={this.handleChangePasos}/>
+                    <TextField id="pasos" variant="outlined" fullWidth label="Pasos" name="pasos" value={this.state.ticket.pasos} multiline rows={6} onChange={this.handleChangePasos}/>
                     </Grid>
                 : ''}
 
                 <Grid item sm={12} md={12} xl={12} lg={12} xs={12}>
-                    <TextField id="descripcion" label="Descripcion" fullWidth value={this.state.descripcion} name="descripcion" multiline rows={8} variant="outlined" onChange={this.handleChangeDescripcion}/>
+                    <TextField id="descripcion" label="Descripcion" fullWidth value={this.state.ticket.descripcion} name="descripcion" multiline rows={8} variant="outlined" onChange={this.handleChangeDescripcion}/>
                 </Grid>
                 
-                <Grid item sm={12} md={12} xl={12} lg={12} xs={12}>
+                <Grid item sm={4} md={4} xl={4} lg={4} xs={4}>
+                  <div class="centrado">
+                    <Button variant="contained" color="primary" onClick={this.crearTarea}>
+                        Crear Tarea
+                    </Button>
+                  </div>
+                </Grid>
+                <Grid item sm={4} md={4} xl={4} lg={4} xs={4}></Grid>
+                <Grid item sm={4} md={4} xl={4} lg={4} xs={4}>
                   <div class="centrado">
                     <Button variant="contained" color="primary" type="submit">
                         Guardar
@@ -291,7 +334,32 @@ class VisualizarTicket extends Component {
                 
               </Grid>
               </form>
+              <Dialog open={this.state.modal} onClose={this.handleClose} aria-labelledby="form-dialog-title">
+                <DialogTitle id="form-dialog-title">Crear tarea</DialogTitle>
+                <DialogContent>
+                  <DialogContentText>
+                    Usted creara una tarea asociada a este ticket.
+                  </DialogContentText>
+                  <TextField
+                    autoFocus
+                    margin="dense"
+                    id="name"
+                    label="Email Address"
+                    type="email"
+                    fullWidth
+                  />
+                </DialogContent>
+                <DialogActions>
+                  <Button onClick={this.handleClose} color="primary">
+                    Cancel
+                  </Button>
+                  <Button onClick={this.handleClose} color="primary">
+                    Subscribe
+                  </Button>
+                </DialogActions>
+              </Dialog>
             </div>
+            
         )
     }
 

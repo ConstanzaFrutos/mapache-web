@@ -24,10 +24,12 @@ class TabCargarHoras extends Component {
             empleado: {},
             proyectos: {},
             tareas: {},
-            tareaSeleccionada: null
+            tareaSeleccionada: null,
+            horaSeleccionada: null
         }
 
         this.seleccionarTarea = this.seleccionarTarea.bind(this);
+        this.seleccionarHora = this.seleccionarHora.bind(this);
     }
 
     componentDidMount() {
@@ -61,6 +63,13 @@ class TabCargarHoras extends Component {
         });
     }
 
+    seleccionarHora(event) {
+        console.log("Seleccionando hora ", event.target.value);
+        this.setState({
+            horaSeleccionada: event.target.value
+        });
+    }
+
     render() {
         
         let nombreYApellido = this.state.empleado.apellido + ", " + this.state.empleado.nombre;
@@ -74,7 +83,11 @@ class TabCargarHoras extends Component {
                 </div>
 
         let tarea = this.state.tareaSeleccionada ? this.state.tareaSeleccionada : tareas[0].value;
+        let hora = this.state.horaSeleccionada ? this.state.horaSeleccionada : horasDropdown[0].value;
 
+        console.log("minutos ", minutos);
+
+        console.log("horasDropdown ", horasDropdown);
         return(
             <div className="tab-cargar-horas-div">
                 { avatar }
@@ -90,6 +103,16 @@ class TabCargarHoras extends Component {
                             >
                             </Dropdown> 
                         </div>    
+                        <div className="seleccion-horas">
+                            <Dropdown
+                                renderDropdown={ true }
+                                label="Horas trabajadas"
+                                value={ hora }
+                                values={ horasDropdown }
+                                handleChange={ this.seleccionarHora }
+                            >
+                            </Dropdown> 
+                        </div>
                             
                     </Paper>
                 </div>
@@ -118,3 +141,26 @@ const tareas = [
         value: "enfermad"
     }
 ]
+
+let horas = [];
+for (let i=0; i<10; i++) {
+    horas[i] = {
+        name: `${i} horas `,
+        value: i
+    }
+}
+
+let minutos = [];
+for (let i=0; i<2; i++) {
+    minutos[i] = {
+        name: `${60/(4-2*i)} minutos`,
+        value: 1/(4-2*i)
+    }
+}
+
+let horasDropdown = horas.map((hora) => {
+    let aux = {};
+    aux.name = hora.value > 0 ? hora.name + minutos[0].name : minutos[0].name;
+    aux.value = hora.value + minutos[0].value;
+    return aux;
+});

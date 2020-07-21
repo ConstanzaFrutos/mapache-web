@@ -63,7 +63,8 @@ class EmpleadosScreen extends Component {
         this.props.history.push({
             pathname: `/empleados/${oldData.legajo}`,
             state: {
-                modo: "info"
+                modo: "info",
+                tab: "informacion"
             }
         });
     }

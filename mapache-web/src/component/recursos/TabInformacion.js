@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
 
-import NavBarPerfilEmpleado from "./NavBarPerfilEmpleado";
+import "../../assets/css/component/recursos/TabInformacion.css";
 
 import Avatar from '@material-ui/core/Avatar';
 import Paper from '@material-ui/core/Paper';
@@ -545,13 +545,11 @@ class Tabinformacion extends Component {
 
         return(
             <div className="tab-informacion-div">
-                <div className="perfil-empleado-body">
-                    { avatar }
-                    <div className={ "perfil-empleado-paper" }>
-                        <Paper square className="paper-informacion">
-                            { data }
-                        </Paper>
-                    </div>
+                { avatar }
+                <div className={ "perfil-empleado-body" }>
+                    <Paper square className="paper-informacion">
+                        { data }
+                    </Paper>
                 </div>
             </div>
         )

@@ -27,6 +27,7 @@ export default class NavBarProyecto extends Component {
                             pathname: `/empleados/${this.props.legajo}`, 
                             state: { tab: "cargar-horas"}
                         }} 
+                        params={{ legajo: this.props.legajo }}
                         className="nav-link"
                     >Cargar Horas</Link>
                     <Link to={"/empleados/:legajo/horas-cargadas"} className="nav-link">Horas cargadas</Link>

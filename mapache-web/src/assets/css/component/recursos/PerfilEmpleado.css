@@ -1,5 +1,11 @@
 .perfil-empleado {
     display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.perfil-empleado-body {
+    display: flex;
     flex-direction: row;
     justify-content: center;
 }
@@ -23,7 +29,7 @@
     justify-content: center;
 }
 
-.perfil-empleado .perfil-empleado-body {
+.perfil-empleado .perfil-empleado-paper {
     width: 50%;
     align-self: flex-start;
     padding-top: 2em;

@@ -1,0 +1,83 @@
+.tab-informacion-div {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.foto-y-nombre {
+    display: flex;
+    flex-direction: column;
+    align-self: flex-start;
+    align-items: center;
+    padding-top: 2em;
+    padding-left: 2em;
+    padding-right: 5em;
+}
+
+.foto-y-nombre .avatar {
+    background-color: #3497c4;
+}
+
+.foto-y-nombre .nombre {
+    margin-top: 0.5em;
+    justify-content: center;
+}
+
+.perfil-empleado .perfil-empleado-body {
+    width: 50%;
+    align-self: flex-start;
+    padding-top: 2em;
+}
+
+.perfil-empleado .perfil-empleado-body .informacion {
+    padding: 5%;
+    align-items: center;
+}
+
+.perfil-empleado .perfil-empleado-body .add {
+    padding: 5%;
+}
+
+.perfil-empleado .perfil-empleado-body .edit {
+    padding: 5%;
+}
+
+.nombre-y-apellido {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 90%;
+}
+
+.fechas-paragraph {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.dropdown-paragraph {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.contrato-paragraph {
+    width: 30%;
+}
+
+.iconos-agregar-empleado {
+    display: flex;
+    flex-direction: row;
+    float: right;
+    width: 10%;
+    justify-content: space-between;
+}
+
+.iconos-informacion-empleado {
+    display: flex;
+    flex-direction: row;
+    float: right;
+    width: 10%;
+    justify-content: space-between;
+}
+

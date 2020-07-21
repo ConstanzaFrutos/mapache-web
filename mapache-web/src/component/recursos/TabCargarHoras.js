@@ -27,7 +27,10 @@ class TabCargarHoras extends Component {
             actividadSeleccionada: null,
             mostrarDropdownTareas: true,
             tareaSeleccionada: null,
-            horaSeleccionada: null
+            horaSeleccionada: null,
+            semanaSeleccionada: null,
+            mostrarDropdownHoras: true,
+            mostrarDropdownSemanas: false
         }
 
         this.seleccionarActividad = this.seleccionarActividad.bind(this);
@@ -46,7 +49,7 @@ class TabCargarHoras extends Component {
                 }
             })
             .then(response => {
-                console.log(response);
+                console.log("Empleado: ", response);
                 let iniciales = response.nombre.charAt(0) + response.apellido.charAt(0);
                 iniciales = iniciales.toUpperCase();                
 
@@ -62,10 +65,14 @@ class TabCargarHoras extends Component {
     seleccionarActividad(event) {
         let mostrarDropdownTareas = event.target.value === "TAREA" ? true : false;
         
+        let mostrarDropdownSemanas = event.target.value === "VACACIONES" ? true : false;
+        
         console.log("Seleccionando actividad ", event.target.value);
         this.setState({
             actividadSeleccionada: event.target.value,
-            mostrarDropdownTareas: mostrarDropdownTareas
+            mostrarDropdownTareas: mostrarDropdownTareas,
+            mostrarDropdownSemanas: mostrarDropdownSemanas,
+            mostrarDropdownHoras: !mostrarDropdownSemanas
         });
     }
 
@@ -84,6 +91,17 @@ class TabCargarHoras extends Component {
         });
     }
 
+    seleccionarSemanas(event) {
+        const horasPorSemana = this.state.empleado.contrato === "FULL_TIME" ?
+                        5 * horasFullTime : 5 * horasPartTime;
+        let horas = event.target.value * horasPorSemana;              
+        console.log("Seleccionando semanas ", event.target.value);
+        this.setState({
+            semanaSeleccionada: event.target.value,
+            horaSeleccionada: horas
+        });
+    }
+
     render() {
         
         let nombreYApellido = this.state.empleado.apellido + ", " + this.state.empleado.nombre;
@@ -99,10 +117,12 @@ class TabCargarHoras extends Component {
         let actividad = this.state.actividadSeleccionada ? this.state.actividadSeleccionada : actividades[0].value;
         let tarea = this.state.tareaSeleccionada ? this.state.tareaSeleccionada : tareas[0].value;
         let hora = this.state.horaSeleccionada ? this.state.horaSeleccionada : horasDropdown[0].value;
+        let cantidadSemanas = this.state.semanaSeleccionada ? this.state.semanaSeleccionada : semanasDropdown[0].value;
 
         console.log("minutos ", minutos);
 
         console.log("horasDropdown ", horasDropdown);
+
         return(
             <div className="tab-cargar-horas-div">
                 { avatar }
@@ -127,13 +147,22 @@ class TabCargarHoras extends Component {
                             >
                             </Dropdown> 
                         </div>    
-                        <div className="seleccion-horas">
+                        <div className="seleccion-tiempo">
                             <Dropdown
-                                renderDropdown={ true }
+                                renderDropdown={ this.state.mostrarDropdownHoras }
                                 label="Horas trabajadas"
                                 value={ hora }
                                 values={ horasDropdown }
                                 handleChange={ this.seleccionarHora }
+                            >
+                            </Dropdown> 
+
+                            <Dropdown
+                                renderDropdown={ this.state.mostrarDropdownSemanas }
+                                label="Semanas"
+                                value={ cantidadSemanas }
+                                values={ semanasDropdown }
+                                handleChange={ this.seleccionarSemanas }
                             >
                             </Dropdown> 
                         </div>
@@ -187,16 +216,41 @@ for (let i=0; i<10; i++) {
 }
 
 let minutos = [];
+minutos[0] = {
+    name: "",
+    value: 0
+}
 for (let i=0; i<2; i++) {
-    minutos[i] = {
+    minutos[i+1] = {
         name: `${60/(4-2*i)} minutos`,
         value: 1/(4-2*i)
     }
 }
 
-let horasDropdown = horas.map((hora) => {
-    let aux = {};
-    aux.name = hora.value > 0 ? hora.name + minutos[0].name : minutos[0].name;
-    aux.value = hora.value + minutos[0].value;
-    return aux;
+let horasDropdown = [];
+
+horas.forEach((hora) => {
+    minutos.forEach((minuto) => {
+        let aux = {};
+        aux.name = hora.value > 0 ? hora.name + minuto.name : minuto.name;
+        aux.value = hora.value + minuto.value;
+        horasDropdown.push(aux);
+        if (
+            (hora.value === 0 && minuto.value === 0) ||
+            (hora.value === 9 && minuto.value > 0)
+        ) {
+            horasDropdown.pop();
+        }
+    })
 });
+
+const horasFullTime = 40;
+const horasPartTime = 20;
+
+let semanasDropdown = [];
+for (let i=0; i<4; i++) {
+    semanasDropdown[i] = {
+        name: `${i+1} semanas`,
+        value: i+1
+    }
+}

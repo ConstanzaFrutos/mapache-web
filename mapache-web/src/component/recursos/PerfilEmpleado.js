@@ -54,7 +54,7 @@ class PerfilEmpleado extends Component {
     render() {
         
         let tab = null;
-        
+
         if (this.props.location.state.tab === "informacion") {
             tab = <TabInformacion legajo={this.state.empleado.legajo} modo="info"/>
         } else if (this.props.location.state.tab === "cargar-horas") {
@@ -66,9 +66,7 @@ class PerfilEmpleado extends Component {
                 <NavBarPerfilEmpleado 
                     legajo={ this.state.empleado.legajo }
                 />
-                <div className="perfil-empleado-body">
-                    { tab }
-                </div>
+                { tab }
             </div>
         )
     }

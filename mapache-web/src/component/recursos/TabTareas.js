@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
 
+import LinearProgress from '@material-ui/core/LinearProgress';
+
 import AccessTime from '@material-ui/icons/AccessTime';
 
 import { TablaAdministracion } from "../general/TablaAdministracion";
@@ -87,6 +89,8 @@ export default withRouter(TabTareas);
 
 const title = `Tareas del empleado`;
 
+//{ title: 'Avatar', field: 'imageUrl', 
+//render: rowData => <img src={rowData.imageUrl} style={{width: 40, borderRadius: '50%'}}/> }
 const columns = [
     {
         title: "Nombre", 
@@ -97,8 +101,9 @@ const columns = [
         field: "proyecto"
     },
     {
-        title: "Horas", 
-        field: "horas"
+        title: "Progreso", 
+        field: "progreso",
+        render: rowData => <LinearProgress variant="buffer" value={rowData.progreso}/> 
     },
     {
         title: "Estado", 
@@ -110,7 +115,7 @@ const data = [
     {
         nombre: "Tarea 1",
         proyecto: "Proyecto 1",
-        horas: 20,
+        progreso: 20,
         estado: "En curso"
     }
 ]

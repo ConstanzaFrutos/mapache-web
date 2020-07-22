@@ -8,6 +8,7 @@ import NavBarPerfilEmpleado from "./NavBarPerfilEmpleado";
 import Requester from "../../communication/Requester";
 import TabInformacion from './TabInformacion';
 import TabCargarHoras from './TabCargarHoras';
+import TabTareas from './TabTareas';
 
 const mapacheRecursosBaseUrl = "https://mapache-recursos.herokuapp.com";
 //const mapacheRecursosBaseUrl = "http://0.0.0.0:8080";
@@ -59,6 +60,8 @@ class PerfilEmpleado extends Component {
             tab = <TabInformacion legajo={this.state.empleado.legajo} modo="info"/>
         } else if (this.props.location.state.tab === "cargar-horas") {
             tab = <TabCargarHoras legajo={this.state.empleado.legajo}/>
+        } else if (this.props.location.state.tab === "tareas") {
+            tab = <TabTareas legajo={this.state.empleado.legajo}/>
         }
 
         return (

@@ -23,7 +23,13 @@ export default class NavBarProyecto extends Component {
                         }} 
                         className="nav-link"
                     >Proyectos</Link>
-                    <Link to={"/empleados/:legajo/tareas"} className="nav-link">Tareas</Link>
+                    <Link 
+                        to={{
+                            pathname: `/empleados/${this.props.legajo}`, 
+                            state: { tab: "tareas"}
+                        }} 
+                        className="nav-link"
+                    >Tareas</Link>
                     <Link 
                         to={{
                             pathname: `/empleados/${this.props.legajo}`, 

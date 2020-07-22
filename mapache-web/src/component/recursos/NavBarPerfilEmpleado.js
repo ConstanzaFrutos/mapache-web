@@ -2,10 +2,12 @@ import React, {Component} from "react";
 import {Nav, Navbar} from "react-bootstrap";
 import {Link} from "react-router-dom";
 
+import "../../assets/css/component/recursos/NavBarPerfilEmpleado.css"
+
 export default class NavBarProyecto extends Component {
     render() {
         return(
-            <Navbar className="navbar navbar-expand-lg navbar-dark">
+            <Navbar className="navbar navbar-expand-lg navbar-dark empleados-navbar">
                 <Nav className="mr-auto">
                     <Link 
                         to={{

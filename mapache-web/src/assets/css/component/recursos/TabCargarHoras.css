@@ -24,9 +24,10 @@
 }
 
 .tab-cargar-horas-div .tab-cargar-horas-body {
-    width: 50%;
+    width: 40%;
     align-self: flex-start;
     padding-top: 2em;
+    padding-bottom: 2em;
 }
 
 .paper-cargar-horas {
@@ -39,6 +40,21 @@
     justify-content: space-between;
 }
 
-.seleccion-tiempo {
+.seleccion-tiempo-div {
     width: 50%;
+}
+
+.seleccion-fecha-carga-horas-div {
+    padding-left: 1em;
+    padding-top: 2em;
+    padding-bottom: 2em;
+    width: 50%;
+}
+
+.icono-guardar-carga-hora {
+    display: flex;
+    flex-direction: row;
+    float: right;
+    width: 10%;
+    justify-content: space-between;
 }

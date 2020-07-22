@@ -131,7 +131,17 @@ class TabCargarHoras extends Component {
     }
 
     handleCargaHoras() {
-
+        let proyectoId = 1;
+        let tareaId = 1;
+        this.requester.post(
+            `/empleados/${this.state.empleado.legajo}/proyectos/${proyectoId}/tareas/${tareaId}/horas/fecha?="`
+        ).then(response => {
+            if (response.ok){
+                console.log("ok");
+            } else {
+                console.log("Error al consultar empleado con legajo: ");
+            }
+        });
     }
 
     render() {
@@ -181,7 +191,7 @@ class TabCargarHoras extends Component {
                         </div>    
                         <div className="seleccion-fecha-carga-horas-div">
                             <DatePicker 
-                                label="Fecha de nacimiento"
+                                label="Fecha"
                                 handleDateInput={ this.handleDateInput }
                             ></DatePicker>
                         </div>

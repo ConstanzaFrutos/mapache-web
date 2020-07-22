@@ -5,8 +5,10 @@ import "../../assets/css/component/recursos/TabCargarHoras.css";
 
 import Avatar from '@material-ui/core/Avatar';
 import Paper from '@material-ui/core/Paper';
+import Save from '@material-ui/icons/Save'
 
 import { Dropdown } from "../general/Dropdown";
+import { DatePicker } from "../general/DatePicker";
 
 import Requester from "../../communication/Requester";
 
@@ -27,6 +29,7 @@ class TabCargarHoras extends Component {
             actividadSeleccionada: null,
             mostrarDropdownTareas: true,
             tareaSeleccionada: null,
+            fechaSeleccionada: null,
             horaSeleccionada: null,
             semanaSeleccionada: null,
             mostrarDropdownHoras: true,
@@ -36,6 +39,10 @@ class TabCargarHoras extends Component {
         this.seleccionarActividad = this.seleccionarActividad.bind(this);
         this.seleccionarTarea = this.seleccionarTarea.bind(this);
         this.seleccionarHora = this.seleccionarHora.bind(this);
+
+        this.handleDateInput = this.handleDateInput.bind(this);
+
+        this.handleCargaHoras = this.handleCargaHoras.bind(this);
     }
 
     componentDidMount() {
@@ -63,12 +70,16 @@ class TabCargarHoras extends Component {
     }
     
     seleccionarActividad(event) {
+        let empleado = (Object.is(this.state.empleado, {})) ? 
+            {} : Object.assign({}, this.state.empleado);
+
         let mostrarDropdownTareas = event.target.value === "TAREA" ? true : false;
         
         let mostrarDropdownSemanas = event.target.value === "VACACIONES" ? true : false;
         
         console.log("Seleccionando actividad ", event.target.value);
         this.setState({
+            empleado: empleado,
             actividadSeleccionada: event.target.value,
             mostrarDropdownTareas: mostrarDropdownTareas,
             mostrarDropdownSemanas: mostrarDropdownSemanas,
@@ -77,29 +88,50 @@ class TabCargarHoras extends Component {
     }
 
     seleccionarTarea(event) {
+        let empleado = (Object.is(this.state.empleado, {})) ? 
+            {} : Object.assign({}, this.state.empleado);
         console.log("Seleccionando tarea ", event.target.value);
         
         this.setState({
+            empleado: empleado,
             tareaSeleccionada: event.target.value
         });
     }
 
     seleccionarHora(event) {
+        let empleado = (Object.is(this.state.empleado, {})) ? 
+            {} : Object.assign({}, this.state.empleado);
+
         console.log("Seleccionando hora ", event.target.value);
         this.setState({
+            empleado: empleado,
             horaSeleccionada: event.target.value
         });
     }
 
     seleccionarSemanas(event) {
-        const horasPorSemana = this.state.empleado.contrato === "FULL_TIME" ?
+        let empleado = (Object.is(this.state.empleado, {})) ? 
+            {} : Object.assign({}, this.state.empleado);
+
+        const horasPorSemana = empleado.contrato === "FULL_TIME" ?
                         5 * horasFullTime : 5 * horasPartTime;
         let horas = event.target.value * horasPorSemana;              
         console.log("Seleccionando semanas ", event.target.value);
         this.setState({
+            empleado: empleado,
             semanaSeleccionada: event.target.value,
             horaSeleccionada: horas
         });
+    }
+
+    handleDateInput(event) {
+        this.setState({
+            fechaSeleccionada: event.target.value
+        });
+    }
+
+    handleCargaHoras() {
+
     }
 
     render() {
@@ -147,7 +179,13 @@ class TabCargarHoras extends Component {
                             >
                             </Dropdown> 
                         </div>    
-                        <div className="seleccion-tiempo">
+                        <div className="seleccion-fecha-carga-horas-div">
+                            <DatePicker 
+                                label="Fecha de nacimiento"
+                                handleDateInput={ this.handleDateInput }
+                            ></DatePicker>
+                        </div>
+                        <div className="seleccion-tiempo-div">
                             <Dropdown
                                 renderDropdown={ this.state.mostrarDropdownHoras }
                                 label="Horas trabajadas"
@@ -166,7 +204,12 @@ class TabCargarHoras extends Component {
                             >
                             </Dropdown> 
                         </div>
-                            
+                        <div className="icono-guardar-carga-hora">
+                            <Save 
+                                onClick={ this.handleCargaHoras }
+                            ></Save>
+                        </div>
+                        <br></br>
                     </Paper>
                 </div>
             </div>

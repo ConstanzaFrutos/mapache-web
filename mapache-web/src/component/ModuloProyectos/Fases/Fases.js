@@ -5,27 +5,78 @@ import Paper from "@material-ui/core/Paper";
 import TableContainer from "@material-ui/core/TableContainer";
 import "../../../assets/css/controller/ProyectosScreen.css";
 import "../../../assets/css/ModuloProyectos/TablaCrearProyecto.css";
-//const URL = 'https://mapache-proyectos.herokuapp.com/';
+import axios from 'axios';
+const URL = 'https://mapache-proyectos.herokuapp.com/proyectos/';
 
 class Fases extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            fases : []
+            fases : [],
+            nuevaFase : this.estadoInicial
         };
     }
 
-    data = [{nombre: 'Fase de Desarollo',fechaDeInicio: '2020-09-09'}, {nombre: 'Fase de Testing',fechaDeInicio: '2020-09-19'}];
+    estadoInicial = {nombre: '',fechaDeInicio: ''};
 
     obtenerFases(){
-        this.setState({fases : this.data});
+        const proyectoId = +this.props.match.params.id;
+        (async() => {
+            try {
+                axios.get(URL+proyectoId+'/fases')
+                    .then(respuesta => respuesta.data)
+                    .then((data) => {
+                        this.setState({fases : data})
+                    });
+            } catch (err) {
+                let mensaje = "Error: " + err.response.status;
+                if(err.response.message){
+                    mensaje += ': ' + err.response.message;
+                }
+                alert(mensaje);
+            }
+        })();
     }
 
     componentDidMount() {
         this.obtenerFases()
     }
 
+    cambioFase = event => {
+        const aux = {[event.target.name]: event.target.value};
+        this.setState({
+            nuevaFase : aux
+        });
+    }
+
+    crearFase = event => {
+        event.preventDefault();
+        const fase = {
+            nombre: this.state.nuevaFase.nombre,
+        };
+        const proyectoId = +this.props.match.params.id;
+        (async() => {
+            try {
+                await axios.post(URL+proyectoId+'/fases', fase)
+                    .then(respuesta => {
+                        if(respuesta.data){
+                            this.setState({nuevaFase: this.estadoInicial});
+                            alert("La fase se creo exitosamente");
+                        }
+                    })
+            } catch (err) {
+                let mensaje = "Error: " + err.response.status;
+                if(err.response.message){
+                    mensaje += ': ' + err.response.message;
+                }
+                alert(mensaje);
+            }
+        })();
+        this.obtenerFases();
+    }
+
     render() {
+        const {nombre, fechaDeInicio} = this.state.nuevaFase;
         return(
             <div className="proyectos-screen-div">
                 <div className="tablaProyectos" style={{height:"80%"}}>
@@ -57,7 +108,7 @@ class Fases extends Component {
                                 ))
                             }
                             <Card>
-                                <Form id="formularioFaseCrear">
+                                <Form id="formularioFaseCrear" onSubmit={this.crearFase}>
                                     <Card.Header>{"Nueva Fase"}</Card.Header>
                                     <Card.Body>
                                         <Form.Group as={Col}>
@@ -65,6 +116,8 @@ class Fases extends Component {
                                             <Form.Control
                                                 autoComplete="off"
                                                 type="text" name="nombre"
+                                                value = {nombre}
+                                                onChange={this.cambioFase}
                                             />
                                         </Form.Group>
                                         <Form.Group as={Col}>
@@ -72,11 +125,13 @@ class Fases extends Component {
                                             <Form.Control
                                                 autoComplete="off"
                                                 type="date" name="fechaDeInicio"
+                                                value = {fechaDeInicio}
+                                                onChange={this.cambioFase}
                                             />
                                         </Form.Group>
                                     </Card.Body>
                                     <Card.Footer>
-                                        <Button>Crear Fase</Button>
+                                        <Button variant="success" type="submit">Crear Fase</Button>
                                     </Card.Footer>
                                 </Form>
                             </Card>

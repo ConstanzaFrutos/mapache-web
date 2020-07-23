@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
 
+import "../../assets/css/component/recursos/TabTareas.css";
+
 import LinearProgress from '@material-ui/core/LinearProgress';
+import Avatar from '@material-ui/core/Avatar';
 
 import AccessTime from '@material-ui/icons/AccessTime';
 
@@ -54,31 +57,52 @@ class TabTareas extends Component {
 
     handleCargaHoras(tarea) {
         console.log("Tarea a la cual cargar horas: ", tarea);
+
+        this.props.history.push({
+            pathname: `/empleados/${this.props.match.params.legajo}`,
+            state: {
+                tab: "cargar-horas"
+            }
+        });
     }
 
     render() {
+        let nombreYApellido = this.state.empleado.apellido + ", " + this.state.empleado.nombre;
+        let avatar = <div className={"foto-y-nombre"}>
+                    <Avatar className="avatar">
+                        {this.state.iniciales}
+                    </Avatar>
+                    <p className={"nombre"}>
+                        {nombreYApellido}
+                    </p>
+                </div>
+
+
         return (
             <div className="tab-tareas-div">
-                <TablaAdministracion
-                    title={ title }
-                    columns={ columns }
-                    data={ data }
-                    handleAdd={ this.handleAdd }
-                    handleEdit={ this.handleEdit }
-                    handleDelete={ this.handleDelete } 
-                    editIcon={ AccessTime }
-                    editable ={ null }
-                    actions={[
-                        {
-                            icon: AccessTime,
-                            tooltip: "Cargar horas",
-                            onClick: (event, rowData) => {
-                                this.handleCargaHoras(rowData)  
+                { avatar }
+                <div className="tab-tareas-body">
+                    <TablaAdministracion
+                        title={ title }
+                        columns={ columns }
+                        data={ data }
+                        handleAdd={ this.handleAdd }
+                        handleEdit={ this.handleEdit }
+                        handleDelete={ this.handleDelete } 
+                        editIcon={ AccessTime }
+                        editable ={ null }
+                        actions={[
+                            {
+                                icon: AccessTime,
+                                tooltip: "Cargar horas",
+                                onClick: (event, rowData) => {
+                                    this.handleCargaHoras(rowData)  
+                                }
                             }
-                        }
-                    ]}
-                >
-                </TablaAdministracion>
+                        ]}
+                    >
+                    </TablaAdministracion>
+                </div>
             </div>
         )
     }
@@ -89,8 +113,6 @@ export default withRouter(TabTareas);
 
 const title = `Tareas del empleado`;
 
-//{ title: 'Avatar', field: 'imageUrl', 
-//render: rowData => <img src={rowData.imageUrl} style={{width: 40, borderRadius: '50%'}}/> }
 const columns = [
     {
         title: "Nombre", 

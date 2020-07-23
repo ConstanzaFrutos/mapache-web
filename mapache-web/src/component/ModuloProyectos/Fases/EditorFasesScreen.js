@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import NavBarProyecto from "../NavBarProyecto";
-import Fases from "./Fases";
+import Fases from "./ListadoFases";
 
 export default class EditorFasesScreen extends Component {
     render() {

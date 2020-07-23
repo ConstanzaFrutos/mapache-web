@@ -1,15 +1,20 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
+
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import Requester from "../../communication/Requester";
 import MenuItem from '@material-ui/core/MenuItem';
 import Grid from '@material-ui/core/Grid';
+import SaveIcon from '@material-ui/icons/Save';
+import BackspaceIcon from '@material-ui/icons/Backspace';
+
+import Requester from "../../communication/Requester";
 
 import "../../assets/css/component/soporte/Cliente.css";
 
+
 const mapacheSoporteBaseUrl = "https://psa-api-support.herokuapp.com";
-//const mapacheSoporteBaseUrl = "http://localhost:5000";
+// const mapacheSoporteBaseUrl = "http://localhost:5000";
 
 const estados = [
   {
@@ -23,7 +28,7 @@ const estados = [
 ]
 
 class InfoCliente extends Component {
-  
+
   constructor(props){
     super(props);
 
@@ -91,7 +96,7 @@ class InfoCliente extends Component {
         this.setState({ page: this.props.history.location.pathname })
         if (this.props.history.location.pathname !== '/clientes/nuevo') {
           let id_cliente = this.props.match.params.id_cliente;
-          this.requester.get('/clientes/' + id_cliente)
+          this.requester.get(`/clientes/${id_cliente}`)
             .then(response => {
                 if (response.ok){
                     return response.json();
@@ -133,7 +138,7 @@ render() {
             <Grid item lg={6} xl={6}>
                 <TextField id="CUIT" value={this.state.CUIT} fullWidth variant="outlined" name="CUIT" label="CUIT" onChange={this.handleChangeCUIT}/>
             </Grid>
-          
+
             {this.state.page !== '/clientes/nuevo'?
                     <Grid item sm={6} md={6} xl={6} lg={6} xs={6}>
                       <TextField id="fecha_desde_que_es_cliente" fullWidth disabled value={this.state.fecha_desde_que_es_cliente} variant="outlined" name="fecha_desde_que_es_cliente" label="Fecha de creación"/>
@@ -142,17 +147,22 @@ render() {
             <Grid item sm={12} md={12} xl={12} lg={12} xs={12}>
                 <TextField id="descripcion" label="Descripcion" fullWidth value={this.state.descripcion} name="descripcion" multiline rows={8} variant="outlined" onChange={this.handleChangeDescripcion}/>
             </Grid>
-            <Grid item sm={12} md={12} xl={12} lg={12} xs={12}>
-            <div class="centrado">
-            {this.state.page !== '/clientes/nuevo'?
-              <Button variant="contained" color="primary" type="submit">
-                Guardar
-              </Button>
-            :
-              <Button variant="contained" color="primary" type="submit">
-                Crear
-              </Button>}
-            </div>
+            <Grid
+              container
+              direction="row"
+              justify="space-evenly"
+              alignItems="center">
+                {(this.state.page !== '/clientes/nuevo') ?
+                <Button variant="contained" color="primary" type="submit" startIcon={<SaveIcon />}>
+                    Guardar
+                </Button>
+                :
+                <Button variant="contained" color="primary" type="submit" startIcon={<SaveIcon />}>
+                    Crear
+                </Button>}
+                <Button variant="contained" onClick={() => {this.props.history.push({ pathname: `/clientes` })}} startIcon={<BackspaceIcon />}>
+                    Cancelar
+                </Button>
             </Grid>
           </Grid>
           </form>

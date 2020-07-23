@@ -3,7 +3,7 @@
     margin-right: auto;
     margin-top: auto;
     /* height: 35em; */
-    width: 30%;
+    width: 40%;
     background: rgba(245, 245, 220, 0.7);
     padding-top: 40px;
 }
@@ -14,4 +14,13 @@
 
 .full-width {
     width: '100%';
+}
+
+.modal {
+    top: 50;
+    left: 50;
+    position: absolute;
+    width: 400;
+    background-color: white;
+    border: '2px solid #000';
 }

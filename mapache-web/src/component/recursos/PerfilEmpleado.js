@@ -16,8 +16,8 @@ import { Alerta } from "../general/Alerta";
 
 import Requester from "../../communication/Requester";
 
-const mapacheRecursosBaseUrl = "https://mapache-recursos.herokuapp.com";
-//const mapacheRecursosBaseUrl = "http://0.0.0.0:8080";
+//const mapacheRecursosBaseUrl = "https://mapache-recursos.herokuapp.com";
+const mapacheRecursosBaseUrl = "http://0.0.0.0:8080";
 
 class PerfilEmpleado extends Component {
 

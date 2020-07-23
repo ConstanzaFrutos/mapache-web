@@ -1,16 +1,18 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
 
-import { TablaAdministracion } from "../component/general/TablaAdministracion";
 import Add from '@material-ui/icons/Add'
+import InfoOutlined from '@material-ui/icons/InfoOutlined';
+
+import { TablaAdministracion } from "../component/general/TablaAdministracion";
+
 import Requester from "../communication/Requester";
 
 import "../assets/css/controller/ClientesScreen.css";
 
-import InfoOutlined from '@material-ui/icons/InfoOutlined';
 
 const mapacheSoporteBaseUrl = "https://psa-api-support.herokuapp.com";
-//const mapacheSoporteBaseUrl = "http://localhost:5000";
+// const mapacheSoporteBaseUrl = "http://localhost:5000";
 
 class ClientesScreen extends Component {
 
@@ -36,8 +38,8 @@ class ClientesScreen extends Component {
     }
 
     handleEdit(oldData) {
-        // Esta funcion en el caso de los empleados 
-        // se usa para redirigir el perfil      
+        // Esta funcion en el caso de los empleados
+        // se usa para redirigir el perfil
         this.props.history.push({
             pathname: `/clientes/${oldData.id}`
         });
@@ -76,7 +78,7 @@ class ClientesScreen extends Component {
     render() {
         return (
             <div className="clientes-screen-div">
-                <TablaAdministracion 
+                <TablaAdministracion
                     title={ title }
                     columns={ columns }
                     data={ this.state.clientes }
@@ -108,7 +110,7 @@ class ClientesScreen extends Component {
                             icon: editIcon,
                             tooltip: "Editar cliente",
                             onClick: (event, rowData) => {
-                              this.handleEdit(rowData)  
+                              this.handleEdit(rowData)
                               console.log(rowData)
                               console.log("PruebaEdit");
                             }
@@ -117,7 +119,7 @@ class ClientesScreen extends Component {
 
                 ></TablaAdministracion>
             </div>
-        )	      
+        )
     }
 }
 
@@ -128,15 +130,15 @@ const title = "Clientes";
 
 const columns = [
     {
-        title: "Razon Social", 
+        title: "Razon Social",
         field: "razon_social"
     },
     {
-        title: "CUIT", 
+        title: "CUIT",
         field: "CUIT"
     },
     {
-        title: "Fecha de creación", 
+        title: "Fecha de creación",
         field: "fecha_desde_que_es_cliente"
     },
     {

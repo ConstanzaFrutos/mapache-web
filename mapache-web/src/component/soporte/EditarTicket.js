@@ -1,21 +1,25 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
-import TextField from '@material-ui/core/TextField';
-import MenuItem from '@material-ui/core/MenuItem';
-import Button from '@material-ui/core/Button';
-import Grid from '@material-ui/core/Grid';
-import "../../assets/css/component/recursos/PerfilEmpleado.css";
-import Requester from "../../communication/Requester";
+
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import TextField from '@material-ui/core/TextField';
+import MenuItem from '@material-ui/core/MenuItem';
+import Button from '@material-ui/core/Button';
+import Grid from '@material-ui/core/Grid';
 
-const mapacheSoporteBaseUrl = "https://psa-api-support.herokuapp.com";
-//const mapacheSoporteBaseUrl = "http://localhost:5000";
+import Requester from "../../communication/Requester";
+
+import "../../assets/css/component/recursos/PerfilEmpleado.css";
+
+
 const mapacheRecursosBaseUrl = "https://mapache-recursos.herokuapp.com"
 const mapacheProyectosBaseUrl = "https://mapache-proyectos.herokuapp.com"
+const mapacheSoporteBaseUrl = "https://psa-api-support.herokuapp.com";
+// const mapacheSoporteBaseUrl = "http://localhost:5000";
 
 const tipos = [
     {
@@ -31,7 +35,7 @@ const tipos = [
       label: "Mejora"
     }
   ]
-  
+
 const severidades = [
     {
       value: "alta",
@@ -212,7 +216,7 @@ class VisualizarTicket extends Component {
             .then(response => {
                 console.log("Proyectos!: ")
                 console.log(response);
-                if (response) {                    
+                if (response) {
                     this.setState({proyectos: response})
                 }
             });
@@ -230,7 +234,7 @@ class VisualizarTicket extends Component {
         this.requester.put('/tickets/' + this.state.ticket.id, this.state.ticket)
         .then(response => {
             if (response.ok){
-    
+
                 this.props.history.push({
                     pathname: `/soporte/`
                 });
@@ -257,7 +261,7 @@ class VisualizarTicket extends Component {
 
     componentDidMount() {
         let id_ticket = this.props.match.params.id_ticket;
-        
+
         this.requester.get('/clientes')
         .then(response => {
           if (response.ok){
@@ -344,7 +348,7 @@ class VisualizarTicket extends Component {
                     </MenuItem>
                     ))}
                     </TextField>
-                </Grid>                
+                </Grid>
 
                 <Grid item sm={6} md={6} xl={6} lg={4} xs={6}>
                     <TextField id="severidad" fullWidth name="severidad" label="Severidad" variant="outlined" select value={this.state.ticket.severidad} onChange={this.handleChangeSeveridad}>
@@ -355,7 +359,7 @@ class VisualizarTicket extends Component {
                     ))}
                     </TextField>
                 </Grid>
-                
+
                 <Grid item sm={6} md={6} xl={6} lg={6} xs={6}>
                     <TextField id="cliente" fullWidth name="cliente" variant="outlined" select label="Cliente" value={this.state.ticket.cliente.id} onChange={this.handleChangeCliente}>
                     {this.state.clientes.map((option) => (
@@ -365,7 +369,7 @@ class VisualizarTicket extends Component {
                     ))}
                     </TextField>
                 </Grid>
-                
+
                 <Grid item sm={6} md={6} xl={6} lg={6} xs={6}>
                     <TextField id="responsable" fullWidth name="responsable" variant="outlined" select label="Responsable" value={this.state.ticket.legajo_responsable} onChange={this.handleChangeResponsable}>
                     {this.state.responsables.map((option) => (
@@ -378,7 +382,7 @@ class VisualizarTicket extends Component {
                 <Grid item sm={6} md={6} xl={6} lg={6} xs={6}>
                     <TextField id="fecha_creacion" fullWidth disabled value={this.state.ticket.fecha_creacion} variant="outlined" name="fecha_creacion" label="Fecha de creación" />
                 </Grid>
-                
+
                 <Grid item sm={6} md={6} xl={6} lg={6} xs={6}>
                     <TextField id="fecha_ultima_actualizacion" fullWidth disabled value={this.state.ticket.fecha_ultima_actualizacion} variant="outlined" name="fecha_ultima_actualizacion" label="Fecha de última actualización"/>
                 </Grid>
@@ -386,7 +390,7 @@ class VisualizarTicket extends Component {
                 <Grid item xl={12} lg={12}>
                   <TextField id="fecha_limite" disabled fullWidth value={this.state.ticket.fecha_limite} variant="outlined" name="fecha_limite" label="Fecha límite"/>
                 </Grid>
-                
+
                 {this.state.ticket.fecha_finalizacion!==null
                     ?<Grid item sm={6} md={6} xl={6} lg={6} xs={6}>
                     <TextField id="fecha_finalizacion" fullWidth disabled value={this.state.ticket.fecha_finalizacion} variant="outlined" name="fecha_finalizacion" label="Fecha de finalización"/>
@@ -402,7 +406,7 @@ class VisualizarTicket extends Component {
                 <Grid item sm={12} md={12} xl={12} lg={12} xs={12}>
                     <TextField id="descripcion" label="Descripcion" fullWidth value={this.state.ticket.descripcion} name="descripcion" multiline rows={8} variant="outlined" onChange={this.handleChangeDescripcion}/>
                 </Grid>
-                
+
                 <Grid item sm={4} md={4} xl={4} lg={4} xs={4}>
                   <div class="centrado">
                     <Button variant="contained" color="primary" onClick={this.crearTarea}>
@@ -418,7 +422,7 @@ class VisualizarTicket extends Component {
                     </Button>
                   </div>
                 </Grid>
-                
+
               </Grid>
               </form>
               <Dialog open={this.state.modal} onClose={this.handleClose} aria-labelledby="form-dialog-title">
@@ -457,7 +461,7 @@ class VisualizarTicket extends Component {
                       */}
                       <Grid item sm={12} md={12} xl={12} lg={12} xs={12}>
                         <TextField id="descripcion" label="Descripcion" fullWidth value={this.state.tarea.descripcion} name="descripcion" multiline rows={8} variant="outlined" onChange={this.handleChangeDescripcionTarea}/>
-                      </Grid>                   
+                      </Grid>
                   </Grid>
                   </form>
                 </DialogContent>
@@ -470,9 +474,9 @@ class VisualizarTicket extends Component {
                   </Button>
                 </DialogActions>
               </Dialog>
-              
+
             </div>
-            
+
         )
     }
 

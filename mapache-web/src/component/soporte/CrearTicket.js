@@ -1,16 +1,22 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
+
 import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
-import Requester from "../../communication/Requester";
 import Grid from '@material-ui/core/Grid';
+
+import SaveIcon from '@material-ui/icons/Save';
+import BackspaceIcon from '@material-ui/icons/Backspace';
+
+import Requester from "../../communication/Requester";
 
 import "../../assets/css/component/soporte/Ticket.css";
 
-const mapacheSoporteBaseUrl = "https://psa-api-support.herokuapp.com";
-//const mapacheSoporteBaseUrl = "http://localhost:5000";
+
 const mapacheRecursosBaseUrl = "https://mapache-recursos.herokuapp.com"
+const mapacheSoporteBaseUrl = "https://psa-api-support.herokuapp.com";
+// const mapacheSoporteBaseUrl = "http://localhost:5000";
 
 const tipos = [
   {
@@ -43,7 +49,7 @@ const severidades = [
 ]
 
 class CrearTicket extends Component {
-  
+
   constructor(props){
     super(props);
 
@@ -116,12 +122,10 @@ class CrearTicket extends Component {
     });
   }
 
-
-
   componentDidMount() {
         this.requester.get('/clientes')
         .then(response => {
-          if (response.ok){
+          if (response.ok) {
               return response.json();
           } else {
               console.log("Error al consultar ticket con id: ");
@@ -155,7 +159,7 @@ class CrearTicket extends Component {
     }
 
 render() {
-    return (  
+    return (
       <div class='form-crear-ticket'>
         <form noValidate autoComplete="off" onSubmit={this.handleSubmit}>
         <Grid container spacing={3} direction="row" justify="flex-start" alignItems="flex-start">
@@ -193,7 +197,7 @@ render() {
               <TextField id="pasos" fullWidth variant="outlined" name="pasos" label="Pasos para reproducir" style={{width: '600px'}} multiline rows={6} onChange={this.handleChangePasos}/>
             </Grid>
           : null}
-          
+
           <br/>
           <Grid item lg={6} xl={6}>
             <TextField id="severidad" fullWidth name="severidad" variant="outlined" select label="Severidad" value={this.state.severidad} onChange={this.handleChangeSeveridad}>
@@ -216,16 +220,21 @@ render() {
           <Grid item sm={12} md={12} xl={12} lg={12} xs={12}>
             <TextField id="descripcion" name="descripcion" label="Descripcion" fullWidth multiline rows={8} variant="outlined" onChange={this.handleChangeDescripcion}/>
           </Grid>
-          <Grid item sm={12} md={12} xl={12} lg={12} xs={12}>
-          <div class="centrado">
-          <Button variant="contained" color="primary" type="submit">
-            Agregar
-          </Button>
-          </div>
+          <Grid
+              container
+              direction="row"
+              justify="space-evenly"
+              alignItems="center">
+            <Button variant="contained" color="primary" type="submit" startIcon={<SaveIcon />}>
+                Agregar
+            </Button>
+            <Button variant="contained" onClick={() => {this.props.history.push({ pathname: `/soporte` })}} startIcon={<BackspaceIcon />}>
+                Cancelar
+            </Button>
           </Grid>
           </Grid>
         </form>
-        
+
       </div>
     );
   }
@@ -233,8 +242,8 @@ render() {
 
 
 export default withRouter(CrearTicket);
-/*
 
+/*
 const tiposDeTicket = [
     {
         value: 'error',

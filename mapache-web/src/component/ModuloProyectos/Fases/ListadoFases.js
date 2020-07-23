@@ -108,7 +108,7 @@ class ListadoFases extends Component {
                                         <Form.Group as={Col}>
                                             <Form.Label>Nombre</Form.Label>
                                             <Form.Control
-                                                autoComplete="off"
+                                                required autoComplete="off"
                                                 type="text" name="nombre"
                                                 value = {nombre}
                                                 onChange={this.cambioFase}

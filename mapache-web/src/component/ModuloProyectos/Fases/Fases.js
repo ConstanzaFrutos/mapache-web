@@ -15,9 +15,10 @@ class Fases extends Component {
             fases : [],
             nuevaFase : this.estadoInicial
         };
+        this.cambioFase = this.cambioFase.bind(this);
     }
 
-    estadoInicial = {nombre: '',fechaDeInicio: ''};
+    estadoInicial = {nombre: '',fechaDeInicio: '0000-00-00'};
 
     obtenerFases(){
         const proyectoId = +this.props.match.params.id;
@@ -38,30 +39,21 @@ class Fases extends Component {
         })();
     }
 
-    componentDidMount() {
-        this.obtenerFases()
-    }
-
-    cambioFase = event => {
-        const aux = {[event.target.name]: event.target.value};
-        this.setState({
-            nuevaFase : aux
-        });
-    }
-
-    crearFase = event => {
+    actualizarFase(event, fase) {
         event.preventDefault();
-        const fase = {
-            nombre: this.state.nuevaFase.nombre,
-        };
         const proyectoId = +this.props.match.params.id;
+        const aux = {
+            id : fase.id,
+            nombre : fase.nombre,
+            fechaDeInicio: fase.fechaDeInicio
+        };
         (async() => {
             try {
-                await axios.post(URL+proyectoId+'/fases', fase)
-                    .then(respuesta => {
-                        if(respuesta.data){
-                            this.setState({nuevaFase: this.estadoInicial});
-                            alert("La fase se creo exitosamente");
+                axios.put(URL+proyectoId+'/fases/'+fase.id, aux)
+                    .then(respuesta=> {
+                        if(respuesta.data != null){
+                            alert("La fase fue actualizada correctamente");
+                            this.obtenerFases();
                         }
                     })
             } catch (err) {
@@ -72,7 +64,91 @@ class Fases extends Component {
                 alert(mensaje);
             }
         })();
-        this.obtenerFases();
+    };
+
+    componentDidMount() {
+        this.obtenerFases()
+    }
+
+    cambioFase = event => {
+        let copia = Object.assign({}, this.state.nuevaFase);
+        if(event.target.name === "nombre"){
+            copia.nombre = event.target.value;
+        }
+        if(event.target.name === "fechaDeInicio"){
+            copia.fechaDeInicio = event.target.value;
+        }
+        this.setState({
+            nuevaFase : copia
+        });
+    }
+
+    crearFase = event => {
+        event.preventDefault();
+        const fase = {
+            nombre: this.state.nuevaFase.nombre,
+            fechaDeInicio : this.state.nuevaFase.fechaDeInicio
+        };
+        const proyectoId = +this.props.match.params.id;
+        (async() => {
+            try {
+                await axios.post(URL+proyectoId+'/fases', fase)
+                    .then(respuesta => {
+                        if(respuesta.data){
+                            this.setState({nuevaFase: this.estadoInicial});
+                            alert("La fase se creo exitosamente");
+                            this.obtenerFases();
+                        }
+                    })
+            } catch (err) {
+                let mensaje = "Error: " + err.response.status;
+                if(err.response.message){
+                    mensaje += ': ' + err.response.message;
+                }
+                alert(mensaje);
+            }
+        })();
+    }
+
+    eliminarFase = (faseId) => {
+        const proyectoId = +this.props.match.params.id;
+        (async() => {
+            try {
+                axios.delete(URL+proyectoId+'/fases/'+faseId)
+                    .then(respuesta => {
+                        if(respuesta.data != null){
+                            alert("La fase fue eliminada correctamente");
+                            this.obtenerFases();
+                        }
+                    });
+            } catch (err) {
+                let mensaje = "Error: " + err.response.status;
+                if(err.response.message){
+                    mensaje += ': ' + err.response.message;
+                }
+                alert(mensaje);
+            }
+        })();
+    }
+
+    cambioFaseCreada(event, id) {
+        var pos = -1;
+        for(var i = 0; i < this.state.fases.length; ++i) {
+            if(this.state.fases[i].id === id) {
+                pos = i;
+            }
+        }
+        if(pos === -1){return;}
+        var copia = this.state.fases.slice();
+        if(event.target.name === "nombre"){
+            copia[pos].nombre = event.target.value;
+        }
+        if(event.target.name === "fechaDeInicio"){
+            copia[pos].fechaDeInicio = event.target.value;
+        }
+        this.setState({
+            fases : copia
+        });
     }
 
     render() {
@@ -88,7 +164,7 @@ class Fases extends Component {
                                 </tr> :
                                 this.state.fases.map((fase) => (
                                         <Card>
-                                            <Form id="formularioFaseEditar">
+                                            <Form id="formularioFaseEditar" onSubmit={(e) => {this.actualizarFase(e, fase)}}>
                                                 <Card.Header>{fase.nombre}</Card.Header>
                                                 <Card.Body>
                                                     <Form.Group as={Col}>
@@ -96,12 +172,18 @@ class Fases extends Component {
                                                         <Form.Control
                                                             autoComplete="off"
                                                             type="date" name="fechaDeInicio"
-                                                            value={fase.fechaDeInicio}
+                                                            value={fase.fechaDeInicio ? fase.fechaDeInicio.split('T')[0] : '0000-00-00'}
+                                                            onChange={(e) => {this.cambioFaseCreada(e, fase.id)}}
                                                         />
                                                     </Form.Group>
                                                 </Card.Body>
                                                 <Card.Footer>
-                                                    <Button>Actualizar</Button>
+                                                    <Button variant="success" type="submit">
+                                                        Actualizar
+                                                    </Button>
+                                                    <Button onClick={this.eliminarFase.bind(this,fase.id)}>
+                                                        Delete
+                                                    </Button>
                                                 </Card.Footer>
                                             </Form>
                                         </Card>

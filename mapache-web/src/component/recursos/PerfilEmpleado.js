@@ -9,6 +9,7 @@ import Requester from "../../communication/Requester";
 import TabInformacion from './TabInformacion';
 import TabCargarHoras from './TabCargarHoras';
 import TabTareas from './TabTareas';
+import TabProyectos from './TabProyectos';
 
 const mapacheRecursosBaseUrl = "https://mapache-recursos.herokuapp.com";
 //const mapacheRecursosBaseUrl = "http://0.0.0.0:8080";
@@ -23,17 +24,9 @@ class PerfilEmpleado extends Component {
         this.state = {
             empleado: {}
         }
-
-        this.procesarInfo = this.procesarInfo.bind(this);
     }
 
     componentDidMount() {
-        if (this.props.location.state.modo === "info") {
-            this.procesarInfo();
-        } 
-    }
-    
-    procesarInfo() {
         let legajo = this.props.match.params.legajo;
         this.requester.get('/empleados/' + legajo)
             .then(response => {
@@ -62,6 +55,8 @@ class PerfilEmpleado extends Component {
             tab = <TabCargarHoras legajo={this.state.empleado.legajo}/>
         } else if (this.props.location.state.tab === "tareas") {
             tab = <TabTareas legajo={this.state.empleado.legajo}/>
+        } else if (this.props.location.state.tab === "proyectos") {
+            tab = <TabProyectos legajo={this.state.empleado.legajo}/>
         }
 
         return (

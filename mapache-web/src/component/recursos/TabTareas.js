@@ -135,9 +135,15 @@ const columns = [
 
 const data = [
     {
-        nombre: "Tarea 1",
-        proyecto: "Proyecto 1",
+        nombre: "Consultar tickets resueltos",
+        proyecto: "ERP Cloud",
         progreso: 20,
+        estado: "En curso"
+    },
+    {
+        nombre: "Ingresar datos de facturación",
+        proyecto: "ERP Cloud",
+        progreso: 80,
         estado: "En curso"
     }
 ]

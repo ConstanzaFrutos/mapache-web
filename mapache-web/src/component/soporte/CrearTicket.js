@@ -16,7 +16,6 @@ import "../../assets/css/component/soporte/Ticket.css";
 
 const mapacheRecursosBaseUrl = "https://mapache-recursos.herokuapp.com"
 const mapacheSoporteBaseUrl = "https://psa-api-support.herokuapp.com";
-// const mapacheSoporteBaseUrl = "http://localhost:5000";
 
 const tipos = [
   {

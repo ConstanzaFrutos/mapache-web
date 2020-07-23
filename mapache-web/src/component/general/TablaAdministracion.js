@@ -40,7 +40,7 @@ export class TablaAdministracion extends Component {
 
         let tabla = null;
 
-        let icons = { 
+        let icons = {
             Add: Add,
             Edit: this.props.editIcon,
             Delete: Delete,
@@ -63,7 +63,7 @@ export class TablaAdministracion extends Component {
         console.log('acciones')
         console.log(this.props.editable)
         console.log(this.props.editable===undefined)
-        
+
         tabla = <MaterialTable
                     icons={ icons }
                     style={ {width:"auto"} }
@@ -73,7 +73,7 @@ export class TablaAdministracion extends Component {
                     editable= { this.props.editable===undefined? ({onRowAdd: (newData) =>
                         new Promise((resolve) => {
                             resolve();
-                            this.props.handleAdd(newData);  
+                            this.props.handleAdd(newData);
                         }),
                         onRowUpdate: (newData, oldData) =>
                         new Promise((resolve) => {
@@ -91,10 +91,26 @@ export class TablaAdministracion extends Component {
                         actionsColumnIndex: -1
                     }}
                     actions = { this.props.actions }
+                    localization={{
+                        body: {
+                          emptyDataSourceMessage: 'No hay ningún registro para mostrar'
+                        },
+                        toolbar: {
+                            searchPlaceholder: 'Buscar...'
+                        },
+                        pagination: {
+                          labelRowsSelect: 'registros',
+                          labelDisplayedRows: '{count} de {from}-{to}',
+                          firstTooltip: 'Primera página',
+                          previousTooltip: 'Página anterior',
+                          nextTooltip: 'Página siguiente',
+                          lastTooltip: 'Última página'
+                        }
+                    }}
                 >
                 </MaterialTable>
-        
-        
+
+
         return (
             <div class="center-v">
                 <div className="tabla">

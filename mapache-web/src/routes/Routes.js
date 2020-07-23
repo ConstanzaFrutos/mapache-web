@@ -20,14 +20,14 @@ class Routes extends Component {
                 <NavBar />
                 <Route exact path={"/"} component={Home} />
                 <Route exact path={"/empleados"} component={ EmpleadosScreen }/>
-                <Route exact path={"/proyectos"} component={ ProyectosScreen }/>
-                <Route exact path={"/soporte"} component={ SoporteScreen }/>
-                <Route exact path={"/clientes"} component={ ClientesScreen }/>
-                <Route exact path={"/proyectos/edit/:id"} component={ EditorProyectosScreen }/>
                 <Route exact path={`/empleados/:legajo`} component={ PerfilEmpleado }/>
+                <Route exact path={"/proyectos"} component={ ProyectosScreen }/>
+                <Route exact path={"/proyectos/edit/:id"} component={ EditorProyectosScreen }/>
+                <Route exact path={"/soporte"} component={ SoporteScreen }/>
                 <Route exact path={`/soporte/tickets/nuevo`} component={ CrearTicket }/>
-                <Route exact path={[`/clientes/nuevo`,`/clientes/:id_cliente`]} component={ InfoCliente }/>
                 <Route exact path={`/tickets/:id_ticket`} component={ EditarTicket }/>
+                <Route exact path={"/clientes"} component={ ClientesScreen }/>
+                <Route exact path={[`/clientes/nuevo`,`/clientes/:id_cliente`]} component={ InfoCliente }/>
             </Router>
         )
     }

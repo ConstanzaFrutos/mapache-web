@@ -10,6 +10,9 @@ import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
+import AssignmentIcon from '@material-ui/icons/Assignment';
+import SaveIcon from '@material-ui/icons/Save';
+import BackspaceIcon from '@material-ui/icons/Backspace';
 
 import Requester from "../../communication/Requester";
 
@@ -19,7 +22,6 @@ import "../../assets/css/component/recursos/PerfilEmpleado.css";
 const mapacheRecursosBaseUrl = "https://mapache-recursos.herokuapp.com"
 const mapacheProyectosBaseUrl = "https://mapache-proyectos.herokuapp.com"
 const mapacheSoporteBaseUrl = "https://psa-api-support.herokuapp.com";
-// const mapacheSoporteBaseUrl = "http://localhost:5000";
 
 const tipos = [
     {
@@ -326,104 +328,104 @@ class VisualizarTicket extends Component {
               <h2>Editar Ticket</h2>
             </div>
             <br/>
-            <form noValidate autoComplete="off" onSubmit={this.handleSubmit}>
-             <Grid container spacing={3} direction="row" justify="flex-start" alignItems="flex-start">
-                <Grid item lg={12} xl={12}>
-                    <TextField id="nombre" fullWidth value={this.state.ticket.nombre} variant="outlined" name="nombre" label="Nombre" onChange={this.handleChangeNombre}/>
-                </Grid>
-                <Grid item sm={6} md={6} xl={6} lg={4} xs={6}>
-                    <TextField id="tipo" fullWidth name="tipo" variant="outlined" select label="Tipo" value={this.state.ticket.tipo} onChange={this.handleChangeTipo}>
-                    {tipos.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                        {option.label}
-                    </MenuItem>
-                    ))}
-                    </TextField>
-                </Grid>
-                <Grid item sm={6} md={6} xl={6} lg={4} xs={6}>
-                    <TextField id="estado" fullWidth  name="estado" variant="outlined" select label="Estado" value={this.state.ticket.estado} onChange={this.handleChangeEstado}>
-                    {estados.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                        {option.label}
-                    </MenuItem>
-                    ))}
-                    </TextField>
-                </Grid>
-
-                <Grid item sm={6} md={6} xl={6} lg={4} xs={6}>
-                    <TextField id="severidad" fullWidth name="severidad" label="Severidad" variant="outlined" select value={this.state.ticket.severidad} onChange={this.handleChangeSeveridad}>
-                    {severidades.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                        {option.label}
-                    </MenuItem>
-                    ))}
-                    </TextField>
-                </Grid>
-
-                <Grid item sm={6} md={6} xl={6} lg={6} xs={6}>
-                    <TextField id="cliente" fullWidth name="cliente" variant="outlined" select label="Cliente" value={this.state.ticket.cliente.id} onChange={this.handleChangeCliente}>
-                    {this.state.clientes.map((option) => (
-                    <MenuItem key={option.id} value={option.id}>
-                        {option.razon_social}
-                    </MenuItem>
-                    ))}
-                    </TextField>
-                </Grid>
-
-                <Grid item sm={6} md={6} xl={6} lg={6} xs={6}>
-                    <TextField id="responsable" fullWidth name="responsable" variant="outlined" select label="Responsable" value={this.state.ticket.legajo_responsable} onChange={this.handleChangeResponsable}>
-                    {this.state.responsables.map((option) => (
-                    <MenuItem key={option.legajo} value={option.legajo}>
-                        {option.nombre + " " + option.apellido}
-                    </MenuItem>
-                    ))}
-                    </TextField>
-                </Grid>
-                <Grid item sm={6} md={6} xl={6} lg={6} xs={6}>
-                    <TextField id="fecha_creacion" fullWidth disabled value={this.state.ticket.fecha_creacion} variant="outlined" name="fecha_creacion" label="Fecha de creación" />
-                </Grid>
-
-                <Grid item sm={6} md={6} xl={6} lg={6} xs={6}>
-                    <TextField id="fecha_ultima_actualizacion" fullWidth disabled value={this.state.ticket.fecha_ultima_actualizacion} variant="outlined" name="fecha_ultima_actualizacion" label="Fecha de última actualización"/>
-                </Grid>
-
-                <Grid item xl={12} lg={12}>
-                  <TextField id="fecha_limite" disabled fullWidth value={this.state.ticket.fecha_limite} variant="outlined" name="fecha_limite" label="Fecha límite"/>
-                </Grid>
-
-                {this.state.ticket.fecha_finalizacion!==null
-                    ?<Grid item sm={6} md={6} xl={6} lg={6} xs={6}>
-                    <TextField id="fecha_finalizacion" fullWidth disabled value={this.state.ticket.fecha_finalizacion} variant="outlined" name="fecha_finalizacion" label="Fecha de finalización"/>
+            <form autoComplete="off" onSubmit={this.handleSubmit}>
+                <Grid container spacing={3} direction="row" justify="flex-start" alignItems="flex-start">
+                    <Grid item lg={12} xl={12}>
+                        <TextField id="nombre" fullWidth value={this.state.ticket.nombre} variant="outlined" name="nombre" label="Nombre"
+                        disabled={this.isFormDisabled()} onChange={this.handleChangeNombre}/>
                     </Grid>
-                : null}
-
-                {this.state.ticket.tipo==='error'
-                    ?<Grid item sm={12} md={12} xl={12} lg={12} xs={12}>
-                    <TextField id="pasos" variant="outlined" fullWidth label="Pasos" name="pasos" value={this.state.ticket.pasos} multiline rows={6} onChange={this.handleChangePasos}/>
+                    <Grid item sm={6} md={6} xl={6} lg={4} xs={6}>
+                        <TextField id="tipo" fullWidth name="tipo" variant="outlined" select label="Tipo" value={this.state.ticket.tipo} disabled={this.isFormDisabled()} onChange={this.handleChangeTipo}>
+                        {tipos.map((option) => (
+                        <MenuItem key={option.value} value={option.value}>
+                            {option.label}
+                        </MenuItem>
+                        ))}
+                        </TextField>
                     </Grid>
-                : ''}
+                    <Grid item sm={6} md={6} xl={6} lg={4} xs={6}>
+                        <TextField id="estado" fullWidth  name="estado" variant="outlined" select label="Estado" value={this.state.ticket.estado} disabled={this.isFormDisabled()} onChange={this.handleChangeEstado}>
+                        {estados.map((option) => (
+                        <MenuItem key={option.value} value={option.value}>
+                            {option.label}
+                        </MenuItem>
+                        ))}
+                        </TextField>
+                    </Grid>
 
-                <Grid item sm={12} md={12} xl={12} lg={12} xs={12}>
-                    <TextField id="descripcion" label="Descripcion" fullWidth value={this.state.ticket.descripcion} name="descripcion" multiline rows={8} variant="outlined" onChange={this.handleChangeDescripcion}/>
-                </Grid>
+                    <Grid item sm={6} md={6} xl={6} lg={4} xs={6}>
+                        <TextField id="severidad" fullWidth name="severidad" label="Severidad" variant="outlined" select value={this.state.ticket.severidad} disabled={this.isFormDisabled()} onChange={this.handleChangeSeveridad}>
+                        {severidades.map((option) => (
+                        <MenuItem key={option.value} value={option.value}>
+                            {option.label}
+                        </MenuItem>
+                        ))}
+                        </TextField>
+                    </Grid>
 
-                <Grid item sm={4} md={4} xl={4} lg={4} xs={4}>
-                  <div class="centrado">
-                    <Button variant="contained" color="primary" onClick={this.crearTarea}>
-                        Crear Tarea
-                    </Button>
-                  </div>
-                </Grid>
-                <Grid item sm={4} md={4} xl={4} lg={4} xs={4}></Grid>
-                <Grid item sm={4} md={4} xl={4} lg={4} xs={4}>
-                  <div class="centrado">
-                    <Button variant="contained" color="primary" type="submit">
-                        Guardar
-                    </Button>
-                  </div>
-                </Grid>
+                    <Grid item sm={6} md={6} xl={6} lg={6} xs={6}>
+                        <TextField id="cliente" fullWidth name="cliente" variant="outlined" select label="Cliente" value={this.state.ticket.cliente.id} disabled={this.isFormDisabled()} onChange={this.handleChangeCliente}>
+                        {this.state.clientes.map((option) => (
+                        <MenuItem key={option.id} value={option.id}>
+                            {option.razon_social}
+                        </MenuItem>
+                        ))}
+                        </TextField>
+                    </Grid>
 
-              </Grid>
+                    <Grid item sm={6} md={6} xl={6} lg={6} xs={6}>
+                        <TextField id="responsable" fullWidth name="responsable" variant="outlined" select label="Responsable" value={this.state.ticket.legajo_responsable} disabled={this.isFormDisabled()} onChange={this.handleChangeResponsable}>
+                        {this.state.responsables.map((option) => (
+                        <MenuItem key={option.legajo} value={option.legajo}>
+                            {option.nombre + " " + option.apellido}
+                        </MenuItem>
+                        ))}
+                        </TextField>
+                    </Grid>
+                    <Grid item sm={6} md={6} xl={6} lg={6} xs={6}>
+                        <TextField id="fecha_creacion" fullWidth disabled value={this.state.ticket.fecha_creacion} variant="outlined" name="fecha_creacion" label="Fecha de creación" />
+                    </Grid>
+
+                    <Grid item sm={6} md={6} xl={6} lg={6} xs={6}>
+                        <TextField id="fecha_ultima_actualizacion" fullWidth disabled value={this.state.ticket.fecha_ultima_actualizacion} variant="outlined" name="fecha_ultima_actualizacion" label="Fecha de última actualización"/>
+                    </Grid>
+
+                    <Grid item xl={12} lg={12}>
+                    <TextField id="fecha_limite" disabled fullWidth value={this.state.ticket.fecha_limite} variant="outlined" name="fecha_limite" label="Fecha límite"/>
+                    </Grid>
+
+                    {this.state.ticket.fecha_finalizacion!==null
+                        ?<Grid item sm={6} md={6} xl={6} lg={6} xs={6}>
+                        <TextField id="fecha_finalizacion" fullWidth disabled value={this.state.ticket.fecha_finalizacion} variant="outlined" name="fecha_finalizacion" label="Fecha de finalización"/>
+                        </Grid>
+                    : null}
+
+                    {this.state.ticket.tipo==='error'
+                        ?<Grid item sm={12} md={12} xl={12} lg={12} xs={12}>
+                        <TextField id="pasos" variant="outlined" fullWidth label="Pasos" name="pasos" value={this.state.ticket.pasos} multiline rows={6} onChange={this.handleChangePasos}/>
+                        </Grid>
+                    : ''}
+
+                    <Grid item sm={12} md={12} xl={12} lg={12} xs={12}>
+                        <TextField id="descripcion" label="Descripcion" fullWidth value={this.state.ticket.descripcion} name="descripcion" multiline rows={8} variant="outlined" disabled={this.isFormDisabled()} onChange={this.handleChangeDescripcion}/>
+                    </Grid>
+
+                    <Grid
+                        container
+                        direction="row"
+                        justify="space-evenly"
+                        alignItems="center">
+                        <Button variant="contained"color="secondary" disabled={this.isFormDisabled()} onClick={this.crearTarea} startIcon={<AssignmentIcon />}>
+                            Crear Tarea
+                        </Button>
+                        <Button variant="contained" color="primary" type="submit" disabled={this.isFormDisabled()} startIcon={<SaveIcon />}>
+                            Guardar
+                        </Button>
+                        <Button variant="contained" onClick={() => {this.props.history.push({ pathname: `/soporte` })}} startIcon={<BackspaceIcon />}>
+                            Cancelar
+                        </Button>
+                    </Grid>
+                </Grid>
               </form>
               <Dialog open={this.state.modal} onClose={this.handleClose} aria-labelledby="form-dialog-title">
                 <DialogTitle id="form-dialog-title"> <h2 class="centrado"> Crear tarea </h2></DialogTitle>
@@ -480,6 +482,10 @@ class VisualizarTicket extends Component {
         )
     }
 
+
+    isFormDisabled() {
+        return this.state.ticket.estado === "cerrado";
+    }
 }
 
 export default withRouter(VisualizarTicket);

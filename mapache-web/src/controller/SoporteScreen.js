@@ -12,7 +12,6 @@ import "../assets/css/controller/SoporteScreen.css";
 
 
 const mapacheSoporteBaseUrl = "https://psa-api-support.herokuapp.com";
-// const mapacheSoporteBaseUrl = "http://localhost:5000";
 
 class SoporteScreen extends Component {
 

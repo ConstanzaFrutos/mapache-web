@@ -12,9 +12,10 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-//const mapacheSoporteBaseUrl = "https://psa-api-support.herokuapp.com";
-const mapacheSoporteBaseUrl = "http://localhost:5000";
+const mapacheSoporteBaseUrl = "https://psa-api-support.herokuapp.com";
+//const mapacheSoporteBaseUrl = "http://localhost:5000";
 const mapacheRecursosBaseUrl = "https://mapache-recursos.herokuapp.com"
+const mapacheProyectosBaseUrl = "https://mapache-proyectos.herokuapp.com"
 
 const tipos = [
     {
@@ -65,7 +66,26 @@ const estados = [
         label: 'Cerrado'
     }
 ]
-
+/*
+const estados_tareas = [
+  {
+      value: 'Por hacer',
+      label: 'Por hacer'
+  },
+  {
+      value: 'En progreso',
+      label: 'En Progreso'
+  },
+  {
+      value: 'Bloqueada',
+      label: 'Bloqueada'
+  },
+  {
+      value: 'Finalizada',
+      label: 'Finalizada'
+  }
+]
+*/
 class VisualizarTicket extends Component {
 
     constructor(props) {
@@ -73,9 +93,17 @@ class VisualizarTicket extends Component {
 
         this.requester = new Requester(mapacheSoporteBaseUrl);
         this.requesterRecursos = new Requester(mapacheRecursosBaseUrl);
+        this.requesterProyectos = new Requester(mapacheProyectosBaseUrl)
 
         this.state = {
             "clientes": [],
+            "proyectos": [],
+            "tarea": {
+              "nombre": "",
+              "id_proyecto": "",
+              "prioridad": "",
+              "descripcion": ""
+            },
             "responsables": [{"legajo": "-1", "nombre": "Ninguno", "apellido": ""}],
             "modal": false,
             "ticket": {
@@ -141,10 +169,54 @@ class VisualizarTicket extends Component {
         this.setState({ ticket: tk });
       }
 
+      handleChangeNombreTarea = event => {
+        let tarea = this.state.tarea
+        tarea.nombre = event.target.value
+        this.setState({ tarea: tarea })
+      }
+
+      handleChangePrioridad = event => {
+        let tarea = this.state.tarea
+        tarea.prioridad = event.target.value
+        this.setState({ tarea: tarea })
+      }
+
+
+      handleChangeDescripcionTarea = event => {
+        let tarea = this.state.tarea
+        tarea.descripcion = event.target.value
+        this.setState({ tarea: tarea })
+      }
+
+
+      handleChangeProyecto = event => {
+        let tarea = this.state.tarea
+        tarea.id_proyecto = event.target.value
+        this.setState({ tarea: tarea })
+      }
+
+
 
       crearTarea = event => {
         console.log('Creando tarea');
         this.setState({modal: true});
+
+        this.requesterProyectos.get('/proyectos')
+            .then(response => {
+              if (response.ok){
+                  return response.json();
+              } else {
+                  console.log("Error al consultar ticket con id: ");
+              }
+            })
+            .then(response => {
+                console.log("Proyectos!: ")
+                console.log(response);
+                if (response) {                    
+                    this.setState({proyectos: response})
+                }
+            });
+
       }
 
       handleClose = event => {
@@ -164,6 +236,21 @@ class VisualizarTicket extends Component {
                 });
             } else {
                 console.log("al crear el ticket");
+            }
+        });
+      }
+
+      submitTarea = event => {
+        event.preventDefault();
+        console.log(this.state.tarea)
+        this.requesterProyectos.put('/proyectos/' + this.state.tarea.id_proyecto + '/tareas', this.state.tarea)
+        .then(response => {
+            if (response.ok){
+                this.props.history.push({
+                    pathname: `/soporte`
+                });
+            } else {
+                console.log("Error al crear el ticket");
             }
         });
       }
@@ -335,29 +422,55 @@ class VisualizarTicket extends Component {
               </Grid>
               </form>
               <Dialog open={this.state.modal} onClose={this.handleClose} aria-labelledby="form-dialog-title">
-                <DialogTitle id="form-dialog-title">Crear tarea</DialogTitle>
+                <DialogTitle id="form-dialog-title"> <h2 class="centrado"> Crear tarea </h2></DialogTitle>
                 <DialogContent>
                   <DialogContentText>
-                    Usted creara una tarea asociada a este ticket.
+                    Se creara una tarea de tipo bug en el proyecto indicado.
                   </DialogContentText>
-                  <TextField
-                    autoFocus
-                    margin="dense"
-                    id="name"
-                    label="Email Address"
-                    type="email"
-                    fullWidth
-                  />
+                  <form noValidate autoComplete="off" onSubmit={this.submitTarea}>
+                    <Grid container spacing={3} direction="row" justify="flex-start" alignItems="flex-start">
+                      <Grid item lg={12} xl={12} sm={12} md={12} xs={12}>
+                        <TextField id="nombre" fullWidth value={this.state.tarea.nombre} variant="outlined" name="nombre" label="Nombre" onChange={this.handleChangeNombreTarea}/>
+                      </Grid>
+                      <Grid item lg={6} xl={6} sm={6} md={6} xs={6}>
+                        <TextField id="prioridad" fullWidth value={this.state.tarea.prioridad} variant="outlined" name="prioridad" label="Prioridad" onChange={this.handleChangePrioridad}/>
+                      </Grid>
+                      <Grid item sm={6} md={6} xl={6} lg={6} xs={6}>
+                          <TextField id="proyecto" fullWidth name="proyecto" variant="outlined" select label="Proyecto" value={this.state.tarea.id_proyecto} onChange={this.handleChangeProyecto}>
+                          {this.state.proyectos.map((option) => (
+                            <MenuItem key={option.id} value={option.id}>
+                                {option.nombre}
+                            </MenuItem>
+                          ))}
+                          </TextField>
+                      </Grid>
+                      {/*
+                      <Grid item sm={6} md={6} xl={6} lg={4} xs={6}>
+                        <TextField id="estado_tarea" fullWidth  name="estado_tarea" variant="outlined" select label="Estado" value={this.state.tarea.estado} onChange={this.handleChangeEstado}>
+                        {estados_tareas.map((option) => (
+                          <MenuItem key={option.value} value={option.value}>
+                              {option.label}
+                          </MenuItem>
+                        ))}
+                        </TextField>
+                      </Grid>
+                      */}
+                      <Grid item sm={12} md={12} xl={12} lg={12} xs={12}>
+                        <TextField id="descripcion" label="Descripcion" fullWidth value={this.state.tarea.descripcion} name="descripcion" multiline rows={8} variant="outlined" onChange={this.handleChangeDescripcionTarea}/>
+                      </Grid>                   
+                  </Grid>
+                  </form>
                 </DialogContent>
                 <DialogActions>
-                  <Button onClick={this.handleClose} color="primary">
-                    Cancel
+                  <Button  variant="contained" type="submit" onClick={this.submitTarea} color="primary">
+                    Crear
                   </Button>
-                  <Button onClick={this.handleClose} color="primary">
-                    Subscribe
+                  <Button variant="contained" onClick={this.handleClose} color="primary">
+                    Cancelar
                   </Button>
                 </DialogActions>
               </Dialog>
+              
             </div>
             
         )

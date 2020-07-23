@@ -8,8 +8,8 @@ import Grid from '@material-ui/core/Grid';
 
 import "../../assets/css/component/soporte/Ticket.css";
 
-//const mapacheSoporteBaseUrl = "https://psa-api-support.herokuapp.com";
-const mapacheSoporteBaseUrl = "http://localhost:5000";
+const mapacheSoporteBaseUrl = "https://psa-api-support.herokuapp.com";
+//const mapacheSoporteBaseUrl = "http://localhost:5000";
 const mapacheRecursosBaseUrl = "https://mapache-recursos.herokuapp.com"
 
 const tipos = [

@@ -9,8 +9,8 @@ import "../assets/css/controller/SoporteScreen.css";
 
 import InfoOutlined from '@material-ui/icons/InfoOutlined';
 
-//const mapacheSoporteBaseUrl = "https://psa-api-support.herokuapp.com";
-const mapacheSoporteBaseUrl = "http://localhost:5000";
+const mapacheSoporteBaseUrl = "https://psa-api-support.herokuapp.com";
+//const mapacheSoporteBaseUrl = "http://localhost:5000";
 
 class SoporteScreen extends Component {
 

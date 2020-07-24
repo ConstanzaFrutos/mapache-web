@@ -20,7 +20,7 @@ class ListadoFases extends Component {
         this.obtenerFases = this.obtenerFases.bind(this);
     }
 
-    estadoInicial = {nombre: '', fechaDeInicio : '0000-00-00'};
+    estadoInicial = {nombre: ''};
 
     obtenerFases(){
         const proyectoId = +this.props.match.params.id;
@@ -56,8 +56,7 @@ class ListadoFases extends Component {
     crearFase = event => {
         event.preventDefault();
         const fase = {
-            nombre: this.state.nuevaFase.nombre,
-            fechaDeInicio: this.state.nuevaFase.fechaDeInicio
+            nombre: this.state.nuevaFase.nombre
         };
         const proyectoId = +this.props.match.params.id;
         (async() => {

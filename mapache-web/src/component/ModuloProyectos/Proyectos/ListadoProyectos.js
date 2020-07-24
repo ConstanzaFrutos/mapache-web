@@ -38,30 +38,6 @@ export default class ListadoProyectos extends Component {
         this.obtenerProyectos();
     }
 
-    eliminarProyecto = (proyectoId, estado) => {
-        if(estado !== "No iniciado"){
-            alert("Los proyecto ya iniciados no se pueden eliminar");
-            return;
-        }
-        (async() => {
-            try {
-                axios.delete(URL+'proyectos/'+proyectoId)
-                    .then(respuesta => {
-                        if(respuesta.data != null){
-                            alert("El proyecto fue eliminado correctamente");
-                            this.obtenerProyectos();
-                        }
-                    });
-            } catch (err) {
-                let mensaje = "Error: " + err.response.status;
-                if(err.response.message){
-                    mensaje += ': ' + err.response.message;
-                }
-                alert(mensaje);
-            }
-        })();
-    }
-
     definirColor(estado){
         if(estado === "No iniciado"){
             //negro
@@ -114,13 +90,11 @@ export default class ListadoProyectos extends Component {
                                         <td>{proyecto.tipoDeProyecto}</td>
                                         <td>
                                             <ButtonGroup>
-                                                <Link to={"/proyectos/"+proyecto.id}><Button size="sm" variant="outline-primary">
-                                                    Edit
-                                                </Button>
+                                                <Link to={"/proyectos/"+proyecto.id}>
+                                                    <Button size="sm" variant="outline-primary">
+                                                        Abrir
+                                                    </Button>
                                                 </Link>
-                                                <Button size="sm" variant="outline-primary" onClick={this.eliminarProyecto.bind(this,proyecto.id, proyecto.estado)}>
-                                                    Delete
-                                                </Button>
                                             </ButtonGroup>
                                         </td>
                                     </tr>

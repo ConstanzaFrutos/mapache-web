@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {Button, Card, Col, Form} from "react-bootstrap";
+import {Button, Card, Col, Form, Modal} from "react-bootstrap";
 import { withRouter } from 'react-router';
 import axios from 'axios';
 import "../../../assets/css/controller/ProyectosScreen.css";
@@ -27,10 +27,10 @@ class Fase extends Component {
             descripcion: this.state.descripcion,
             fechaDeFinalizacion: this.state.fechaDeFinalizacion
         };
-        if(aux.fechaDeInicio < '0000-00-00'){
+        if(!aux.fechaDeInicio || aux.fechaDeInicio < '0000-00-00'){
             aux.fechaDeInicio = '0000-00-00';
         }
-        if(aux.fechaDeFinalizacion < '0000-00-00'){
+        if(!aux.fechaDeFinalizacion || aux.fechaDeFinalizacion < '0000-00-00'){
             aux.fechaDeFinalizacion = '0000-00-00';
         }
         (async() => {
@@ -73,6 +73,16 @@ class Fase extends Component {
             }
         })();
     }
+
+    abrirConfirm = event => {
+        event.preventDefault();
+        this.setState({confirm : true})
+    }
+
+    cerrarConfirm = () => {
+        this.setState({confirm : false});
+    }
+
     render() {
         const {nombre, fechaDeInicio, fechaDeFinalizacion, descripcion} = this.state;
         return(
@@ -110,12 +120,14 @@ class Fase extends Component {
                         </Form.Group>
                     </Form.Row>
                     <Form.Group as={Col}>
-                        <Form.Label>Descripcion</Form.Label>
+                        <Form.Label>Descripcion (Max 100 caracteres)</Form.Label>
                         <Form.Control
                             autoComplete="off"
                             type="text" name="descripcion"
                             value={descripcion}
                             onChange={this.cambioFase}
+                            as="textarea" rows="2"
+                            maxLength = {100}
                         />
                     </Form.Group>
                 </Card.Body>
@@ -123,9 +135,23 @@ class Fase extends Component {
                     <Button variant="success" type="submit">
                         Actualizar
                     </Button>
-                    <Button onClick={this.eliminarFase.bind(this)}>
+                    <Button onClick={this.abrirConfirm}>
                         Delete
                     </Button>
+                    <Modal show={this.state.confirm} onHide={this.cerrarConfirm}>
+                        <Modal.Header closeButton>
+                            <Modal.Title>Eliminar Fase</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>Desea eliminar esta fase? Una vez eliminada no se puede volver atras</Modal.Body>
+                        <Modal.Footer>
+                            <Button variant="secondary" onClick={this.cerrarConfirm}>
+                                Cancelar
+                            </Button>
+                            <Button variant="danger" onClick={this.eliminarFase.bind(this)}>
+                                Eliminar
+                            </Button>
+                        </Modal.Footer>
+                    </Modal>
                 </Card.Footer>
             </Form>
         );

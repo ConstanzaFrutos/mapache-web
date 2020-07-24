@@ -24,6 +24,7 @@ class ListadoFases extends Component {
 
     obtenerFases(){
         const proyectoId = +this.props.match.params.id;
+        this.setState({fases : []});
         (async() => {
             try {
                 axios.get(URL+proyectoId+'/fases')

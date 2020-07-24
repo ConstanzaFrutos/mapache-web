@@ -62,6 +62,7 @@ class Fase extends Component {
                         if(respuesta.data != null){
                             alert("La fase fue eliminada correctamente");
                             this.props.obtenerFases();
+                            this.setState({confirm : false});
                         }
                     });
             } catch (err) {
@@ -142,7 +143,7 @@ class Fase extends Component {
                         <Modal.Header closeButton>
                             <Modal.Title>Eliminar Fase</Modal.Title>
                         </Modal.Header>
-                        <Modal.Body>Desea eliminar esta fase? Una vez eliminada no se puede volver atras</Modal.Body>
+                        <Modal.Body>Desea eliminar la fase : {this.state.nombre} ? Una vez eliminada no se puede volver atras</Modal.Body>
                         <Modal.Footer>
                             <Button variant="secondary" onClick={this.cerrarConfirm}>
                                 Cancelar

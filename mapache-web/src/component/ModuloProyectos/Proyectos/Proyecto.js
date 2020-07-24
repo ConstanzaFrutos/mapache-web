@@ -16,7 +16,7 @@ class Proyecto extends Component {
     }
 
     estadoInicial = {id:'', nombre:'', tipo:"Implementación", descripcion: '', fechaDeInicio: '',
-        fechaDeFinalizacion: '', estado: 'No iniciado', redirectListado: false, redirectFases: false};
+        fechaDeFinalizacion: '', estado: 'No iniciado', redirectListado: false, redirectFases: false, fases : []};
 
     crearProyecto = event => {
         event.preventDefault();
@@ -40,8 +40,8 @@ class Proyecto extends Component {
                     })
             } catch (err) {
                 let mensaje = "Error: " + err.response.status;
-                if(err.response.message){
-                    mensaje += ': ' + err.response.message;
+                if(err.response.error){
+                    mensaje += ': ' + err.response.error;
                 }
                 alert(mensaje);
             }
@@ -71,7 +71,8 @@ class Proyecto extends Component {
                                     descripcion: respuesta.data.descripcion,
                                     fechaDeInicio: respuesta.data.fechaDeInicio,
                                     fechaDeFinalizacion: respuesta.data.fechaDeFinalizacion,
-                                    estado: respuesta.data.estado
+                                    estado: respuesta.data.estado,
+                                    fases: respuesta.data.fases
                                 });
                             }
                         }).catch((error) => {
@@ -87,7 +88,7 @@ class Proyecto extends Component {
         })();
     }
 
-    actualizarProyecto = event => {
+    actualizarProyecto = (event, listado) => {
         event.preventDefault();
         const proyecto = {
             id: this.state.id,
@@ -100,13 +101,15 @@ class Proyecto extends Component {
         };
         (async() => {
             try {
-                axios.put(URL+"proyectos/"+proyecto.id, proyecto)
+                axios.patch(URL+"proyectos/"+proyecto.id, proyecto)
                     .then(respuesta=> {
                         if(respuesta.data != null){
-                            this.setState(this.estadoInicial);
-                            alert("El proyecto: " + proyecto.nombre+ " se actualizo exitosamente");
-                        } else {
-                            alert("El proyecto no pudo ser actualizado");
+                            if(listado){
+                                alert("El proyecto: " + proyecto.nombre+ " se actualizo exitosamente");
+                                this.setState({redirectListado : true});
+                            } else {
+                                this.setState({redirectFases : true});
+                            }
                         }
                     })
             } catch (err) {
@@ -117,6 +120,7 @@ class Proyecto extends Component {
                 alert(mensaje);
             }
         })();
+        return false;
     };
 
 
@@ -143,14 +147,12 @@ class Proyecto extends Component {
 
     redireccionarListadoActualizar = event => {
         event.preventDefault();
-        this.actualizarProyecto(event);
-        this.setState({redirectListado:true});
+        this.actualizarProyecto(event, true);
     }
 
     redireccionarFase = event => {
         event.preventDefault();
-        this.actualizarProyecto(event);
-        this.setState({redirectFases:true});
+        this.actualizarProyecto(event, false);
     }
 
     abrirConfirm = event => {
@@ -184,9 +186,9 @@ class Proyecto extends Component {
     }
 
     render() {
-        if (this.state.redirectListado === true) {
+        if (this.state.redirectListado) {
             return <Redirect to="/proyectos" />
-        } else if(this.state.redirectFases === true){
+        } else if(this.state.redirectFases){
             return <Redirect to={"/proyectos/" + this.state.id + "/fases"}/>
         }
         const {nombre, tipo, descripcion, fechaDeInicio, fechaDeFinalizacion, estado} = this.state;

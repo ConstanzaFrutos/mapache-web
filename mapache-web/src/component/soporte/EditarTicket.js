@@ -22,6 +22,7 @@ import "../../assets/css/component/recursos/PerfilEmpleado.css";
 const mapacheRecursosBaseUrl = "https://mapache-recursos.herokuapp.com"
 const mapacheProyectosBaseUrl = "https://mapache-proyectos.herokuapp.com"
 const mapacheSoporteBaseUrl = "https://psa-api-support.herokuapp.com";
+//const mapacheSoporteBaseUrl = "http://localhost:5000"
 
 const tipos = [
     {
@@ -112,6 +113,7 @@ class VisualizarTicket extends Component {
             },
             "responsables": [{"legajo": "-1", "nombre": "Ninguno", "apellido": ""}],
             "modal": false,
+            "modal_tareas": false,
             "ticket": {
               "cliente": {
                 "id": -1,
@@ -128,7 +130,8 @@ class VisualizarTicket extends Component {
               "pasos": "",
               "legajo_responsable": -1,
               "severidad": "",
-              "tipo": ""
+              "tipo": "",
+              "tareas": []
             }
         }
 
@@ -202,9 +205,11 @@ class VisualizarTicket extends Component {
       }
 
 
+      verTareas = event => {
+        this.setState({modal_tareas: true});
+      }
 
       crearTarea = event => {
-        console.log('Creando tarea');
         this.setState({modal: true});
 
         this.requesterProyectos.get('/proyectos')
@@ -216,8 +221,6 @@ class VisualizarTicket extends Component {
               }
             })
             .then(response => {
-                console.log("Proyectos!: ")
-                console.log(response);
                 if (response) {
                     this.setState({proyectos: response})
                 }
@@ -226,13 +229,15 @@ class VisualizarTicket extends Component {
       }
 
       handleClose = event => {
-        console.log('Cerrando');
         this.setState({modal: false});
+      }
+
+      handleCloseTareas = event => {
+        this.setState({modal_tareas: false});
       }
 
       handleSubmit = event => {
         event.preventDefault();
-        console.log(this.state.ticket)
         this.requester.put('/tickets/' + this.state.ticket.id, this.state.ticket)
         .then(response => {
             if (response.ok){
@@ -248,17 +253,34 @@ class VisualizarTicket extends Component {
 
       submitTarea = event => {
         event.preventDefault();
-        console.log(this.state.tarea)
-        this.requesterProyectos.put('/proyectos/' + this.state.tarea.id_proyecto + '/tareas', this.state.tarea)
+        // Le pego a proyectos para crear una tarea asociada a este ticket
+        this.requesterProyectos.post('/proyectos/' + this.state.tarea.id_proyecto + '/tareas', this.state.tarea)
         .then(response => {
             if (response.ok){
-                this.props.history.push({
-                    pathname: `/soporte`
-                });
+                return response.json()
             } else {
                 console.log("Error al crear el ticket");
             }
-        });
+        })
+        .then(response => {
+          if (response) {
+
+            let relacion = {"id_tarea": response.id, "id_proyecto": this.state.tarea.id_proyecto}
+            // le pego a soporte, para que cree la relacion entre ticket y tareas.
+            this.requester.post('/tickets/' + this.state.ticket.id + '/tareas', relacion)
+            .then(response => {
+                if (response.ok){
+                    console.log("OK")
+                } else {
+                    console.log("Error al crear el ticket");
+                }
+            })
+
+            this.props.history.push({
+              pathname: `/soporte`
+              });
+          }
+      });
       }
 
     componentDidMount() {
@@ -273,7 +295,6 @@ class VisualizarTicket extends Component {
           }
         })
         .then(response => {
-            console.log(response);
             if (response) {
                 this.setState({clientes: response})
             }
@@ -288,7 +309,6 @@ class VisualizarTicket extends Component {
               }
             })
             .then(response => {
-                console.log(response);
                 if (response) {
                     this.setState({responsables: [...this.state.responsables, ...response]})
                 }
@@ -304,12 +324,10 @@ class VisualizarTicket extends Component {
                 }
             })
             .then(response => {
-                console.log(response);
                 if (response) {
                     if (response.cliente==null) {
                       response.cliente = {"id": -1, "razon_social": ""}
                     }
-                    console.log(response.legajo_responsable)
                     if (response.legajo_responsable==null) {
                       response.legajo_responsable = -1
                     }
@@ -318,10 +336,17 @@ class VisualizarTicket extends Component {
             });
     }
 
+    obtenerTareas() {
+      var tareas = [];
+      var url = 'https://mapache-web.herokuapp.com'
+      for (var i=0; i<this.state.ticket.tareas.length; i++) {
+        tareas.push(<div><Button href={url + "/proyectos/" + this.state.ticket.tareas[i].id_proyecto + "/tareas/" + this.state.ticket.tareas[i].id_tarea}> {this.state.ticket.tareas[i].nombre} </Button></div>)
+      }
+      return tareas;
+    }
+
     render() {
-
-        console.log('STATE', this.state.ticket.severidad)
-
+        
         return (
             <div class='form-crear-ticket'>
             <div class="centrado">
@@ -330,9 +355,14 @@ class VisualizarTicket extends Component {
             <br/>
             <form autoComplete="off" onSubmit={this.handleSubmit}>
                 <Grid container spacing={3} direction="row" justify="flex-start" alignItems="flex-start">
-                    <Grid item lg={12} xl={12}>
+                    <Grid item lg={8} xl={8}>
                         <TextField id="nombre" fullWidth value={this.state.ticket.nombre} variant="outlined" name="nombre" label="Título"
                         disabled={this.isFormDisabled()} onChange={this.handleChangeNombre}/>
+                    </Grid>
+                    <Grid item lg={4} xl={4}>
+                        <Button variant="contained" color="secondary" onClick={this.verTareas} startIcon={<AssignmentIcon />}>
+                            Ver Tareas
+                        </Button>
                     </Grid>
                     <Grid item sm={6} md={6} xl={6} lg={4} xs={6}>
                         <TextField id="tipo" fullWidth name="tipo" variant="outlined" select label="Tipo" value={this.state.ticket.tipo} disabled={this.isFormDisabled()} onChange={this.handleChangeTipo}>
@@ -473,6 +503,21 @@ class VisualizarTicket extends Component {
                   </Button>
                   <Button variant="contained" onClick={this.handleClose} color="primary">
                     Cancelar
+                  </Button>
+                </DialogActions>
+              </Dialog>
+
+
+
+              <Dialog open={this.state.modal_tareas} onClose={this.handleCloseTareas} aria-labelledby="form-dialog-title">
+                <DialogTitle id="form-dialog-title"> <h2 class="centrado"> Tareas asociadas </h2></DialogTitle>
+                <DialogContent>
+                  <DialogContentText>
+                    {this.obtenerTareas()}
+                  </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                  <Button variant="contained" onClick={this.handleCloseTareas} color="primary" startIcon={<BackspaceIcon />}>
                   </Button>
                 </DialogActions>
               </Dialog>

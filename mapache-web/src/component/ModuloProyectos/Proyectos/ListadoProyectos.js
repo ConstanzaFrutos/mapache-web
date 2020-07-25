@@ -4,8 +4,8 @@ import {ButtonGroup, Table, Button} from "react-bootstrap";
 import {Link} from "react-router-dom";
 import Paper from "@material-ui/core/Paper";
 import TableContainer from "@material-ui/core/TableContainer";
-import "../../assets/css/ModuloProyectos/TablasProyectos.css";
-import "../../assets/css/controller/ProyectosScreen.css";
+import "../../../assets/css/ModuloProyectos/TablasProyectos.css";
+import "../../../assets/css/controller/ProyectosScreen.css";
 const URL = 'https://mapache-proyectos.herokuapp.com/';
 
 export default class ListadoProyectos extends Component {
@@ -36,30 +36,6 @@ export default class ListadoProyectos extends Component {
 
     componentDidMount() {
         this.obtenerProyectos();
-    }
-
-    eliminarProyecto = (proyectoId, estado) => {
-        if(estado !== "No iniciado"){
-            alert("Los proyecto ya iniciados no se pueden eliminar");
-            return;
-        }
-        (async() => {
-            try {
-                axios.delete(URL+'proyectos/'+proyectoId)
-                    .then(respuesta => {
-                        if(respuesta.data != null){
-                            alert("El proyecto fue eliminado correctamente");
-                            this.obtenerProyectos();
-                        }
-                    });
-            } catch (err) {
-                let mensaje = "Error: " + err.response.status;
-                if(err.response.message){
-                    mensaje += ': ' + err.response.message;
-                }
-                alert(mensaje);
-            }
-        })();
     }
 
     definirColor(estado){
@@ -101,7 +77,7 @@ export default class ListadoProyectos extends Component {
                             <tbody>
                             {this.state.proyectos.length === 0 ?
                                 <tr align="center">
-                                    <td colSpan="4">No exite ningun proyecto</td>
+                                    <td colSpan="4">No existe ningun proyecto</td>
                                 </tr> :
                                 this.state.proyectos.map((proyecto) => (
                                     <tr key={proyecto.id}>
@@ -114,13 +90,11 @@ export default class ListadoProyectos extends Component {
                                         <td>{proyecto.tipoDeProyecto}</td>
                                         <td>
                                             <ButtonGroup>
-                                                <Link to={"/proyectos/edit/"+proyecto.id}><Button size="sm" variant="outline-primary">
-                                                    Edit
-                                                </Button>
+                                                <Link to={"/proyectos/"+proyecto.id}>
+                                                    <Button size="sm" variant="outline-primary">
+                                                        Abrir
+                                                    </Button>
                                                 </Link>
-                                                <Button size="sm" variant="outline-primary" onClick={this.eliminarProyecto.bind(this,proyecto.id, proyecto.estado)}>
-                                                    Delete
-                                                </Button>
                                             </ButtonGroup>
                                         </td>
                                     </tr>

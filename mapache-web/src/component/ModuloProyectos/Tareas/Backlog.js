@@ -1,31 +1,32 @@
 import React, { Component }  from 'react';
 import axios from 'axios';
-import {ButtonGroup, Table, Button} from "react-bootstrap";
+import {ButtonGroup, Table, Button, Card} from "react-bootstrap";
 import {Link} from "react-router-dom";
 import Paper from "@material-ui/core/Paper";
 import TableContainer from "@material-ui/core/TableContainer";
+import { withRouter } from 'react-router';
 import "../../../assets/css/ModuloProyectos/TablasProyectos.css";
 import "../../../assets/css/controller/ProyectosScreen.css";
-const URL = 'https://mapache-proyectos.herokuapp.com/';
+const URL = 'https://mapache-proyectos.herokuapp.com/proyectos/';
 
-export default class ListadoProyectos extends Component {
+
+class Backlog extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            proyectos : []
-        };
+        this.state = {tareas:[]};
     }
 
-    obtenerProyectos(){
+    obtenerTareas(){
+        const proyectoId = +this.props.match.params.id;
         (async() => {
             try {
-                axios.get(URL+'proyectos')
+                axios.get(URL+proyectoId+'/tareas')
                     .then(respuesta => respuesta.data)
                     .then((data) => {
-                        this.setState({proyectos : data})
+                        this.setState({tareas : data})
                     });
             } catch (err) {
-                let mensaje = "Error: " + err.response.status;
+                let mensaje = "Error: " + err.status;
                 if(err.response.message){
                     mensaje += ': ' + err.response.message;
                 }
@@ -35,23 +36,20 @@ export default class ListadoProyectos extends Component {
     }
 
     componentDidMount() {
-        this.obtenerProyectos();
+        this.obtenerTareas();
     }
 
     definirColor(estado){
-        if(estado === "No iniciado"){
+        if(estado === "No iniciada"){
             //negro
             return '#000000';
-        } else if(estado === "Activo"){
+        } else if(estado === "En curso"){
             //azul
             return '#0033FF';
-        } else if(estado === "Suspendido"){
-            //gris
-            return '#808080';
-        } else if(estado === "Cancelado"){
+        } else if(estado === "Bloqueada"){
             //rojo
             return '#ff0000';
-        } else if(estado === "Finalizado"){
+        } else if(estado === "Finalizadao"){
             //verde
             return '#00ff00';
         }
@@ -60,44 +58,42 @@ export default class ListadoProyectos extends Component {
     }
 
     render() {
-        return (
+        const proyectoId = +this.props.match.params.id;
+        return(
             <div className="proyectos-screen-div">
                 <div className="tablaProyectos">
                     <TableContainer component={Paper}>
-                        <Table  aria-label="simple table">
+                        <Table  aria-label="simple table" style={{height:"20%"}}>
                             <thead>
                             <tr>
                                 <th>Id</th>
                                 <th>Nombre</th>
                                 <th>Estado</th>
-                                <th>Tipo de Proyecto</th>
+                                <th>Fecha de Finalizacion</th>
                                 <th>Acciones</th>
                             </tr>
                             </thead>
                             <tbody>
-                            {this.state.proyectos.length === 0 ?
+                            {this.state.tareas.length === 0 ?
                                 <tr align="center">
-                                    <td colSpan="4">No existe ningun proyecto</td>
+                                    <td colSpan="4">Este proyecto no contiene tareas</td>
                                 </tr> :
-                                this.state.proyectos.map((proyecto) => (
-                                    <tr key={proyecto.id}>
-                                        <td>{proyecto.id}</td>
-                                        <td>{proyecto.nombre}</td>
+                                this.state.tareas.map((tarea) => (
+                                    <tr key={tarea.id}>
+                                        <td>{tarea.id}</td>
+                                        <td>{tarea.nombre}</td>
                                         <td
-                                            style={{color: this.definirColor(proyecto.estado)}}>
-                                            {proyecto.estado}
+                                            style={{color: this.definirColor(tarea.estado)}}>
+                                            {tarea.estado}
                                         </td>
-                                        <td>{proyecto.tipoDeProyecto}</td>
+                                        <td>{tarea.fechaDeFinalizacion ?
+                                            tarea.fechaDeFinalizacion.split('T')[0] :
+                                            "No contiene"}</td>
                                         <td>
                                             <ButtonGroup>
-                                                <Link to={"/proyectos/"+proyecto.id}>
+                                                <Link to={"/proyectos/"+proyectoId+"/tareas/"+tarea.id}>
                                                     <Button size="sm" variant="outline-primary">
                                                         Abrir
-                                                    </Button>
-                                                </Link>
-                                                <Link to={"/proyectos/"+proyecto.id+"/tareas"}>
-                                                    <Button size="sm" variant="outline-primary">
-                                                        Backlog
                                                     </Button>
                                                 </Link>
                                             </ButtonGroup>
@@ -107,9 +103,18 @@ export default class ListadoProyectos extends Component {
                             }
                             </tbody>
                         </Table>
+                        <Card>
+                            <Link to={"/proyectos/"+proyectoId+"/tareas/:id"}>
+                                <Button>
+                                    Crear Tarea
+                                </Button>
+                            </Link>
+                        </Card>
                     </TableContainer>
                 </div>
             </div>
         );
     }
 }
+
+export default withRouter(Backlog);

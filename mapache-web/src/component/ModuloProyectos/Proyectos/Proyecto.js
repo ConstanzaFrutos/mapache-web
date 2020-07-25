@@ -120,7 +120,6 @@ class Proyecto extends Component {
                 alert(mensaje);
             }
         })();
-        return false;
     };
 
 

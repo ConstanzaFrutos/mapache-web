@@ -1,13 +1,14 @@
 import React, {Component} from "react";
 import NavBarProyecto from "../NavBarProyecto";
-import ListadoFases from "./ListadoFases";
+import Tarea from "./Tarea";
 
-export default class EditorFasesScreen extends Component {
+
+export default class EditorTareaScreen extends Component {
     render() {
         return(
             <div>
                 <NavBarProyecto/>
-                <ListadoFases/>
+                <Tarea/>
             </div>
         )
     }

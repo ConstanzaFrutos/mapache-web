@@ -13,6 +13,8 @@ import CrearTicket from '../component/soporte/CrearTicket';
 import EditarTicket from '../component/soporte/EditarTicket';
 import InfoCliente from '../component/soporte/InfoCliente';
 import EditorFasesScreen from "../component/ModuloProyectos/Fases/EditorFasesScreen";
+import EditorBacklogScreen from "../component/ModuloProyectos/Tareas/EditorBacklogScreen";
+import EditorTareaScreen from "../component/ModuloProyectos/Tareas/EditorTareaScreen";
 
 class Routes extends Component {
     render() {
@@ -30,7 +32,9 @@ class Routes extends Component {
                 <Route exact path={"/proyectos/:id/fases"} component={ EditorFasesScreen }/>
                 <Route exact path={"/proyectos/:id"} component={ EditorProyectosScreen }/>
                 <Route exact path={"/clientes"} component={ ClientesScreen }/>
-                <Route exact path={[`/clientes/nuevo`,`/clientes/:id_cliente`]} component={ InfoCliente }/>          
+                <Route exact path={[`/clientes/nuevo`,`/clientes/:id_cliente`]} component={ InfoCliente }/>
+                <Route exact path={"/proyectos/:id/tareas"} component={EditorBacklogScreen} />
+                <Route exact path={"/proyectos/:id/tareas/:id_tarea"} component={EditorTareaScreen} />
             </Router>
         )
     }

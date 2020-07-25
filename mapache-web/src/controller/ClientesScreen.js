@@ -130,7 +130,7 @@ const title = "Clientes";
 
 const columns = [
     {
-        title: "Razon Social",
+        title: "Razón Social",
         field: "razon_social"
     },
     {

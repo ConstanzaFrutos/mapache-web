@@ -356,7 +356,7 @@ class VisualizarTicket extends Component {
             <form autoComplete="off" onSubmit={this.handleSubmit}>
                 <Grid container spacing={3} direction="row" justify="flex-start" alignItems="flex-start">
                     <Grid item lg={8} xl={8}>
-                        <TextField id="nombre" fullWidth value={this.state.ticket.nombre} variant="outlined" name="nombre" label="Nombre"
+                        <TextField id="nombre" fullWidth value={this.state.ticket.nombre} variant="outlined" name="nombre" label="Título"
                         disabled={this.isFormDisabled()} onChange={this.handleChangeNombre}/>
                     </Grid>
                     <Grid item lg={4} xl={4}>

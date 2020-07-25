@@ -14,84 +14,71 @@ import Requester from "../../communication/Requester";
 import "../../assets/css/component/soporte/Ticket.css";
 
 
-const mapacheRecursosBaseUrl = "https://mapache-recursos.herokuapp.com"
+const mapacheRecursosBaseUrl = "https://mapache-recursos.herokuapp.com";
 const mapacheSoporteBaseUrl = "https://psa-api-support.herokuapp.com";
 //const mapacheSoporteBaseUrl = "http://localhost:5000"
 
 const tipos = [
-  {
-    value: 'Error',
-    label: 'Error'
-  },
-  {
-    value: 'Consulta',
-    label: 'Consulta'
-  },
-  {
-    value: 'Mejora',
-    label: 'Mejora'
-  }
-]
+  { value: 'Error', label: 'Error' },
+  { value: 'Consulta', label: 'Consulta' },
+  { value: 'Mejora', label: 'Mejora' }
+];
 
 const severidades = [
-  {
-    value: 'Alta',
-    label: 'Alta'
-  },
-  {
-    value: 'Media',
-    label: 'Media'
-  },
-  {
-    value: 'Baja',
-    label: 'Baja'
-  }
-]
+  { value: 'Alta', label: 'Alta'},
+  { value: 'Media', label: 'Media'},
+  { value: 'Baja', label: 'Baja'}
+];
 
 class CrearTicket extends Component {
 
-  constructor(props){
+  constructor(props) {
     super(props);
 
     this.requester = new Requester(mapacheSoporteBaseUrl);
     this.requesterRecursos = new Requester(mapacheRecursosBaseUrl);
 
-    this.clientes = [{"id":-1, "razon_social": "Ninguno"}]
-    this.responsables = [{"legajo": -1, "nombre": "Ninguno", "apellido": ""}]
+    this.clientes = [{"id": -1, "razon_social": "Ninguno"}];
+    this.responsables = [{"legajo": -1, "nombre": "Ninguno", "apellido": ""}];
 
-    this.state={
-      nombre:'',
-      tipo:'Consulta',
-      severidad:'Baja',
-      descripcion:'',
-      pasos:'',
+    this.state = {
+      nombre: '',
+      tipo: 'Consulta',
+      severidad: 'Baja',
+      descripcion: '',
+      pasos: '',
       cliente: {
         id: -1,
         razon_social: ""
       },
       legajo_responsable: -1
-    }
+    };
   }
-
 
   handleChangeNombre = event => {
     this.setState({ nombre: event.target.value });
   }
+
   handleChangeTipo = event => {
     this.setState({ tipo: event.target.value });
   }
+
   handleChangeSeveridad = event => {
     this.setState({ severidad: event.target.value });
   }
+
   handleChangeDescripcion = event => {
     this.setState({ descripcion: event.target.value });
   }
+
   handleChangePasos = event => {
     this.setState({ pasos: event.target.value });
   }
+
   handleChangeCliente = event => {
     this.setState({ cliente: {"id": event.target.value, "razon_social": event.target.label} });
   }
+
   handleChangeResponsable = event => {
     this.setState({ legajo_responsable: event.target.value});
   }
@@ -111,13 +98,10 @@ class CrearTicket extends Component {
 
     this.requester.post('/tickets', ticket)
     .then(response => {
-        if (response.ok){
-
-            this.props.history.push({
-                pathname: `/soporte/`
-            });
+        if (response.ok) {
+            this.props.history.push({ pathname: `/soporte/`});
         } else {
-            console.log("al crear el ticket");
+            console.error("al crear el ticket");
         }
     });
   }
@@ -128,32 +112,28 @@ class CrearTicket extends Component {
           if (response.ok) {
               return response.json();
           } else {
-              console.log("Error al consultar ticket con id: ");
+              console.error("Error al consultar ticket con id: ");
           }
         })
         .then(response => {
-            console.log(response);
             if (response) {
-                console.log(response);
-                this.clientes = response
+                this.clientes = response.filter((cliente) => { return cliente.estado === "activo" });
                 this.setState({cliente: {'id': response[0].id, 'razon_social': response[0].razon_social}})
             }
         });
 
         this.requesterRecursos.get('/empleados/')
         .then(response => {
-          if (response.ok){
+          if (response.ok) {
               return response.json();
           } else {
-              console.log("Error al consultar ticket con id: ");
+              console.error("Error al consultar los emplados");
           }
         })
         .then(response => {
-            console.log(response);
             if (response) {
-                console.log(response);
-                this.responsables = this.responsables.concat(response)
-                this.setState({responsable: {'id': response[0].id, 'nombre': response[0].nombre + " " + response[0].apellido}})
+                this.responsables = this.responsables.concat(response);
+                this.setState({responsable: {'id': response[0].id, 'nombre': `${response[0].nombre} ${response[0].apellido}` }});
             }
         });
     }
@@ -169,11 +149,12 @@ render() {
             </div>
           </Grid>
           <Grid item sm={12} md={12} xl={12} lg={12} xs={12}>
-            <TextField id="nombre" fullWidth variant="outlined" name="nombre" label="Nombre" onChange={this.handleChangeNombre}/>
+            <TextField id="nombre" fullWidth variant="outlined" name="nombre" label="Titulo" onChange={this.handleChangeNombre}/>
           </Grid>
           <br/>
           <Grid item lg={6} xl={6}>
-            <TextField id="cliente" fullWidth name="cliente" variant="outlined" select label="Cliente" value={this.state.cliente.id} onChange={this.handleChangeCliente}>
+            <TextField id="cliente" fullWidth name="cliente" variant="outlined" select label="Cliente"
+                value={this.state.cliente.id} onChange={this.handleChangeCliente}>
                       {this.clientes.map((option) => (
                       <MenuItem key={option.id} value={option.id}>
                           {option.razon_social}
@@ -242,20 +223,3 @@ render() {
 
 
 export default withRouter(CrearTicket);
-
-/*
-const tiposDeTicket = [
-    {
-        value: 'error',
-        label: 'Error',
-    },
-    {
-        value: 'consulta',
-        label: 'Consulta',
-    },
-    {
-        value: 'mejora',
-        label: 'Mejora',
-    },
-];
-*/

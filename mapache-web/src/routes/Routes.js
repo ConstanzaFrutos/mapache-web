@@ -21,7 +21,6 @@ class Routes extends Component {
                 <NavBar />
                 <Route exact path={"/"} component={Home} />
                 <Route exact path={"/empleados"} component={ EmpleadosScreen }/>
-                <Route exact path={`/empleados/:legajo`} component={ PerfilEmpleado }/>
                 <Route exact path={"/proyectos"} component={ ProyectosScreen }/>
                 <Route exact path={"/clientes"} component={ ClientesScreen }/>
                 <Route exact path={`/empleados/:legajo`} component={ PerfilEmpleado }/>

@@ -130,7 +130,7 @@ const title = "Ticket";
 
 const columns = [
     {
-        title: "Nombre",
+        title: "Titulo",
         field: "nombre"
     },
     {

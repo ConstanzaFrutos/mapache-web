@@ -12,7 +12,7 @@ import TabTareas from './TabTareas';
 import TabProyectos from './TabProyectos';
 
 const mapacheRecursosBaseUrl = "https://mapache-recursos.herokuapp.com";
-//const mapacheRecursosBaseUrl = "http://0.0.0.0:8080";
+// const mapacheRecursosBaseUrl = "http://0.0.0.0:8080";
 
 class PerfilEmpleado extends Component {
 
@@ -27,6 +27,12 @@ class PerfilEmpleado extends Component {
     }
 
     componentDidMount() {
+        if (this.props.location.state.modo === "info") {
+            this.procesarInfo();
+        }
+    }
+
+    procesarInfo() {
         let legajo = this.props.match.params.legajo;
         this.requester.get('/empleados/' + legajo)
             .then(response => {
@@ -37,6 +43,12 @@ class PerfilEmpleado extends Component {
                 }
             })
             .then(response => {
+                console.log(response);
+                let iniciales = response.nombre.charAt(0) + response.apellido.charAt(0);
+                iniciales = iniciales.toUpperCase();
+
+                let empleadoFormateado = this.formatearEmpleado(response);
+
                 if (response) {
                     this.setState({
                         empleado: response

@@ -1,16 +1,18 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
 
-import { TablaAdministracion } from "../component/general/TablaAdministracion";
 import Add from '@material-ui/icons/Add'
+import InfoOutlined from '@material-ui/icons/InfoOutlined';
+
+import { TablaAdministracion } from "../component/general/TablaAdministracion";
+
 import Requester from "../communication/Requester";
 
 import "../assets/css/controller/SoporteScreen.css";
 
-import InfoOutlined from '@material-ui/icons/InfoOutlined';
 
 const mapacheSoporteBaseUrl = "https://psa-api-support.herokuapp.com";
-//const mapacheSoporteBaseUrl = "http://localhost:5000";
+//const mapacheSoporteBaseUrl = "http://localhost:5000"
 
 class SoporteScreen extends Component {
 
@@ -36,8 +38,8 @@ class SoporteScreen extends Component {
     }
 
     handleEdit(oldData) {
-        // Esta funcion en el caso de los empleados 
-        // se usa para redirigir el perfil      
+        // Esta funcion en el caso de los empleados
+        // se usa para redirigir el perfil
         this.props.history.push({
             pathname: `/tickets/${oldData.id}`
         });
@@ -77,7 +79,7 @@ class SoporteScreen extends Component {
         return (
             <div className="tickets-screen-div">
 
-                <TablaAdministracion 
+                <TablaAdministracion
                     title={ title }
                     columns={ columns }
                     data={ this.state.tickets }
@@ -109,7 +111,7 @@ class SoporteScreen extends Component {
                             icon: editIcon,
                             tooltip: "Edit ticket",
                             onClick: (event, rowData) => {
-                              this.handleEdit(rowData)  
+                              this.handleEdit(rowData)
                               console.log(rowData)
                               console.log("PruebaEdit");
                             }
@@ -118,7 +120,7 @@ class SoporteScreen extends Component {
 
                 ></TablaAdministracion>
             </div>
-        )	      
+        )
     }
 }
 
@@ -129,19 +131,19 @@ const title = "Ticket";
 
 const columns = [
     {
-        title: "Nombre", 
+        title: "Titulo",
         field: "nombre"
     },
     {
-        title: "Tipo", 
+        title: "Tipo",
         field: "tipo"
     },
     {
-        title: "Estado", 
+        title: "Estado",
         field: "estado"
     },
     {
-        title: "Severidad", 
+        title: "Severidad",
         field: "severidad"
     }
 ]

@@ -57,7 +57,7 @@ class Tarea extends Component {
         } else if(estado === "Bloqueada"){
             //rojo
             return '#ff0000';
-        } else if(estado === "Finalizadao"){
+        } else if(estado === "Finalizada"){
             //verde
             return '#00ff00';
         }

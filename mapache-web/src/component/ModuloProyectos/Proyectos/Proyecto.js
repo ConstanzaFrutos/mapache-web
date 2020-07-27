@@ -28,6 +28,12 @@ class Proyecto extends Component {
             fechaDeFinalizacion: this.state.fechaDeFinalizacion,
             estado: this.state.estado
         };
+        if(!proyecto.fechaDeInicio || proyecto.fechaDeInicio < '0000-00-00'){
+            proyecto.fechaDeInicio = '0000-00-00';
+        }
+        if(!proyecto.fechaDeFinalizacion || proyecto.fechaDeFinalizacion < '0000-00-00'){
+            proyecto.fechaDeFinalizacion = '0000-00-00';
+        }
         (async() => {
             try {
                 await axios.post(URL+"proyectos", proyecto)

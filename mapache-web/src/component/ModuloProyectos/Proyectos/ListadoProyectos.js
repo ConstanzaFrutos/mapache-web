@@ -1,6 +1,6 @@
 import React, { Component }  from 'react';
 import axios from 'axios';
-import {ButtonGroup, Table, Button} from "react-bootstrap";
+import {ButtonGroup, Table, Button, Card} from "react-bootstrap";
 import {Link} from "react-router-dom";
 import Paper from "@material-ui/core/Paper";
 import TableContainer from "@material-ui/core/TableContainer";
@@ -32,6 +32,8 @@ export default class ListadoProyectos extends Component {
                 alert(mensaje);
             }
         })();
+        //esto deberia ordenar pero no lo hace.
+        this.state.proyectos.sort((a, b) => a.id > b.id ? 1 : -1);
     }
 
     componentDidMount() {
@@ -107,6 +109,13 @@ export default class ListadoProyectos extends Component {
                             }
                             </tbody>
                         </Table>
+                        <Card>
+                            <Link to={"/proyectos/:id"}>
+                                <Button>
+                                    Crear Proyecto
+                                </Button>
+                            </Link>
+                        </Card>
                     </TableContainer>
                 </div>
             </div>

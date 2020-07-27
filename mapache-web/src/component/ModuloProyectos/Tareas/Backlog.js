@@ -49,7 +49,7 @@ class Backlog extends Component {
         } else if(estado === "Bloqueada"){
             //rojo
             return '#ff0000';
-        } else if(estado === "Finalizadao"){
+        } else if(estado === "Finalizada"){
             //verde
             return '#00ff00';
         }
@@ -63,7 +63,7 @@ class Backlog extends Component {
             <div className="proyectos-screen-div">
                 <div className="tablaProyectos">
                     <TableContainer component={Paper}>
-                        <Table  aria-label="simple table" style={{height:"20%"}}>
+                        <Table  aria-label="simple table">
                             <thead>
                             <tr>
                                 <th>Id</th>

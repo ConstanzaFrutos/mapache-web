@@ -27,6 +27,7 @@ class TabProyectos extends Component {
         }
 
         this.requestDataProyecto = this.requestDataProyecto.bind(this);
+        this.requestHorasProyecto = this.requestHorasProyecto.bind(this);
         this.createData = this.createData.bind(this);
     }
 
@@ -77,22 +78,42 @@ class TabProyectos extends Component {
             });
     }
 
-    createData(asignacionProyectos) {
-        return asignacionProyectos.map(async (asignacion) => {
-            console.log(asignacion);
-            
-            return await this.requestDataProyecto(asignacion.codigo)
-                .then((proyecto) => {
-                    console.log("Proyecto recibido ", proyecto);
-                    let aux = {
-                        nombre: proyecto.nombre,
-                        titulo: asignacion.rolEmpleado,
-                        progreso: 10,
-                    }
-                    console.log("Aux ", aux);
-                    return aux;
-                });
-        });
+    requestHorasProyecto(legajo, codigoProyecto) {
+        return this.requesterRecursos.get(`/empleados/${legajo}/proyectos/${codigoProyecto}/horas`)
+            .then(response => {
+                if (response.ok){
+                    return response.json();
+                } else {
+                    console.log(`Error al consultar horas del proyecto ${codigoProyecto}`);
+                }
+            }).then(response => {
+                console.log("Horas: ", response);
+                return response;
+            });
+    }
+
+    async createData(asignacionProyectos) {
+        let array = await Promise.all(
+            asignacionProyectos.map(async (asignacion) => {
+                console.log(asignacion);
+                
+                const proyecto = await this.requestDataProyecto(asignacion.codigo);
+                const horas = await this.requestHorasProyecto(
+                    this.props.legajo, 
+                    asignacion.codigo
+                );
+                console.log("Proyecto: ", proyecto);
+                let aux = {
+                    nombre: proyecto.nombre,
+                    titulo: asignacion.rolEmpleado,
+                    progreso: horas.cantidadDeHorasTrabajadas,
+                }
+                console.log("Aux ", aux);
+                return aux;
+            }
+        ));
+        console.log("Array: ", array);
+        return array;
     }
 
     render() {

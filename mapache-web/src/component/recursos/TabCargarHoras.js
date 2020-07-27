@@ -247,16 +247,12 @@ const actividades = [
 
 const tareas = [
     {
-        name: "cargar horas",
-        value: "cargar horas"
+        name: "Consultar tickets resueltos",
+        value: "Consultar tickets resueltos"
     },
     {
-        name: "cargar proyectos",
-        value: "cargar proyectos"
-    },
-    {
-        name: "enfermedad",
-        value: "enfermad"
+        name: "Ingresar datos de facturación",
+        value: "Ingresar datos de facturación"
     }
 ]
 

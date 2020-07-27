@@ -47,8 +47,6 @@ class PerfilEmpleado extends Component {
                 let iniciales = response.nombre.charAt(0) + response.apellido.charAt(0);
                 iniciales = iniciales.toUpperCase();
 
-                let empleadoFormateado = this.formatearEmpleado(response);
-
                 if (response) {
                     this.setState({
                         empleado: response

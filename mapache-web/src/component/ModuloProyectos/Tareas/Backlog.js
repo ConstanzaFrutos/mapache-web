@@ -78,7 +78,7 @@ class Backlog extends Component {
                                 <tr align="center">
                                     <td colSpan="4">Este proyecto no contiene tareas</td>
                                 </tr> :
-                                this.state.tareas.map((tarea) => (
+                                this.state.tareas.sort((a, b) => a.id > b.id ? -1 : 1).map((tarea) => (
                                     <tr key={tarea.id}>
                                         <td>{tarea.id}</td>
                                         <td>{tarea.nombre}</td>

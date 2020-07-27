@@ -32,8 +32,9 @@ export default class ListadoProyectos extends Component {
                 alert(mensaje);
             }
         })();
-        //esto deberia ordenar pero no lo hace.
-        this.state.proyectos.sort((a, b) => a.id > b.id ? 1 : -1);
+        this.setState({
+            proyectos: this.state.proyectos
+        })
     }
 
     componentDidMount() {
@@ -81,7 +82,7 @@ export default class ListadoProyectos extends Component {
                                 <tr align="center">
                                     <td colSpan="4">No existe ningun proyecto</td>
                                 </tr> :
-                                this.state.proyectos.map((proyecto) => (
+                                this.state.proyectos.sort((a, b) => a.id > b.id ? -1 : 1).map((proyecto) => (
                                     <tr key={proyecto.id}>
                                         <td>{proyecto.id}</td>
                                         <td>{proyecto.nombre}</td>

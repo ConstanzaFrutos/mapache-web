@@ -95,7 +95,7 @@ class ListadoFases extends Component {
                                 <tr align="center">
                                     <td>El proyecto no contiene fases</td>
                                 </tr> :
-                                this.state.fases.map((fase) => (
+                                this.state.fases.sort((a, b) => a.id > b.id ? -1 : 1).map((fase) => (
                                         <Card>
                                             <Fase fase={fase} obtenerFases={this.obtenerFases}/>
                                         </Card>

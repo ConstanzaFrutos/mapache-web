@@ -221,22 +221,14 @@ class TabCargarHoras extends Component {
 
     render() {
         let actividad = this.state.actividadSeleccionada ? this.state.actividadSeleccionada : actividades[0].value;
-        //let tarea = this.state.tareaSeleccionada ? this.state.tareaSeleccionada : this.state.tareas[0].value;
-        let tarea = null;
+        let tarea = 0;
         if (this.state.tareaSeleccionada) {
-            console.log("Seleccionaste tarea ", this.state.tareaSeleccionada)
             tarea = this.state.tareaSeleccionada;
         } else if (this.state.tareasDropdown[0]) {
             tarea = this.state.tareasDropdown[0].value;
-        } else {
-            tarea = "tarea"
         }
         let hora = this.state.horaSeleccionada ? this.state.horaSeleccionada : horasDropdown[0].value;
         let cantidadSemanas = this.state.semanaSeleccionada ? this.state.semanaSeleccionada : semanasDropdown[0].value;
-
-        //console.log("minutos ", minutos);
-
-        //console.log("horasDropdown ", horasDropdown);
 
         return(
             <div className="tab-cargar-horas-div">

@@ -22,29 +22,29 @@ class Tarea extends Component {
         if(!proyectoId || !tareaId){
             return;
         }
-        (async() => {
-            try {
-                axios.get(URL+proyectoId+"/tareas/"+tareaId)
-                    .then(respuesta => {
-                        if(respuesta.data != null){
-                            this.setState({
-                                id: respuesta.data.id,
-                                nombre: respuesta.data.nombre,
-                                descripcion: respuesta.data.descripcion,
-                                fechaDeInicio: respuesta.data.fechaDeInicio,
-                                fechaDeFinalizacion: respuesta.data.fechaDeFinalizacion,
-                                estado: respuesta.data.estado
-                            });
-                        }
-                    })
-            } catch (err) {
-                let mensaje = "Error: " + err.response.status;
-                if(err.response.message){
-                    mensaje += ': ' + err.response.message;
+        axios.get(URL+proyectoId+"/tareas/"+tareaId)
+            .then(respuesta => {
+                if(respuesta.data != null){
+                    this.setState({
+                        id: respuesta.data.id,
+                        nombre: respuesta.data.nombre,
+                        descripcion: respuesta.data.descripcion,
+                        fechaDeInicio: respuesta.data.fechaDeInicio,
+                        fechaDeFinalizacion: respuesta.data.fechaDeFinalizacion,
+                        estado: respuesta.data.estado
+                    });
+                }
+            }).catch(function(err){
+            if(err.response){
+                let mensaje = "Error: " + err.response.data.status;
+                if(err.response.data.error){
+                    mensaje += ': ' + err.response.data.error;
                 }
                 alert(mensaje);
+            } else {
+                alert("Ocurrio un error desconocido");
             }
-        })();
+        });
     }
 
     definirColor(estado){
@@ -75,30 +75,24 @@ class Tarea extends Component {
             fechaDeFinalizacion: this.state.fechaDeFinalizacion,
             estado: this.state.estado
         };
-        if(!tarea.fechaDeInicio || tarea.fechaDeInicio < '0000-00-00'){
-            tarea.fechaDeInicio = '0000-00-00';
-        }
-        if(!tarea.fechaDeFinalizacion || tarea.fechaDeFinalizacion < '0000-00-00'){
-            tarea.fechaDeFinalizacion = '0000-00-00';
-        }
-        (async() => {
-            try {
-                await axios.post(URL+proyectoId+"/tareas", tarea)
-                    .then(respuesta => {
-                        if(respuesta.data){
-                            this.setState(this.estadoInicial);
-                            alert("La tarea se creo exitosamente");
-                            this.setState({redirect: true});
-                        }
-                    })
-            } catch (err) {
-                let mensaje = "Error: " + err.status;
-                if(err.error){
-                    mensaje += ': ' + err.response.error;
+        axios.post(URL+proyectoId+"/tareas", tarea)
+            .then(respuesta => {
+                if(respuesta.data){
+                    this.setState(this.estadoInicial);
+                    alert("La tarea se creo exitosamente");
+                    this.setState({redirect: true});
                 }
-                alert(mensaje);
-            }
-        })();
+            }).catch(function(err){
+                if(err.response){
+                    let mensaje = "Error: " + err.response.data.status;
+                    if(err.response.data.error){
+                        mensaje += '\n' + err.response.data.error;
+                    }
+                    alert(mensaje);
+                } else {
+                    alert("Ocurrio un error desconocido");
+                }
+            })
     }
 
     cambioTarea = event => {
@@ -117,52 +111,46 @@ class Tarea extends Component {
             fechaDeFinalizacion: this.state.fechaDeFinalizacion,
             estado: this.state.estado
         };
-        if(!tarea.fechaDeInicio || tarea.fechaDeInicio < '0000-00-00'){
-            tarea.fechaDeInicio = '0000-00-00';
-        }
-        if(!tarea.fechaDeFinalizacion || tarea.fechaDeFinalizacion < '0000-00-00'){
-            tarea.fechaDeFinalizacion = '0000-00-00';
-        }
         const proyectoId = +this.props.match.params.id;
-        (async() => {
-            try {
-                axios.put(URL+proyectoId+"/tareas/"+tarea.id, tarea)
-                    .then(respuesta=> {
-                        if(respuesta.data != null){
-                            alert("La tarea: " + tarea.nombre+ " se actualizo exitosamente");
-                            this.setState({redirect : true});
-                        }
-                    })
-            } catch (err) {
-                let mensaje = "Error: " + err.response.status;
-                if(err.response.message){
-                    mensaje += ': ' + err.response.message;
+        axios.put(URL+proyectoId+"/tareas/"+tarea.id, tarea)
+            .then(respuesta=> {
+                if(respuesta.data != null){
+                    alert("La tarea: " + tarea.nombre+ " se actualizo exitosamente");
+                    this.setState({redirect : true});
                 }
-                alert(mensaje);
-            }
-        })();
-    };
+            }).catch(function(err){
+                if(err.response){
+                    let mensaje = "Error: " + err.response.data.status;
+                    if(err.response.data.error){
+                        mensaje += '\n' + err.response.data.error;
+                    }
+                    alert(mensaje);
+                } else {
+                    alert("Ocurrio un error desconocido");
+                }
+            });
+    }
 
     eliminarTarea = event => {
         event.preventDefault();
         const proyectoId = +this.props.match.params.id;
-        (async() => {
-            try {
-                axios.delete(URL+proyectoId+'/tareas/'+this.state.id)
-                    .then(respuesta => {
-                        if(respuesta.data != null){
-                            alert("La tarea fue eliminada correctamente");
-                            this.setState({confirm : false, redirect:true});
-                        }
-                    });
-            } catch (err) {
-                let mensaje = "Error: " + err.response.status;
-                if(err.response.message){
-                    mensaje += ': ' + err.response.message;
+        axios.delete(URL+proyectoId+'/tareas/'+this.state.id)
+            .then(respuesta => {
+                if(respuesta.data != null){
+                    alert("La tarea fue eliminada correctamente");
+                    this.setState({confirm : false, redirect:true});
+                }
+            }).catch(function(err){
+            if(err.response){
+                let mensaje = "Error: " + err.response.data.status;
+                if(err.response.data.error){
+                    mensaje += '\n' + err.response.data.error;
                 }
                 alert(mensaje);
+            } else {
+                alert("Ocurrio un error desconocido");
             }
-        })();
+        });
     }
 
     abrirConfirm = event => {

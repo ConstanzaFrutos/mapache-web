@@ -27,52 +27,46 @@ class Fase extends Component {
             descripcion: this.state.descripcion,
             fechaDeFinalizacion: this.state.fechaDeFinalizacion
         };
-        if(!aux.fechaDeInicio || aux.fechaDeInicio < '0000-00-00'){
-            aux.fechaDeInicio = '0000-00-00';
-        }
-        if(!aux.fechaDeFinalizacion || aux.fechaDeFinalizacion < '0000-00-00'){
-            aux.fechaDeFinalizacion = '0000-00-00';
-        }
-        (async() => {
-            try {
-                axios.put(URL+proyectoId+'/fases/'+this.state.id, aux)
-                    .then(respuesta=> {
-                        if(respuesta.data != null){
-                            alert("La fase fue actualizada correctamente");
-                            this.props.obtenerFases();
-                        }
-                    })
-            } catch (err) {
-                let mensaje = "Error: " + err.response.status;
-                if(err.response.message){
-                    mensaje += ': ' + err.response.message;
+        axios.put(URL+proyectoId+'/fases/'+this.state.id, aux)
+            .then(respuesta=> {
+                if(respuesta.data != null){
+                    alert("La fase fue actualizada correctamente");
+                    this.props.obtenerFases();
+                }
+            }).catch(function(err){
+            if(err.response){
+                let mensaje = "Error: " + err.response.data.status;
+                if(err.response.data.error){
+                    mensaje += '\n' + err.response.data.error;
                 }
                 alert(mensaje);
+            } else {
+                alert("Ocurrio un error desconocido");
             }
-        })();
+        });
     }
 
     eliminarFase = event => {
         event.preventDefault();
         const proyectoId = +this.props.match.params.id;
-        (async() => {
-            try {
-                axios.delete(URL+proyectoId+'/fases/'+this.state.id)
-                    .then(respuesta => {
-                        if(respuesta.data != null){
-                            alert("La fase fue eliminada correctamente");
-                            this.props.obtenerFases();
-                            this.setState({confirm : false});
-                        }
-                    });
-            } catch (err) {
-                let mensaje = "Error: " + err.response.status;
-                if(err.response.message){
-                    mensaje += ': ' + err.response.message;
+        axios.delete(URL+proyectoId+'/fases/'+this.state.id)
+            .then(respuesta => {
+                if(respuesta.data != null){
+                    alert("La fase fue eliminada correctamente");
+                    this.props.obtenerFases();
+                    this.setState({confirm : false});
+                }
+            }).catch(function(err){
+            if(err.response){
+                let mensaje = "Error: " + err.response.data.status;
+                if(err.response.data.error){
+                    mensaje += '\n' + err.response.data.error;
                 }
                 alert(mensaje);
+            } else {
+                alert("Ocurrio un error desconocido");
             }
-        })();
+        });
     }
 
     abrirConfirm = event => {

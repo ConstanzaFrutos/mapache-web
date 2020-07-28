@@ -17,24 +17,21 @@ export default class ListadoProyectos extends Component {
     }
 
     obtenerProyectos(){
-        (async() => {
-            try {
-                axios.get(URL+'proyectos')
-                    .then(respuesta => respuesta.data)
-                    .then((data) => {
-                        this.setState({proyectos : data})
-                    });
-            } catch (err) {
-                let mensaje = "Error: " + err.response.status;
-                if(err.response.message){
-                    mensaje += ': ' + err.response.message;
+        axios.get(URL+'proyectos')
+            .then(respuesta => respuesta.data)
+            .then((data) => {
+                this.setState({proyectos : data})
+            }).catch(function(err){
+            if(err.response){
+                let mensaje = "Error: " + err.response.data.status;
+                if(err.response.data.error){
+                    mensaje += '\n' + err.response.data.error;
                 }
                 alert(mensaje);
+            } else {
+                alert("Ocurrio un error desconocido");
             }
-        })();
-        this.setState({
-            proyectos: this.state.proyectos
-        })
+        });
     }
 
     componentDidMount() {
@@ -62,6 +59,32 @@ export default class ListadoProyectos extends Component {
         return '#000000';
     }
 
+    ordenarProyectos(proyecto1, proyecto2) {
+        if(proyecto1.estado === proyecto2.estado){
+            return proyecto2.id - proyecto1.id;
+        } else if(proyecto1.estado === "Activo"){
+            return -1;
+        } else if(proyecto2.estado === "Activo"){
+            return 1;
+        } else if(proyecto1.estado === "No iniciado"){
+            return -1;
+        } else if(proyecto2.estado === "No iniciado"){
+            return 1;
+        } else if(proyecto1.estado === "Finalizado"){
+            return -1;
+        } else if(proyecto2.estado === "Finalizado"){
+            return 1;
+        } else if(proyecto1.estado === "Suspendido"){
+            return -1;
+        } else if(proyecto2.estado === "Suspendido"){
+            return 1;
+        } else if(proyecto1.estado === "Cancelado"){
+            return -1;
+        } else if(proyecto2.estado === "Cancelado"){
+            return 1;
+        }
+    }
+
     render() {
         return (
             <div className="proyectos-screen-div">
@@ -82,7 +105,7 @@ export default class ListadoProyectos extends Component {
                                 <tr align="center">
                                     <td colSpan="4">No existe ningun proyecto</td>
                                 </tr> :
-                                this.state.proyectos.sort((a, b) => a.id > b.id ? -1 : 1).map((proyecto) => (
+                                this.state.proyectos.sort((a,b) => this.ordenarProyectos(a,b)).map((proyecto) => (
                                     <tr key={proyecto.id}>
                                         <td>{proyecto.id}</td>
                                         <td>{proyecto.nombre}</td>

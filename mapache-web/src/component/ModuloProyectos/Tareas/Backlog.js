@@ -18,21 +18,21 @@ class Backlog extends Component {
 
     obtenerTareas(){
         const proyectoId = +this.props.match.params.id;
-        (async() => {
-            try {
-                axios.get(URL+proyectoId+'/tareas')
-                    .then(respuesta => respuesta.data)
-                    .then((data) => {
-                        this.setState({tareas : data})
-                    });
-            } catch (err) {
-                let mensaje = "Error: " + err.status;
-                if(err.response.message){
-                    mensaje += ': ' + err.response.message;
+        axios.get(URL+proyectoId+'/tareas')
+            .then(respuesta => respuesta.data)
+            .then((data) => {
+                this.setState({tareas : data})
+            }).catch(function(err){
+            if(err.response){
+                let mensaje = "Error: " + err.response.data.status;
+                if(err.response.data.error){
+                    mensaje += '\n' + err.response.data.error;
                 }
                 alert(mensaje);
+            } else {
+                alert("Ocurrio un error desconocido");
             }
-        })();
+        });
     }
 
     componentDidMount() {
@@ -57,6 +57,28 @@ class Backlog extends Component {
         return '#000000';
     }
 
+    ordenarTareas(tarea1, tarea2) {
+        if(tarea1.estado === tarea2.estado){
+            return tarea2.id - tarea1.id;
+        } else if(tarea1.estado === "En curso"){
+            return -1;
+        } else if(tarea2.estado === "En curso"){
+            return 1;
+        } else if(tarea1.estado === "No iniciada"){
+            return -1;
+        } else if(tarea2.estado === "No iniciada"){
+            return 1;
+        } else if(tarea1.estado === "Bloqueada"){
+            return -1;
+        } else if(tarea2.estado === "Bloqueada"){
+            return 1;
+        } else if(tarea1.estado === "Finalizada"){
+            return -1;
+        } else if(tarea2.estado === "Finalizada"){
+            return 1;
+        }
+    }
+
     render() {
         const proyectoId = +this.props.match.params.id;
         return(
@@ -78,7 +100,7 @@ class Backlog extends Component {
                                 <tr align="center">
                                     <td colSpan="4">Este proyecto no contiene tareas</td>
                                 </tr> :
-                                this.state.tareas.sort((a, b) => a.id > b.id ? -1 : 1).map((tarea) => (
+                                this.state.tareas.sort((a, b) => this.ordenarTareas(a,b)).map((tarea) => (
                                     <tr key={tarea.id}>
                                         <td>{tarea.id}</td>
                                         <td>{tarea.nombre}</td>

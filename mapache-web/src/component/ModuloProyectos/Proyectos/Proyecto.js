@@ -28,30 +28,30 @@ class Proyecto extends Component {
             fechaDeFinalizacion: this.state.fechaDeFinalizacion,
             estado: this.state.estado
         };
-        if(!proyecto.fechaDeInicio || proyecto.fechaDeInicio < '0000-00-00'){
-            proyecto.fechaDeInicio = '0000-00-00';
-        }
         if(!proyecto.fechaDeFinalizacion || proyecto.fechaDeFinalizacion < '0000-00-00'){
             proyecto.fechaDeFinalizacion = '0000-00-00';
         }
-        (async() => {
-            try {
-                await axios.post(URL+"proyectos", proyecto)
-                    .then(respuesta => {
-                        if(respuesta.data){
-                            this.setState(this.estadoInicial);
-                            alert("El proyecto se creo exitosamente");
-                            this.setState({redirectListado: true});
-                        }
-                    })
-            } catch (err) {
-                let mensaje = "Error: " + err.response.status;
-                if(err.response.error){
-                    mensaje += ': ' + err.response.error;
+        if(!proyecto.fechaDeInicio || proyecto.fechaDeInicio < '0000-00-00'){
+            proyecto.fechaDeInicio = '0000-00-00';
+        }
+        axios.post(URL+"proyectos", proyecto)
+            .then(respuesta => {
+                if(respuesta.data){
+                    this.setState(this.estadoInicial);
+                    alert("El proyecto se creo exitosamente");
+                    this.setState({redirectListado: true});
                 }
-                alert(mensaje);
-            }
-        })();
+            }).catch(function(err){
+                if(err.response){
+                    let mensaje = "Error: " + err.response.data.status;
+                    if(err.response.data.error){
+                        mensaje += '\n' + err.response.data.error;
+                    }
+                    alert(mensaje);
+                } else {
+                    alert("Ocurrio un error desconocido");
+                }
+            });
     }
 
     cambioProyecto = event => {
@@ -65,33 +65,33 @@ class Proyecto extends Component {
         if(!proyectoId){
             return;
         }
-        (async() => {
-            try {
-                axios.get(URL+"proyectos/"+proyectoId)
-                        .then(respuesta => {
-                            if(respuesta.data != null){
-                                this.setState({
-                                    id: respuesta.data.id,
-                                    nombre: respuesta.data.nombre,
-                                    tipo: respuesta.data.tipoDeProyecto,
-                                    descripcion: respuesta.data.descripcion,
-                                    fechaDeInicio: respuesta.data.fechaDeInicio,
-                                    fechaDeFinalizacion: respuesta.data.fechaDeFinalizacion,
-                                    estado: respuesta.data.estado,
-                                    fases: respuesta.data.fases
-                                });
-                            }
-                        }).catch((error) => {
-                            console.error("Error - "+error);
-                    });
-            } catch (err) {
-                let mensaje = "Error: " + err.response.status;
-                if(err.response.message){
-                    mensaje += ': ' + err.response.message;
+        axios.get(URL+"proyectos/"+proyectoId)
+                .then(respuesta => {
+                    if(respuesta.data != null){
+                        this.setState({
+                            id: respuesta.data.id,
+                            nombre: respuesta.data.nombre,
+                            tipo: respuesta.data.tipoDeProyecto,
+                            descripcion: respuesta.data.descripcion,
+                            fechaDeInicio: respuesta.data.fechaDeInicio,
+                            fechaDeFinalizacion: respuesta.data.fechaDeFinalizacion,
+                            estado: respuesta.data.estado,
+                            fases: respuesta.data.fases
+                        });
+                    }
+                }).catch((error) => {
+                    console.error("Error - "+error);
+            }).catch(function(err){
+            if(err.response){
+                let mensaje = "Error: " + err.response.data.status;
+                if(err.response.data.error){
+                    mensaje += '\n' + err.response.data.error;
                 }
                 alert(mensaje);
+            } else {
+                alert("Ocurrio un error desconocido");
             }
-        })();
+        });
     }
 
     actualizarProyecto = (event, listado) => {
@@ -105,49 +105,49 @@ class Proyecto extends Component {
             fechaDeFinalizacion: this.state.fechaDeFinalizacion,
             estado: this.state.estado
         };
-        (async() => {
-            try {
-                axios.patch(URL+"proyectos/"+proyecto.id, proyecto)
-                    .then(respuesta=> {
-                        if(respuesta.data != null){
-                            if(listado){
-                                alert("El proyecto: " + proyecto.nombre+ " se actualizo exitosamente");
-                                this.setState({redirectListado : true});
-                            } else {
-                                this.setState({redirectFases : true});
-                            }
-                        }
-                    })
-            } catch (err) {
-                let mensaje = "Error: " + err.response.status;
-                if(err.response.message){
-                    mensaje += ': ' + err.response.message;
+        axios.patch(URL+"proyectos/"+proyecto.id, proyecto)
+            .then(respuesta=> {
+                if(respuesta.data != null){
+                    if(listado){
+                        alert("El proyecto: " + proyecto.nombre+ " se actualizo exitosamente");
+                        this.setState({redirectListado : true});
+                    } else {
+                        this.setState({redirectFases : true});
+                    }
+                }
+            }).catch(function(err){
+            if(err.response){
+                let mensaje = "Error: " + err.response.data.status;
+                if(err.response.data.error){
+                    mensaje += '\n' + err.response.data.error;
                 }
                 alert(mensaje);
+            } else {
+                alert("Ocurrio un error desconocido");
             }
-        })();
+        });
     };
 
 
     eliminarProyecto = event => {
         event.preventDefault();
-        (async() => {
-            try {
-                axios.delete(URL+'proyectos/'+this.state.id)
-                    .then(respuesta => {
-                        if(respuesta.data != null){
-                            alert("El proyecto fue eliminado correctamente");
-                            this.setState({redirectListado: true});
-                        }
-                    });
-            } catch (err) {
-                let mensaje = "Error: " + err.response.status;
-                if(err.response.message){
-                    mensaje += ': ' + err.response.message;
+        axios.delete(URL+'proyectos/'+this.state.id)
+            .then(respuesta => {
+                if(respuesta.data != null){
+                    alert("El proyecto fue eliminado correctamente");
+                    this.setState({redirectListado: true});
+                }
+            }).catch(function(err){
+            if(err.response){
+                let mensaje = "Error: " + err.response.data.status;
+                if(err.response.data.error){
+                    mensaje += '\n' + err.response.data.error;
                 }
                 alert(mensaje);
+            } else {
+                alert("Ocurrio un error desconocido");
             }
-        })();
+        });
     }
 
     redireccionarListadoActualizar = event => {

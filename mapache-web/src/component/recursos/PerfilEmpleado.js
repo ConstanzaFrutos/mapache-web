@@ -41,13 +41,13 @@ class PerfilEmpleado extends Component {
                 if (response.ok){
                     return response.json();
                 } else {
-                    console.log("Error al consultar empleado con legajo: ");
+                    this.props.mostrarAlerta(
+                        `Error al consultar al empleado con legajo ${legajo}`,
+                        "error"
+                    )
                 }
             })
             .then(response => {
-                console.log(response);
-                let iniciales = response.nombre.charAt(0) + response.apellido.charAt(0);
-                iniciales = iniciales.toUpperCase();
 
                 if (response) {
                     this.setState({

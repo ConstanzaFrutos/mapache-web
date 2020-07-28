@@ -9,8 +9,6 @@ import Save from '@material-ui/icons/Save'
 import { Dropdown } from "../general/Dropdown";
 import { DatePicker } from "../general/DatePicker";
 
-import { OperacionesHoras } from "../../communication/OperacionesHoras";
-
 import Requester from "../../communication/Requester";
 
 const mapacheRecursosBaseUrl = "https://mapache-recursos.herokuapp.com";
@@ -28,6 +26,7 @@ class TabCargarHoras extends Component {
 
         this.state = {
             legajoEmpleado: {},
+            contratoEmpleado: null,
             proyectos: {},
             tareas: [],
             tareasDropdown: [],
@@ -35,8 +34,8 @@ class TabCargarHoras extends Component {
             mostrarDropdownTareas: true,
             tareaSeleccionada: null,
             fechaSeleccionada: null,
-            horaSeleccionada: null,
-            semanaSeleccionada: null,
+            horaSeleccionada: horasDropdown[0].value,
+            semanaSeleccionada: semanasDropdown[0].value,
             mostrarDropdownHoras: true,
             mostrarDropdownSemanas: false
         }
@@ -44,6 +43,7 @@ class TabCargarHoras extends Component {
         this.seleccionarActividad = this.seleccionarActividad.bind(this);
         this.seleccionarTarea = this.seleccionarTarea.bind(this);
         this.seleccionarHora = this.seleccionarHora.bind(this);
+        this.seleccionarSemanas = this.seleccionarSemanas.bind(this);
 
         this.handleDateInput = this.handleDateInput.bind(this);
 
@@ -57,13 +57,13 @@ class TabCargarHoras extends Component {
 
     componentDidMount() {
         let legajo = this.props.match.params.legajo;
+        let contrato = this.props.match.params.contrato;
 
-        console.log("This props tarea", this.props.tarea);
         if (this.props.tarea){
-            console.log("Tarea seleccionada ", this.props.tarea);
             this.setState({
                 tareaSeleccionada: this.props.tarea.codigoTarea,
-                legajoEmpleado: legajo
+                legajoEmpleado: legajo,
+                contratoEmpleado: contrato
             });
         } else {
             this.obtenerTareasDropdown(legajo);
@@ -98,7 +98,8 @@ class TabCargarHoras extends Component {
                             tareas: tareas,
                             tareaSeleccionada: tareasDropdown[0].value,
                             tareasDropdown: tareasDropdown,
-                            legajoEmpleado: legajo
+                            legajoEmpleado: legajo,
+                            contratoEmpleado: this.props.match.params.contrato
                         });
                     }
                 });
@@ -137,7 +138,6 @@ class TabCargarHoras extends Component {
     async requestTareas(asignacionProyectos) {
         let array = await Promise.all(
             asignacionProyectos.map(async (asignacion) => {
-                console.log("Asignacion proyecto", asignacion);
                 const tareas = await this.obtenerTareasDeProyecto(asignacion.codigo); 
                 const proyecto = await this.obtenerProyecto(asignacion.codigo);
 
@@ -157,21 +157,17 @@ class TabCargarHoras extends Component {
                 }
             })
         );    
-        console.log("Array", array.flatMap(aux => aux));
+        
         return array.flatMap(aux => aux);;
     }
     
     seleccionarActividad(event) {
-        let empleado = (Object.is(this.state.empleado, {})) ? 
-            {} : Object.assign({}, this.state.empleado);
-
         let mostrarDropdownTareas = event.target.value === "TAREA" ? true : false;
         
         let mostrarDropdownSemanas = event.target.value === "VACACIONES" ? true : false;
         
         console.log("Seleccionando actividad ", event.target.value);
         this.setState({
-            empleado: empleado,
             actividadSeleccionada: event.target.value,
             mostrarDropdownTareas: mostrarDropdownTareas,
             mostrarDropdownSemanas: mostrarDropdownSemanas,
@@ -180,35 +176,23 @@ class TabCargarHoras extends Component {
     }
 
     seleccionarTarea(event) {
-        let empleado = (Object.is(this.state.empleado, {})) ? 
-            {} : Object.assign({}, this.state.empleado);
-        
         this.setState({
-            empleado: empleado,
             tareaSeleccionada: event.target.value
         });
     }
 
     seleccionarHora(event) {
-        let empleado = (Object.is(this.state.empleado, {})) ? 
-            {} : Object.assign({}, this.state.empleado);
-
         this.setState({
-            empleado: empleado,
             horaSeleccionada: event.target.value
         });
     }
 
     seleccionarSemanas(event) {
-        let empleado = (Object.is(this.state.empleado, {})) ? 
-            {} : Object.assign({}, this.state.empleado);
-
-        const horasPorSemana = empleado.contrato === "FULL_TIME" ?
+        const horasPorSemana = this.state.contratoEmpleado === "FULL_TIME" ?
                         5 * horasFullTime : 5 * horasPartTime;
         let horas = event.target.value * horasPorSemana;              
-        console.log("Seleccionando semanas ", event.target.value);
+        console.log("Horas vacaciones ", horas);
         this.setState({
-            empleado: empleado,
             semanaSeleccionada: event.target.value,
             horaSeleccionada: horas
         });
@@ -371,8 +355,8 @@ horas.forEach((hora) => {
     })
 });
 
-const horasFullTime = 40;
-const horasPartTime = 20;
+const horasFullTime = 9;
+const horasPartTime = 4;
 
 let semanasDropdown = [];
 for (let i=0; i<4; i++) {

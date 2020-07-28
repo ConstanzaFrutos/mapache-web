@@ -121,6 +121,8 @@ class TabTareas extends Component {
                 if (tareas){
                     return tareas.map( (tarea) => {                    
                         return {
+                            codigoTarea: tarea.id,
+                            codigoProyecto: proyecto.id,
                             nombre: tarea.nombre,
                             proyecto: proyecto.nombre,
                             progreso: 10,

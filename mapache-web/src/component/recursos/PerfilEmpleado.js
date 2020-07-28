@@ -3,6 +3,8 @@ import { withRouter } from 'react-router';
 
 import "../../assets/css/component/recursos/PerfilEmpleado.css";
 
+import { Alerta } from "../general/Alerta";
+
 import NavBarPerfilEmpleado from "./NavBarPerfilEmpleado";
 
 import Requester from "../../communication/Requester";
@@ -22,8 +24,14 @@ class PerfilEmpleado extends Component {
         this.requester = new Requester(mapacheRecursosBaseUrl);
 
         this.state = {
-            empleado: {}
+            empleado: {},
+            mostrarAlerta: false,
+            tipoAlerta: "",
+            mensajeAlerta: ""
         }
+
+        this.mostrarAlerta = this.mostrarAlerta.bind(this);
+        this.handleCloseAlerta = this.handleCloseAlerta.bind(this);
     }
 
     componentDidMount() {
@@ -49,12 +57,28 @@ class PerfilEmpleado extends Component {
             });
     }
 
+    mostrarAlerta(mensaje, tipo) {
+        this.setState({
+            mostrarAlerta: true,
+            tipoAlerta: tipo,
+            mensajeAlerta: mensaje
+        });
+    }
+
+    handleCloseAlerta() {
+        this.setState({
+            mostrarAlerta: false
+        });
+    }
+
     render() {
         
         let tab = null;
 
         if (this.props.location.state.tab === "informacion") {
-            tab = <TabInformacion legajo={this.state.empleado.legajo} modo="info"/>
+            tab = <TabInformacion 
+                      legajo={this.state.empleado.legajo} modo="info"
+                  />
         } else if (this.props.location.state.tab === "cargar-horas") {
             tab = <TabCargarHoras 
                       legajo={this.state.empleado.legajo}
@@ -62,9 +86,26 @@ class PerfilEmpleado extends Component {
                       tarea={this.props.location.state.tarea ? this.props.location.state.tarea : null}
                   />
         } else if (this.props.location.state.tab === "tareas") {
-            tab = <TabTareas legajo={this.state.empleado.legajo}/>
+            tab = <TabTareas 
+                      legajo={this.state.empleado.legajo}
+                      mostrarAlerta={ this.mostrarAlerta }
+                      handleCloseAlerta={ this.handleCloseAlerta }
+                  />
         } else if (this.props.location.state.tab === "proyectos") {
-            tab = <TabProyectos legajo={this.state.empleado.legajo}/>
+            tab = <TabProyectos 
+                      legajo={this.state.empleado.legajo}
+                  />
+        }
+
+        let alerta = null;
+        if (this.state.mostrarAlerta) {
+            alerta = <Alerta
+                        open={ true }
+                        mensaje={ this.state.mensajeAlerta }
+                        tipo={ this.state.tipoAlerta }
+                        handleClose={ this.handleCloseAlerta }
+                     >
+                     </Alerta>
         }
 
         return (
@@ -73,6 +114,7 @@ class PerfilEmpleado extends Component {
                     legajo={ this.state.empleado.legajo }
                 />
                 { tab }
+                { alerta }
             </div>
         )
     }

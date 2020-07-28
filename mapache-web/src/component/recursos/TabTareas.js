@@ -92,7 +92,10 @@ class TabTareas extends Component {
                 if (response.ok){
                     return response.json();
                 } else {
-                    console.log(`Error al consultar tareas del proyecto ${codigoProyecto}`);
+                    this.props.mostrarAlerta(
+                        `Error al consultar tareas del proyecto ${codigoProyecto}`,
+                        "error"
+                    )
                 }
             }).then(response => {
                 if (response) {

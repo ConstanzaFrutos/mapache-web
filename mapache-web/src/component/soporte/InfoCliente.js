@@ -14,6 +14,7 @@ import "../../assets/css/component/soporte/Cliente.css";
 
 
 const mapacheSoporteBaseUrl = "https://psa-api-support.herokuapp.com";
+//const mapacheSoporteBaseUrl = "http://localhost:5000"
 
 const estados = [
   {
@@ -119,7 +120,7 @@ render() {
                 <form noValidate autoComplete="off" onSubmit={this.handleSubmit}>
                     <Grid container spacing={3} direction="row" justify="flex-start" alignItems="flex-start">
                         <Grid item lg={6} xl={6}>
-                            <TextField id="razon_social" fullWidth value={this.state.razon_social} variant="outlined" name="razon_social" label="Razon social" onChange={this.handleChangeRazonSocial}/>
+                            <TextField id="razon_social" fullWidth value={this.state.razon_social} variant="outlined" name="razon_social" label="Razón social" onChange={this.handleChangeRazonSocial}/>
                         </Grid>
                         {this.state.page !== '/clientes/nuevo'?
                         <Grid item sm={6} md={6} xl={6} lg={6} xs={6}>

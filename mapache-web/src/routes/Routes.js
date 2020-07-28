@@ -22,19 +22,26 @@ class Routes extends Component {
             <Router key="router">
                 <NavBar />
                 <Route exact path={"/"} component={Home} />
+
+                {/* Rutas Recursos */}
                 <Route exact path={"/empleados"} component={ EmpleadosScreen }/>
-                <Route exact path={"/proyectos"} component={ ProyectosScreen }/>
-                <Route exact path={"/clientes"} component={ ClientesScreen }/>
                 <Route exact path={`/empleados/:legajo`} component={ PerfilEmpleado }/>
+
+                {/* Rutas Proyectos */}
+                <Route exact path={"/proyectos"} component={ ProyectosScreen }/>
+                <Route exact path={"/proyectos/:id/fases"} component={ EditorFasesScreen }/>
+                <Route exact path={"/proyectos/:id"} component={ EditorProyectosScreen }/>
+                <Route exact path={"/proyectos/:id/tareas"} component={EditorBacklogScreen} />
+                <Route exact path={"/proyectos/:id/tareas/:id_tarea"} component={EditorTareaScreen} />
+
+                {/* Rutas Soporte */}
                 <Route exact path={"/soporte"} component={ SoporteScreen }/>
                 <Route exact path={`/soporte/tickets/nuevo`} component={ CrearTicket }/>
                 <Route exact path={`/tickets/:id_ticket`} component={ EditarTicket }/>
-                <Route exact path={"/proyectos/:id/fases"} component={ EditorFasesScreen }/>
-                <Route exact path={"/proyectos/:id"} component={ EditorProyectosScreen }/>
+
+                {/* Rutas Clientes */}
                 <Route exact path={"/clientes"} component={ ClientesScreen }/>
-                <Route exact path={[`/clientes/nuevo`,`/clientes/:id_cliente`]} component={ InfoCliente }/>
-                <Route exact path={"/proyectos/:id/tareas"} component={EditorBacklogScreen} />
-                <Route exact path={"/proyectos/:id/tareas/:id_tarea"} component={EditorTareaScreen} />
+                <Route exact path={[`/clientes/nuevo`, `/clientes/:id_cliente`]} component={ InfoCliente }/>
             </Router>
         )
     }

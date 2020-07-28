@@ -12,6 +12,7 @@ import "../assets/css/controller/ClientesScreen.css";
 
 
 const mapacheSoporteBaseUrl = "https://psa-api-support.herokuapp.com";
+//const mapacheSoporteBaseUrl = "http://localhost:5000"
 
 class ClientesScreen extends Component {
 
@@ -129,7 +130,7 @@ const title = "Clientes";
 
 const columns = [
     {
-        title: "Razon Social",
+        title: "Razón Social",
         field: "razon_social"
     },
     {

@@ -1,11 +1,12 @@
 import React, {Component} from "react";
-import Proyecto from "./Proyecto";
+import Tarea from "./Tarea";
 
-export default class EditorProyectosScreen extends Component {
+
+export default class EditorTareaScreen extends Component {
     render() {
         return(
             <div>
-                <Proyecto/>
+                <Tarea/>
             </div>
         )
     }

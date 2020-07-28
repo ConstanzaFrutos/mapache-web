@@ -1,11 +1,11 @@
 import React, {Component} from "react";
-import Proyecto from "./Proyecto";
+import Backlog from "./Backlog";
 
-export default class EditorProyectosScreen extends Component {
+export default class EditorBacklogScreen extends Component {
     render() {
         return(
             <div>
-                <Proyecto/>
+                <Backlog/>
             </div>
         )
     }

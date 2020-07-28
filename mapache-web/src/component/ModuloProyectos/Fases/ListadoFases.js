@@ -25,21 +25,21 @@ class ListadoFases extends Component {
     obtenerFases(){
         const proyectoId = +this.props.match.params.id;
         this.setState({fases : []});
-        (async() => {
-            try {
-                axios.get(URL+proyectoId+'/fases')
-                    .then(respuesta => respuesta.data)
-                    .then((data) => {
-                        this.setState({fases : data})
-                    });
-            } catch (err) {
-                let mensaje = "Error: " + err.response.status;
-                if(err.response.message){
-                    mensaje += ': ' + err.response.message;
+        axios.get(URL+proyectoId+'/fases')
+            .then(respuesta => respuesta.data)
+            .then((data) => {
+                this.setState({fases : data})
+            }).catch(function(err){
+            if(err.response){
+                let mensaje = "Error: " + err.response.data.status;
+                if(err.response.data.error){
+                    mensaje += '\n' + err.response.data.error;
                 }
                 alert(mensaje);
+            } else {
+                alert("Ocurrio un error desconocido");
             }
-        })();
+        });
     }
 
     componentDidMount() {
@@ -60,28 +60,24 @@ class ListadoFases extends Component {
             nombre: this.state.nuevaFase.nombre
         };
         const proyectoId = +this.props.match.params.id;
-        (async() => {
-            try {
-                await axios.post(URL+proyectoId+'/fases', fase)
-                    .then(respuesta => {
-                        if(respuesta.data){
-                            this.setState({nuevaFase: this.estadoInicial});
-                            alert("La fase se creo exitosamente");
-                            this.obtenerFases();
-                        }
-                    })
-            } catch (err) {
+        axios.post(URL+proyectoId+'/fases', fase)
+            .then(respuesta => {
+                if(respuesta.data){
+                    this.setState({nuevaFase: this.estadoInicial});
+                    alert("La fase se creo exitosamente");
+                    this.obtenerFases();
+                }
+            }).catch(function(err){
                 if(err.response){
-                    let mensaje = "Error: " + err.response.status;
-                    if(err.response.message){
-                        mensaje += ': ' + err.response.message;
+                    let mensaje = "Error: " + err.response.data.status;
+                    if(err.response.data.error){
+                        mensaje += '\n' + err.response.data.error;
                     }
                     alert(mensaje);
                 } else {
                     alert("Ocurrio un error desconocido");
                 }
-            }
-        })();
+            });
     }
 
     render() {
@@ -95,7 +91,7 @@ class ListadoFases extends Component {
                                 <tr align="center">
                                     <td>El proyecto no contiene fases</td>
                                 </tr> :
-                                this.state.fases.map((fase) => (
+                                this.state.fases.sort((a, b) => a.id > b.id ? -1 : 1).map((fase) => (
                                         <Card>
                                             <Fase fase={fase} obtenerFases={this.obtenerFases}/>
                                         </Card>

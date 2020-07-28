@@ -27,12 +27,6 @@ class PerfilEmpleado extends Component {
     }
 
     componentDidMount() {
-        if (this.props.location.state.modo === "info") {
-            this.procesarInfo();
-        }
-    }
-
-    procesarInfo() {
         let legajo = this.props.match.params.legajo;
         this.requester.get('/empleados/' + legajo)
             .then(response => {
@@ -62,7 +56,10 @@ class PerfilEmpleado extends Component {
         if (this.props.location.state.tab === "informacion") {
             tab = <TabInformacion legajo={this.state.empleado.legajo} modo="info"/>
         } else if (this.props.location.state.tab === "cargar-horas") {
-            tab = <TabCargarHoras legajo={this.state.empleado.legajo}/>
+            tab = <TabCargarHoras 
+                      legajo={this.state.empleado.legajo}
+                      tarea={this.props.location.state.tarea ? this.props.location.state.tarea : null}
+                  />
         } else if (this.props.location.state.tab === "tareas") {
             tab = <TabTareas legajo={this.state.empleado.legajo}/>
         } else if (this.props.location.state.tab === "proyectos") {

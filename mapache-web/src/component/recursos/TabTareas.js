@@ -45,7 +45,7 @@ class TabTareas extends Component {
                 if (response.ok){
                     return response.json();
                 } else {
-                    this.mostrarAlerta(
+                    this.props.mostrarAlerta(
                         `Error al consultar asignaciones del empleado ${this.state.empleadoSeleccionado.legajo}`,
                         "error"
                     );
@@ -165,6 +165,7 @@ class TabTareas extends Component {
                     >
                     </TablaAdministracion>
                 </div>
+                { this.props.alerta }
             </div>
         )
     }

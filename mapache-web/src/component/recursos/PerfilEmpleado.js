@@ -73,30 +73,6 @@ class PerfilEmpleado extends Component {
 
     render() {
         
-        let tab = null;
-
-        if (this.props.location.state.tab === "informacion") {
-            tab = <TabInformacion 
-                      legajo={this.state.empleado.legajo} modo="info"
-                  />
-        } else if (this.props.location.state.tab === "cargar-horas") {
-            tab = <TabCargarHoras 
-                      legajo={this.state.empleado.legajo}
-                      contrato={this.state.empleado.contrato}
-                      tarea={this.props.location.state.tarea ? this.props.location.state.tarea : null}
-                  />
-        } else if (this.props.location.state.tab === "tareas") {
-            tab = <TabTareas 
-                      legajo={this.state.empleado.legajo}
-                      mostrarAlerta={ this.mostrarAlerta }
-                      handleCloseAlerta={ this.handleCloseAlerta }
-                  />
-        } else if (this.props.location.state.tab === "proyectos") {
-            tab = <TabProyectos 
-                      legajo={this.state.empleado.legajo}
-                  />
-        }
-
         let alerta = null;
         if (this.state.mostrarAlerta) {
             alerta = <Alerta
@@ -108,13 +84,47 @@ class PerfilEmpleado extends Component {
                      </Alerta>
         }
 
+        let tab = null;
+
+        if (this.props.location.state.tab === "informacion") {
+            tab = <TabInformacion 
+                      legajo={this.state.empleado.legajo} 
+                      modo="info"
+                      mostrarAlerta={ this.mostrarAlerta }
+                      handleCloseAlerta={ this.handleCloseAlerta }
+                      alerta={ alerta }
+                  />
+        } else if (this.props.location.state.tab === "cargar-horas") {
+            tab = <TabCargarHoras 
+                      legajo={this.state.empleado.legajo}
+                      contrato={this.state.empleado.contrato}
+                      tarea={this.props.location.state.tarea ? this.props.location.state.tarea : null}
+                      mostrarAlerta={ this.mostrarAlerta }
+                      handleCloseAlerta={ this.handleCloseAlerta }
+                      alerta={ alerta }
+                  />
+        } else if (this.props.location.state.tab === "tareas") {
+            tab = <TabTareas 
+                      legajo={this.state.empleado.legajo}
+                      mostrarAlerta={ this.mostrarAlerta }
+                      handleCloseAlerta={ this.handleCloseAlerta }
+                      alerta={ alerta }
+                  />
+        } else if (this.props.location.state.tab === "proyectos") {
+            tab = <TabProyectos 
+                      legajo={this.state.empleado.legajo}
+                      mostrarAlerta={ this.mostrarAlerta }
+                      handleCloseAlerta={ this.handleCloseAlerta }
+                      alerta={ alerta }
+                  />
+        }
+
         return (
             <div className="perfil-empleado">
                 <NavBarPerfilEmpleado 
                     legajo={ this.state.empleado.legajo }
                 />
                 { tab }
-                { alerta }
             </div>
         )
     }

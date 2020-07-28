@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
 
+import "../../assets/css/component/recursos/TabProyectos.css";
+
 import LinearProgress from '@material-ui/core/LinearProgress';
 
 import { TablaAdministracion } from "../general/TablaAdministracion";
@@ -45,18 +47,20 @@ class TabProyectos extends Component {
                 if (response.ok){
                     return response.json();
                 } else {
-                    console.log("Error al consultar asignaciones del empleado");
+                    this.props.mostrarAlerta(
+                        `Error al consultar asignaciones del empleado ${this.state.empleadoSeleccionado.legajo}`,
+                        "error"
+                    );
                 }
             })
             .then(response => {
                 if (response) {
-                    console.log("Asignacion proyectos: ", response);
                     return response;
                 }
             }).then(async (asignacionProyectos) => {
                 if (asignacionProyectos) {
                     let data = await this.createData(asignacionProyectos);
-                    console.log("data ", data);
+                    
                     this.setState({
                         asignacionProyectos: asignacionProyectos,
                         data: data
@@ -71,12 +75,14 @@ class TabProyectos extends Component {
                 if (response.ok){
                     return response.json();
                 } else {
-                    console.log(`Error al consultar el proyecto ${codigoProyecto}`);
+                    this.props.mostrarAlerta(
+                        `Error al consultar el proyecto ${codigoProyecto}`,
+                        "error"
+                    );
                 }
             })
             .then(response => {
                 if (response) {
-                    console.log("Proyectos  : ", response);
                     return response;
                 }
             });
@@ -88,11 +94,13 @@ class TabProyectos extends Component {
                 if (response.ok){
                     return response.json();
                 } else {
-                    console.log(`Error al consultar horas del proyecto ${codigoProyecto}`);
+                    this.props.mostrarAlerta(
+                        `Error al consultar horas del proyecto ${codigoProyecto}`,
+                        "error"
+                    );
                 }
             }).then(response => {
                 if (response) {
-                    console.log("Horas: ", response);
                     return response;
                 }
             });
@@ -127,8 +135,7 @@ class TabProyectos extends Component {
     render() {
         return (
             <div className="tab-proyectos-div">
-                
-                <div className="tab-tareas-body">
+                <div className="tab-proyectos-body">
                     <TablaAdministracion
                         title={ title }
                         columns={ columns }
@@ -138,6 +145,7 @@ class TabProyectos extends Component {
                     >
                     </TablaAdministracion>
                 </div>
+                { this.props.alerta }
             </div>
         )
     }

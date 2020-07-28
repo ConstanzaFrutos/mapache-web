@@ -4,7 +4,6 @@ import { withRouter } from 'react-router';
 import "../../assets/css/component/recursos/TabTareas.css";
 
 import LinearProgress from '@material-ui/core/LinearProgress';
-import { Alerta } from "../general/Alerta";
 
 import AccessTime from '@material-ui/icons/AccessTime';
 
@@ -28,10 +27,7 @@ class TabTareas extends Component {
         this.state = {
             empleado: {},
             proyectos: {},
-            tareas: [],
-            mostrarAlerta: false,
-            tipoAlerta: "",
-            mensajeAlerta: ""
+            tareas: []
         }
 
         this.handleCargaHoras = this.handleCargaHoras.bind(this);
@@ -39,9 +35,6 @@ class TabTareas extends Component {
         this.requestTareas = this.requestTareas.bind(this);
         this.obtenerProyecto = this.obtenerProyecto.bind(this);
         this.obtenerTareasDeProyecto = this.obtenerTareasDeProyecto.bind(this);
-
-        this.mostrarAlerta = this.mostrarAlerta.bind(this);
-        this.handleCloseAlerta = this.handleCloseAlerta.bind(this);
     }
 
     componentDidMount() {
@@ -80,10 +73,10 @@ class TabTareas extends Component {
                 if (response.ok){
                     return response.json();
                 } else {
-                    this.mostrarAlerta(
+                    this.props.mostrarAlerta(
                         `Error al consultar tareas del proyecto ${codigoProyecto}`,
                         "error"
-                    );
+                    )
                     console.log(`Error al consultar tareas del proyecto ${codigoProyecto}`);
                 }
             }).then(response => {
@@ -99,10 +92,6 @@ class TabTareas extends Component {
                 if (response.ok){
                     return response.json();
                 } else {
-                    this.mostrarAlerta(
-                        `Error al consultar tareas del proyecto ${codigoProyecto}`,
-                        "error"
-                    );
                     console.log(`Error al consultar tareas del proyecto ${codigoProyecto}`);
                 }
             }).then(response => {
@@ -150,32 +139,7 @@ class TabTareas extends Component {
         });
     }
 
-    mostrarAlerta(mensaje, tipo) {
-        this.setState({
-            mostrarAlerta: true,
-            tipoAlerta: tipo,
-            mensajeAlerta: mensaje
-        });
-    }
-
-    handleCloseAlerta() {
-        this.setState({
-            mostrarAlerta: false
-        });
-    }
-
     render() {
-        let alerta = null;
-        if (this.state.mostrarAlerta) {
-            alerta = <Alerta
-                        open={ true }
-                        mensaje={ this.state.mensajeAlerta }
-                        tipo={ this.state.tipoAlerta }
-                        handleClose={ this.handleCloseAlerta }
-                     >
-                     </Alerta>
-        }
-
         console.log("tareas state ", this.state.tareas);
         return (
             <div className="tab-tareas-div">
@@ -201,7 +165,6 @@ class TabTareas extends Component {
                     >
                     </TablaAdministracion>
                 </div>
-                { alerta }
             </div>
         )
     }

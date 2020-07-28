@@ -58,6 +58,7 @@ class PerfilEmpleado extends Component {
         } else if (this.props.location.state.tab === "cargar-horas") {
             tab = <TabCargarHoras 
                       legajo={this.state.empleado.legajo}
+                      contrato={this.state.empleado.contrato}
                       tarea={this.props.location.state.tarea ? this.props.location.state.tarea : null}
                   />
         } else if (this.props.location.state.tab === "tareas") {

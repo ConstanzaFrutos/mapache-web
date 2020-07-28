@@ -15,44 +15,98 @@ import Requester from "../../communication/Requester";
 const mapacheRecursosBaseUrl = "https://mapache-recursos.herokuapp.com";
 //const mapacheRecursosBaseUrl = "http://0.0.0.0:8080";
 
+const mapacheProyectosBaseUrl = 'https://mapache-proyectos.herokuapp.com/';
+
 class TabTareas extends Component {
 
     constructor(props) {
         super(props);
 
-        this.requester = new Requester(mapacheRecursosBaseUrl);
+        this.requesterRecursos = new Requester(mapacheRecursosBaseUrl);
+        this.requesterProyectos = new Requester(mapacheProyectosBaseUrl);
 
         this.state = {
             empleado: {},
             proyectos: {},
-            tareas: {}
+            tareas: []
         }
 
         this.handleCargaHoras = this.handleCargaHoras.bind(this);
+        
+        this.requestTareas = this.requestTareas.bind(this);
+        this.obtenerProyecto = this.obtenerProyecto.bind(this);
+        this.obtenerTareasDeProyecto = this.obtenerTareasDeProyecto.bind(this);
     }
 
     componentDidMount() {
         let legajo = this.props.match.params.legajo;
-        this.requester.get('/empleados/' + legajo)
+        
+        this.requesterRecursos.get(`/empleados/${legajo}/proyectos/`)
             .then(response => {
                 if (response.ok){
                     return response.json();
                 } else {
-                    console.log("Error al consultar empleado con legajo: ");
+                    console.log("Error al consultar asignaciones del empleado");
                 }
             })
             .then(response => {
-                console.log("Empleado: ", response);
-                let iniciales = response.nombre.charAt(0) + response.apellido.charAt(0);
-                iniciales = iniciales.toUpperCase();                
-
                 if (response) {
-                    this.setState({
-                        empleado: response,
-                        iniciales: iniciales
-                    });
+                    return response;
                 }
+            }).then(async (asignacionProyectos) => {
+                let tareas = await this.requestTareas(asignacionProyectos);
+
+                this.setState({
+                    tareas: tareas
+                });
             });
+    }
+
+    obtenerTareasDeProyecto(codigoProyecto) {
+        return this.requesterProyectos.get(`/proyectos/${codigoProyecto}/tareas`)
+            .then(response => {
+                if (response.ok){
+                    return response.json();
+                } else {
+                    console.log(`Error al consultar tareas del proyecto ${codigoProyecto}`);
+                }
+            }).then(response => {
+                return response;
+            });
+    }
+
+    obtenerProyecto(codigoProyecto) {
+        return this.requesterProyectos.get(`/proyectos/${codigoProyecto}`)
+            .then(response => {
+                if (response.ok){
+                    return response.json();
+                } else {
+                    console.log(`Error al consultar tareas del proyecto ${codigoProyecto}`);
+                }
+            }).then(response => {
+                return response;
+            });
+    }
+
+    async requestTareas(asignacionProyectos) {
+        let array = await Promise.all(
+            asignacionProyectos.map(async (asignacion) => {
+                console.log("Asignacion proyecto", asignacion);
+                const tareas = await this.obtenerTareasDeProyecto(asignacion.codigo); 
+                const proyecto = await this.obtenerProyecto(asignacion.codigo);
+
+                return tareas.map( (tarea) => {                    
+                    return {
+                        nombre: tarea.nombre,
+                        proyecto: proyecto.nombre,
+                        progreso: 10,
+                        estado: tarea.estado
+                    }
+                })
+            })
+        );    
+        console.log("Array", array.flatMap(aux => aux));
+        return array.flatMap(aux => aux);;
     }
 
     handleCargaHoras(tarea) {
@@ -67,25 +121,14 @@ class TabTareas extends Component {
     }
 
     render() {
-        let nombreYApellido = this.state.empleado.apellido + ", " + this.state.empleado.nombre;
-        let avatar = <div className={"foto-y-nombre"}>
-                    <Avatar className="avatar">
-                        {this.state.iniciales}
-                    </Avatar>
-                    <p className={"nombre"}>
-                        {nombreYApellido}
-                    </p>
-                </div>
-
 
         return (
             <div className="tab-tareas-div">
-                { avatar }
                 <div className="tab-tareas-body">
                     <TablaAdministracion
                         title={ title }
                         columns={ columns }
-                        data={ data }
+                        data={ this.state.tareas }
                         handleAdd={ this.handleAdd }
                         handleEdit={ this.handleEdit }
                         handleDelete={ this.handleDelete } 
@@ -130,20 +173,5 @@ const columns = [
     {
         title: "Estado", 
         field: "estado"
-    }
-]
-
-const data = [
-    {
-        nombre: "Consultar tickets resueltos",
-        proyecto: "ERP Cloud",
-        progreso: 20,
-        estado: "En curso"
-    },
-    {
-        nombre: "Ingresar datos de facturación",
-        proyecto: "ERP Cloud",
-        progreso: 80,
-        estado: "En curso"
     }
 ]

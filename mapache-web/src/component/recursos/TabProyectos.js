@@ -54,12 +54,14 @@ class TabProyectos extends Component {
                     return response;
                 }
             }).then(async (asignacionProyectos) => {
-                let data = await this.createData(asignacionProyectos);
-                console.log("data ", data);
-                this.setState({
-                    asignacionProyectos: asignacionProyectos,
-                    data: data
-                });
+                if (asignacionProyectos) {
+                    let data = await this.createData(asignacionProyectos);
+                    console.log("data ", data);
+                    this.setState({
+                        asignacionProyectos: asignacionProyectos,
+                        data: data
+                    });
+                }
             });
     }
 
@@ -73,8 +75,10 @@ class TabProyectos extends Component {
                 }
             })
             .then(response => {
-                console.log("Proyectos  : ", response);
-                return response;
+                if (response) {
+                    console.log("Proyectos  : ", response);
+                    return response;
+                }
             });
     }
 
@@ -87,8 +91,10 @@ class TabProyectos extends Component {
                     console.log(`Error al consultar horas del proyecto ${codigoProyecto}`);
                 }
             }).then(response => {
-                console.log("Horas: ", response);
-                return response;
+                if (response) {
+                    console.log("Horas: ", response);
+                    return response;
+                }
             });
     }
 
@@ -102,18 +108,20 @@ class TabProyectos extends Component {
                     this.props.legajo, 
                     asignacion.codigo
                 );
-                console.log("Proyecto: ", proyecto);
-                let aux = {
-                    nombre: proyecto.nombre,
-                    titulo: asignacion.rolEmpleado,
-                    progreso: horas.cantidadDeHorasTrabajadas,
+                if (proyecto && horas) {
+                    let aux = {
+                        nombre: proyecto.nombre,
+                        titulo: asignacion.rolEmpleado,
+                        progreso: horas.cantidadDeHorasTrabajadas,
+                    }
+                    return aux;
+                } else {
+                    return null;
                 }
-                console.log("Aux ", aux);
-                return aux;
             }
         ));
-        console.log("Array: ", array);
-        return array;
+        
+        return array.filter((element) => element);
     }
 
     render() {

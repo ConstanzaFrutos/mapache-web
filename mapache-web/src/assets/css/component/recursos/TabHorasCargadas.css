@@ -1,0 +1,15 @@
+.tab-horas-cargadas-div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    margin-top: 5em;
+}
+
+.calendario-semanal-paper {
+    justify-content: center;
+    align-items: center;
+    width: 70%;
+    height: 60%;
+}

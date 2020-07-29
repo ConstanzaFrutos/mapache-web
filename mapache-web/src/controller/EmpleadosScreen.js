@@ -49,7 +49,8 @@ class EmpleadosScreen extends Component {
         this.props.history.push({
             pathname: `/empleados/${0}`,
             state: {
-                modo: "add"
+                modo: "add",
+                tab: "informacion"
             }
         });    
     }

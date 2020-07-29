@@ -7,6 +7,6 @@ export default class EditorProyectosScreen extends Component {
             <div>
                 <Proyecto/>
             </div>
-        )
+        );
     }
 }

@@ -5,6 +5,7 @@ import { Redirect } from "react-router-dom";
 import axios from "axios";
 import "../../../assets/css/controller/ProyectosScreen.css";
 import "../../../assets/css/ModuloProyectos/TablaCrearProyecto.css";
+import {Dropdown} from "../../general/Dropdown";
 const URL = 'https://mapache-proyectos.herokuapp.com/proyectos/';
 
 class Tarea extends Component {
@@ -14,7 +15,7 @@ class Tarea extends Component {
     }
 
     estadoInicial = {id:'', nombre:'', descripcion: '', fechaDeInicio: '',
-        fechaDeFinalizacion: '', estado: 'No iniciado', redirect: false};
+        fechaDeFinalizacion: '', estado: 'No iniciado', redirect: false, responsable: '', recursos: []};
 
     componentDidMount() {
         const proyectoId = +this.props.match.params.id;
@@ -45,6 +46,39 @@ class Tarea extends Component {
                 alert("Ocurrio un error desconocido");
             }
         });
+        this.recursosDropdown();
+    }
+
+    recursosDropdown(){
+        axios.get("https://mapache-recursos.herokuapp.com/empleados/")
+            .then(respuesta => {
+                if(respuesta.data != null){
+                    let recursosDropdown = respuesta.data.map((recurso) => {
+                        return {
+                            name: recurso.apellido + ', ' + recurso.nombre,
+                            value: recurso.legajo
+                        }
+                    })
+                    this.setState({
+                        recursos: recursosDropdown
+                    });
+                }
+            }).catch(function(err){
+            if(err.response){
+                let mensaje = "Error: " + err.response.data.status;
+                if(err.response.data.error){
+                    mensaje += ': ' + err.response.data.error;
+                }
+                alert(mensaje);
+            } else {
+                alert("Ocurrio un error desconocido");
+            }
+        });
+    }
+
+    seleccionarRecurso = event => {
+        event.preventDefault();
+        this.setState({responsable: event.target.value});
     }
 
     definirColor(estado){
@@ -129,6 +163,32 @@ class Tarea extends Component {
                     alert("Ocurrio un error desconocido");
                 }
             });
+        if(this.state.responsable !== ''){
+            this.agregarTareaEmpleado();
+        }
+    }
+
+    agregarTareaEmpleado() {
+        const proyectoId = +this.props.match.params.id;
+        let fecha = new Date();
+        let mes = ("0" + (fecha.getMonth() + 1)).slice(-2);
+        let dia = ("0" + fecha.getDate()).slice(-2);
+        let aux = fecha.getFullYear() + "-" + mes + "-" + dia;
+        axios.post(`https://mapache-recursos.herokuapp.com/empleados/${this.state.responsable}/proyectos/${proyectoId}/tareas/${this.state.id}/horas?fecha=${aux}&horas=${0}`)
+            .catch(function(err){
+            if(err.response){
+                let mensaje = "Error: " + err.response.data.status;
+                if(err.response.data.error){
+                    mensaje += '\n' + err.response.data.error;
+                }
+                if(err.response.data.message){
+                    mensaje += '\n' + err.response.data.message;
+                }
+                alert(mensaje);
+            } else {
+                alert("Ocurrio un error desconocido");
+            }
+        });
     }
 
     eliminarTarea = event => {
@@ -168,6 +228,7 @@ class Tarea extends Component {
         if (this.state.redirect) {
             return <Redirect to={"/proyectos/" +proyectoId+"/tareas"} />
         }
+        let responsable = this.state.responsable;
         return(
             <div className="proyectos-screen-div" style={{width:"100%", height:"100%"}}>
                 <Card className="tablaCrearProyectos">
@@ -194,6 +255,14 @@ class Tarea extends Component {
                                     maxLength = {250}
                                 />
                             </Form.Group>
+                            <Dropdown
+                                renderDropdown={ true }
+                                label="Responsable"
+                                value={ responsable }
+                                values={ this.state.recursos }
+                                handleChange={ this.seleccionarRecurso }
+                            >
+                            </Dropdown>
                             <Form.Row>
                                 <Form.Group as={Col}>
                                     <Form.Label>Fecha de Inicio</Form.Label>

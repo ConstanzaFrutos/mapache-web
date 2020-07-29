@@ -7,6 +7,6 @@ export default class EditorFasesScreen extends Component {
             <div>
                 <ListadoFases/>
             </div>
-        )
+        );
     }
 }

@@ -15,14 +15,20 @@ class Tarea extends Component {
     }
 
     estadoInicial = {id:'', nombre:'', descripcion: '', fechaDeInicio: '',
-        fechaDeFinalizacion: '', estado: 'No iniciado', redirect: false, responsable: '', recursos: []};
+        fechaDeFinalizacion: '', estado: 'No iniciado', redirect: false, responsable: -1, recursos: []};
 
     componentDidMount() {
         const proyectoId = +this.props.match.params.id;
         const tareaId = +this.props.match.params.id_tarea;
-        if(!proyectoId || !tareaId){
-            return;
+        if(proyectoId && tareaId){
+            this.obtenerTarea();
         }
+        this.obtenerRecursos();
+    }
+
+    obtenerTarea() {
+        const proyectoId = +this.props.match.params.id;
+        const tareaId = +this.props.match.params.id_tarea;
         axios.get(URL+proyectoId+"/tareas/"+tareaId)
             .then(respuesta => {
                 if(respuesta.data != null){
@@ -46,10 +52,9 @@ class Tarea extends Component {
                 alert("Ocurrio un error desconocido");
             }
         });
-        this.recursosDropdown();
     }
 
-    recursosDropdown(){
+    obtenerRecursos(){
         axios.get("https://mapache-recursos.herokuapp.com/empleados/")
             .then(respuesta => {
                 if(respuesta.data != null){
@@ -58,9 +63,10 @@ class Tarea extends Component {
                             name: recurso.apellido + ', ' + recurso.nombre,
                             value: recurso.legajo
                         }
-                    })
+                    });
+                    recursosDropdown.push({name: "Sin responsable", value: -1});
                     this.setState({
-                        recursos: recursosDropdown
+                        recursos: [...recursosDropdown, "Sin responsable"]
                     });
                 }
             }).catch(function(err){
@@ -112,7 +118,6 @@ class Tarea extends Component {
         axios.post(URL+proyectoId+"/tareas", tarea)
             .then(respuesta => {
                 if(respuesta.data){
-                    this.setState(this.estadoInicial);
                     alert("La tarea se creo exitosamente");
                     this.setState({redirect: true});
                 }
@@ -126,7 +131,7 @@ class Tarea extends Component {
                 } else {
                     alert("Ocurrio un error desconocido");
                 }
-            })
+            });
     }
 
     cambioTarea = event => {
@@ -163,7 +168,7 @@ class Tarea extends Component {
                     alert("Ocurrio un error desconocido");
                 }
             });
-        if(this.state.responsable !== ''){
+        if(this.state.responsable !== -1){
             this.agregarTareaEmpleado();
         }
     }
@@ -224,11 +229,10 @@ class Tarea extends Component {
 
     render() {
         const proyectoId = +this.props.match.params.id;
-        const {nombre, descripcion, fechaDeInicio, fechaDeFinalizacion, estado} = this.state;
+        const {nombre, descripcion, fechaDeInicio, fechaDeFinalizacion, estado, responsable} = this.state;
         if (this.state.redirect) {
             return <Redirect to={"/proyectos/" +proyectoId+"/tareas"} />
         }
-        let responsable = this.state.responsable;
         return(
             <div className="proyectos-screen-div" style={{width:"100%", height:"100%"}}>
                 <Card className="tablaCrearProyectos">
@@ -255,14 +259,6 @@ class Tarea extends Component {
                                     maxLength = {250}
                                 />
                             </Form.Group>
-                            <Dropdown
-                                renderDropdown={ true }
-                                label="Responsable"
-                                value={ responsable }
-                                values={ this.state.recursos }
-                                handleChange={ this.seleccionarRecurso }
-                            >
-                            </Dropdown>
                             <Form.Row>
                                 <Form.Group as={Col}>
                                     <Form.Label>Fecha de Inicio</Form.Label>
@@ -297,6 +293,16 @@ class Tarea extends Component {
                                     </Form.Control>
                                 </Form.Group>
                             </Form.Row>
+                            {this.state.id ?
+                                <Dropdown
+                                    renderDropdown={ true }
+                                    label="Responsable"
+                                    value={ responsable }
+                                    values={ this.state.recursos }
+                                    handleChange={ this.seleccionarRecurso }
+                                >
+                                </Dropdown> : null
+                            }
                         </Card.Body>
                         <Card.Footer>
                             <ButtonGroup>

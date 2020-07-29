@@ -11,12 +11,37 @@ import ArrowBack from '@material-ui/icons/ArrowBack'
 
 class TabHorasCargadas extends Component {
 
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            fechaActual: new Date(),
+            fechaPivote: new Date()
+        }
+
+        this.cambiarASemanaAnterior = this.cambiarASemanaAnterior.bind(this);
+    }
+
+    cambiarASemanaAnterior() {
+        let fechaPivoteAnterior = new Date();
+        const nuevoDia = this.state.fechaPivote.getDate() - 7;
+        fechaPivoteAnterior.setDate(nuevoDia);
+        console.log("Fecha Pivote anteiror", fechaPivoteAnterior);
+        
+        this.setState({
+            fechaPivote: fechaPivoteAnterior
+        })
+    }
+
     render() {
         return (
             <div className="tab-horas-cargadas-div">
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
-                        <Semana></Semana>
+                        <Semana
+                            fechaPivote={ this.state.fechaPivote }
+                            cambiarASemanaAnterior={ this.cambiarASemanaAnterior }
+                        ></Semana>
                     </Grid>
                 </Grid>
             </div>
@@ -29,12 +54,8 @@ export default withRouter(TabHorasCargadas);
 
 class Semana extends Component {
 
-    cambiarASemanaAnterior() {
-
-    }
-
     render() {
-        const fechasSemana = new Date().obtenerFechasSemana();
+        const fechasSemana = new Date(this.props.fechaPivote).obtenerFechasSemana();
         const fechas = fechasSemana.map((fecha) => {
             return new Fecha(fecha);
         });
@@ -52,7 +73,7 @@ class Semana extends Component {
             <div className="semana-div">
                 <Grid item >
                     <ArrowBack
-                        onClick={ this.cambiarASemanaAnterior }
+                        onClick={ this.props.cambiarASemanaAnterior }
                     ></ArrowBack>
                 </Grid>
                 { gridSemana }
@@ -97,7 +118,7 @@ class Fecha {
     }
 
     procesarFecha(fecha) {
-        return `${fecha.getFullYear()}/${fecha.getMonth()}/${fecha.getDate()}`;
+        return `${fecha.getFullYear()}/${fecha.getMonth() + 1}/${fecha.getDate()}`;
     }
 
 }

@@ -41,7 +41,7 @@ class PerfilEmpleado extends Component {
                 if (response.ok){
                     return response.json();
                 } else {
-                    this.props.mostrarAlerta(
+                    this.mostrarAlerta(
                         `Error al consultar al empleado con legajo ${legajo}`,
                         "error"
                     )
@@ -85,11 +85,13 @@ class PerfilEmpleado extends Component {
         }
 
         let tab = null;
-
+        let modo = this.props.location.state.modo ? this.props.location.state.modo : "info";
+        console.log("Modo ", modo);
+        console.log("Tab ", this.props.location.state.tab);
         if (this.props.location.state.tab === "informacion") {
             tab = <TabInformacion 
                       legajo={this.state.empleado.legajo} 
-                      modo="info"
+                      modo={ modo }
                       mostrarAlerta={ this.mostrarAlerta }
                       handleCloseAlerta={ this.handleCloseAlerta }
                       alerta={ alerta }

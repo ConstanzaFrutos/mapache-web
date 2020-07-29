@@ -2,6 +2,7 @@ import React, {Component} from "react";
 import {Button, Card, Col, Form, Modal} from "react-bootstrap";
 import { withRouter } from 'react-router';
 import axios from 'axios';
+import {Link} from "react-router-dom";
 import "../../../assets/css/controller/ProyectosScreen.css";
 import "../../../assets/css/ModuloProyectos/TablaCrearProyecto.css";
 const URL = 'https://mapache-proyectos.herokuapp.com/proyectos/';
@@ -80,6 +81,7 @@ class Fase extends Component {
 
     render() {
         const {nombre, fechaDeInicio, fechaDeFinalizacion, descripcion} = this.state;
+        const proyectoId = +this.props.match.params.id;
         return(
             <Form id="formularioFaseEditar" onSubmit={this.actualizarFase}>
                 <Card.Header>
@@ -133,6 +135,11 @@ class Fase extends Component {
                     <Button onClick={this.abrirConfirm}>
                         Delete
                     </Button>
+                    <Link to={"/proyectos/"+proyectoId+"/fases/"+this.state.id}>
+                        <Button>
+                            Iteraciones
+                        </Button>
+                    </Link>
                     <Modal show={this.state.confirm} onHide={this.cerrarConfirm}>
                         <Modal.Header closeButton>
                             <Modal.Title>Eliminar Fase</Modal.Title>

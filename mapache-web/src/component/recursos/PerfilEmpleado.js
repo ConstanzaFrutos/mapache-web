@@ -12,6 +12,7 @@ import TabInformacion from './TabInformacion';
 import TabCargarHoras from './TabCargarHoras';
 import TabTareas from './TabTareas';
 import TabProyectos from './TabProyectos';
+import TabHorasCargadas from './TabHorasCargadas';
 
 const mapacheRecursosBaseUrl = "https://mapache-recursos.herokuapp.com";
 // const mapacheRecursosBaseUrl = "http://0.0.0.0:8080";
@@ -114,6 +115,13 @@ class PerfilEmpleado extends Component {
                   />
         } else if (this.props.location.state.tab === "proyectos") {
             tab = <TabProyectos 
+                      legajo={this.state.empleado.legajo}
+                      mostrarAlerta={ this.mostrarAlerta }
+                      handleCloseAlerta={ this.handleCloseAlerta }
+                      alerta={ alerta }
+                  />
+        } else if (this.props.location.state.tab === "horas-cargadas") {
+            tab = <TabHorasCargadas 
                       legajo={this.state.empleado.legajo}
                       mostrarAlerta={ this.mostrarAlerta }
                       handleCloseAlerta={ this.handleCloseAlerta }

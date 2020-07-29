@@ -105,6 +105,7 @@ class Semana extends Component {
             {[0, 1, 2, 3, 4, 5, 6].map((value) => (
                 <Dia 
                     value={ value }
+                    diaSemana={ fechas[value].diaSemana }
                     fecha={ fechas[value].fechaProcesadaBarra }
                     horasCargadasDia={ this.obtenerHorasCargadasDia(fechas[value].fechaProcesadaGuion) }
                 ></Dia>
@@ -151,6 +152,14 @@ class Dia extends Component {
             <Grid key={this.props.value} item>
                 <Paper square className="dia-paper">
                     <Typography 
+                        align="center"
+                        variant="h6"
+                        color="textPrimary"
+                    >
+                        { this.props.diaSemana }
+                    </Typography>
+                    <Typography 
+                        align="center"
                         variant="subtitle1"
                         color="textPrimary"
                     >
@@ -177,6 +186,7 @@ class Dia extends Component {
 
 class Fecha {
     constructor(fecha) {
+        this.diaSemana = this.obtenerDiaSemana(fecha);
         this.fechaProcesadaBarra = this.procesarFecha(fecha, '/');
         this.fechaProcesadaGuion = this.procesarFecha(fecha, '-');
     }
@@ -187,6 +197,11 @@ class Fecha {
             mes = `0${mes}`;
         }
         return `${fecha.getFullYear()}${separador}${mes}${separador}${fecha.getDate()}`;
+    }
+
+    obtenerDiaSemana(fecha) {
+        var dias = ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'];
+        return dias[fecha.getDay()];
     }
 
 }

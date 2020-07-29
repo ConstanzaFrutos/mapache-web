@@ -26,6 +26,7 @@ class TabHorasCargadas extends Component {
         this.requesterHoras = new RequestsHoras();
 
         this.cambiarASemanaAnterior = this.cambiarASemanaAnterior.bind(this);
+        this.cambiarASemanaPosterior = this.cambiarASemanaPosterior.bind(this);
     }
 
     async componentDidMount() {
@@ -53,6 +54,19 @@ class TabHorasCargadas extends Component {
         }
     }
 
+    cambiarASemanaPosterior() {
+        if (this.state.fechaPivote.getDate() < this.state.fechaActual.getDate()){
+            let fechaPivotePosterior = new Date();
+            const nuevoDia = this.state.fechaPivote.getDate() + 7;
+            fechaPivotePosterior.setDate(nuevoDia);
+            console.log("Fecha Pivote posterior", fechaPivotePosterior);
+
+            this.setState({
+                fechaPivote: fechaPivotePosterior
+            })
+        }
+    }
+
     render() {
         return (
             <div className="tab-horas-cargadas-div">
@@ -60,6 +74,7 @@ class TabHorasCargadas extends Component {
                     <Semana
                         fechaPivote={ this.state.fechaPivote }
                         cambiarASemanaAnterior={ this.cambiarASemanaAnterior }
+                        cambiarASemanaPosterior={ this.cambiarASemanaPosterior }
                         horasCargadasSemana={ horasCargadas }
                     ></Semana>
                 </Grid>
@@ -108,7 +123,7 @@ class Semana extends Component {
                 <Grid item>
                     <ArrowForward
                         className="forward-arrow"
-                        onClick={ this.props.cambiarASemanaAnterior }
+                        onClick={ this.props.cambiarASemanaPosterior }
                     ></ArrowForward>
                 </Grid>
             </div>
@@ -231,5 +246,15 @@ const horasCargadas = [
         fecha: "2020-07-26",
         cantidadHoras: 5,
         actividad: "VACACIONES"
+    },
+    {
+        fecha: "2020-07-19",
+        cantidadHoras: 4,
+        actividad: "ENFERMEDAD"
+    },
+    {
+        fecha: "2020-07-15",
+        cantidadHoras: 9,
+        actividad: "TAREA"
     }
 ]

@@ -6,7 +6,7 @@ class TabHorasCargadas extends Component {
     render() {
         return (
             <div className="tab-horas-cargadas-div">
-
+                
             </div>
         )
     }

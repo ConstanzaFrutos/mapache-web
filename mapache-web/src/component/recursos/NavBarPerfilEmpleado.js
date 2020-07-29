@@ -48,7 +48,7 @@ export default class NavBarProyecto extends Component {
                         }} 
                         params={{ legajo: this.props.legajo }}
                         className="nav-link"
-                    >horas Cargadas</Link>
+                    >Horas Cargadas</Link>
                 </Nav>
             </Navbar>
         );

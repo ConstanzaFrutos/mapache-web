@@ -8,6 +8,7 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 
 import ArrowBack from '@material-ui/icons/ArrowBack';
+import ArrowForward from '@material-ui/icons/ArrowForward';
 
 import RequestsHoras from "../../communication/RequesterHoras";
 
@@ -55,14 +56,12 @@ class TabHorasCargadas extends Component {
     render() {
         return (
             <div className="tab-horas-cargadas-div">
-                <Grid container spacing={2}>
-                    <Grid item xs={12}>
-                        <Semana
-                            fechaPivote={ this.state.fechaPivote }
-                            cambiarASemanaAnterior={ this.cambiarASemanaAnterior }
-                            horasCargadasSemana={ horasCargadas }
-                        ></Semana>
-                    </Grid>
+                <Grid container alignItems="center">
+                    <Semana
+                        fechaPivote={ this.state.fechaPivote }
+                        cambiarASemanaAnterior={ this.cambiarASemanaAnterior }
+                        horasCargadasSemana={ horasCargadas }
+                    ></Semana>
                 </Grid>
             </div>
         )
@@ -99,12 +98,19 @@ class Semana extends Component {
 
         return (
             <div className="semana-div">
-                <Grid item >
+                <Grid item>
                     <ArrowBack
+                        className="back-arrow"
                         onClick={ this.props.cambiarASemanaAnterior }
                     ></ArrowBack>
                 </Grid>
                 { gridSemana }
+                <Grid item>
+                    <ArrowForward
+                        className="forward-arrow"
+                        onClick={ this.props.cambiarASemanaAnterior }
+                    ></ArrowForward>
+                </Grid>
             </div>
         )
     }
@@ -143,6 +149,7 @@ class Dia extends Component {
                             return <HoraCargada
                                         color={ color }
                                         cantidadHoras={ horas.cantidadHoras }
+                                        actividad={ horas.actividad }
                                     ></HoraCargada>
                         })}
                     </div>
@@ -177,7 +184,12 @@ class HoraCargada extends Component {
                 className="hora-cargada-div"
                 style={{"background-color": this.props.color}}
             >
-                { this.props.cantidadHoras }
+                <Typography variant="body1" align="center">
+                    { this.props.actividad }
+                </Typography>
+                <Typography variant="subtitle2" align="center">
+                    { this.props.cantidadHoras } horas
+                </Typography>
             </div>
         )
     }

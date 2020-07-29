@@ -18,3 +18,9 @@
     padding: 1em;
     height: 50vh;
 }
+
+.hora-cargada-div {
+    border-radius: 3px;
+    margin-top: 2%;
+    margin-bottom: 2%;
+}

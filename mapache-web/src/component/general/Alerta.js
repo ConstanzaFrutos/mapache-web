@@ -5,13 +5,15 @@ import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import Alert from '@material-ui/lab/Alert';
 
+import "../../assets/css/component/general/Alerta.css";
+
 export class Alerta extends Component {
 
     render() {
         let open = this.props.open;
 
         return (
-            <div>
+            <div className="custom-alerta-div">
                 <Collapse in={ open }>
                     <Alert 
                         variant="outlined" 

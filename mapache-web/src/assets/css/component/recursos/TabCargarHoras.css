@@ -1,0 +1,60 @@
+.tab-cargar-horas-div {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.foto-y-nombre {
+    display: flex;
+    flex-direction: column;
+    align-self: flex-start;
+    align-items: center;
+    padding-top: 2em;
+    padding-left: 2em;
+    padding-right: 5em;
+}
+
+.foto-y-nombre .avatar {
+    background-color: #3497c4;
+}
+
+.foto-y-nombre .nombre {
+    margin-top: 0.5em;
+    justify-content: center;
+}
+
+.tab-cargar-horas-div .tab-cargar-horas-body {
+    width: 40%;
+    align-self: flex-start;
+    padding-top: 2em;
+    padding-bottom: 2em;
+}
+
+.paper-cargar-horas {
+    padding: 1em;
+}
+
+.seleccion-tarea-div {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.seleccion-tiempo-div {
+    width: 50%;
+}
+
+.seleccion-fecha-carga-horas-div {
+    padding-left: 1em;
+    padding-top: 2em;
+    padding-bottom: 2em;
+    width: 50%;
+}
+
+.icono-guardar-carga-hora {
+    display: flex;
+    flex-direction: row;
+    float: right;
+    width: 10%;
+    justify-content: space-between;
+}

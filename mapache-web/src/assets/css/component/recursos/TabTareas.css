@@ -1,0 +1,31 @@
+.tab-tareas-div {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+.foto-y-nombre {
+    display: flex;
+    flex-direction: column;
+    align-self: flex-start;
+    align-items: center;
+    padding-top: 2em;
+    padding-left: 2em;
+    padding-right: 5em;
+}
+
+.foto-y-nombre .avatar {
+    background-color: #3497c4;
+}
+
+.foto-y-nombre .nombre {
+    margin-top: 0.5em;
+    justify-content: center;
+}
+
+.tab-tareas-div .tab-tareas-body {
+    width: auto;    
+}
+

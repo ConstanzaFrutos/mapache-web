@@ -1,0 +1,6 @@
+.custom-alerta-div {
+    position: absolute;
+    z-index: 10;
+    top: 50vh;
+    background-color: white;
+}

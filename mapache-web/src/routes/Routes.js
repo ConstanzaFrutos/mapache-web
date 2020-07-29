@@ -2,19 +2,21 @@ import React, { Component } from 'react';
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import NavBar from "../component/general/NavBar";
 import { Home } from "../controller/Home";
-import EmpleadosScreen from "../controller/EmpleadosScreen";
 import SoporteScreen from "../controller/SoporteScreen";
 import ProyectosScreen from "../controller/ProyectosScreen";
 import ClientesScreen from "../controller/ClientesScreen";
 import EditorProyectosScreen from "../component/ModuloProyectos/Proyectos/EditorProyectosScreen";
 
-import PerfilEmpleado from "../component/recursos/PerfilEmpleado";
 import CrearTicket from '../component/soporte/CrearTicket';
 import EditarTicket from '../component/soporte/EditarTicket';
 import InfoCliente from '../component/soporte/InfoCliente';
 import EditorFasesScreen from "../component/ModuloProyectos/Fases/EditorFasesScreen";
 import EditorBacklogScreen from "../component/ModuloProyectos/Tareas/EditorBacklogScreen";
 import EditorTareaScreen from "../component/ModuloProyectos/Tareas/EditorTareaScreen";
+
+//Recursos
+import EmpleadosScreen from "../controller/EmpleadosScreen";
+import PerfilEmpleado from "../component/recursos/PerfilEmpleado";
 
 class Routes extends Component {
     render() {

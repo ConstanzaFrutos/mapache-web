@@ -7,6 +7,8 @@ import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 
+import ArrowBack from '@material-ui/icons/ArrowBack'
+
 class TabHorasCargadas extends Component {
 
     render() {
@@ -27,14 +29,15 @@ export default withRouter(TabHorasCargadas);
 
 class Semana extends Component {
 
+    cambiarASemanaAnterior() {
+
+    }
+
     render() {
         const fechasSemana = new Date().obtenerFechasSemana();
-        console.log("Fechas Semana: ", fechasSemana);
         const fechas = fechasSemana.map((fecha) => {
             return new Fecha(fecha);
         });
-
-        console.log("Fechas procesadas", fechas);
 
         let gridSemana = <Grid container justify="center" spacing={2}>
             {[0, 1, 2, 3, 4, 5, 6].map((value) => (
@@ -47,6 +50,11 @@ class Semana extends Component {
 
         return (
             <div className="semana-div">
+                <Grid item >
+                    <ArrowBack
+                        onClick={ this.cambiarASemanaAnterior }
+                    ></ArrowBack>
+                </Grid>
                 { gridSemana }
             </div>
         )
@@ -69,9 +77,10 @@ class Dia extends Component {
     render() {
         return (
             <Grid key={this.props.value} item>
-                <Paper square>
+                <Paper square className="dia-paper">
                     <Typography 
-                        variant="subtitle2"
+                        variant="subtitle1"
+                        color="textPrimary"
                     >
                         Fecha: { this.props.fecha }
                     </Typography>

@@ -19,7 +19,7 @@ class TabHorasCargadas extends Component {
         this.state = {
             fechaActual: new Date(),
             fechaPivote: new Date(),
-            horasCargadas: []
+            horasCargadasSemana: []
         }
 
         this.requesterHoras = new RequestsHoras();
@@ -28,13 +28,14 @@ class TabHorasCargadas extends Component {
     }
 
     async componentDidMount() {
-        const horasCargadas = await this.requesterHoras.obtenerHorasCargadas(
-            this.props.match.params.legajo
+        const horasCargadas = await this.requesterHoras.obtenerHorasCargadasSemana(
+            this.props.match.params.legajo, 
+            this.state.fechaActual
         );
-        console.log("Horas cargadas ", horasCargadas);
+        /*console.log("Horas cargadas ", horasCargadas);
         this.setState({
-            horasCargadas: horasCargadas
-        })
+            horasCargadasSemana: horasCargadas
+        })*/
     }
 
     cambiarASemanaAnterior() {
@@ -59,18 +60,26 @@ class TabHorasCargadas extends Component {
                         <Semana
                             fechaPivote={ this.state.fechaPivote }
                             cambiarASemanaAnterior={ this.cambiarASemanaAnterior }
+                            horasCargadasSemana={ horasCargadas }
                         ></Semana>
                     </Grid>
                 </Grid>
             </div>
         )
     }
-
+    //horasCargadasSemana={ this.state.horasCargadasSemana }
 }
 
 export default withRouter(TabHorasCargadas);
 
 class Semana extends Component {
+
+    obtenerHorasCargadasDia(dia) {
+        console.log("Obteniendo las horas cargadas del dia ", dia);
+        console.log(this.props.horasCargadasSemana.filter(hora => hora.fecha === dia));
+        //let horasCargadasDia = this.props.horasCargadasSemana.filter(dia => dia.fecha > 6);
+        return this.props.horasCargadasSemana.filter(hora => hora.fecha === dia);
+    }
 
     render() {
         const fechasSemana = new Date(this.props.fechaPivote).obtenerFechasSemana();
@@ -82,7 +91,8 @@ class Semana extends Component {
             {[0, 1, 2, 3, 4, 5, 6].map((value) => (
                 <Dia 
                     value={ value }
-                    fecha={ fechas[value].fechaProcesada }
+                    fecha={ fechas[value].fechaProcesadaBarra }
+                    horasCargadasDia={ this.obtenerHorasCargadasDia(fechas[value].fechaProcesadaGuion) }
                 ></Dia>
             ))}
         </Grid>
@@ -114,6 +124,8 @@ Date.prototype.obtenerFechasSemana = function(){
 class Dia extends Component {    
 
     render() {
+        console.log("Horas cargadas dia ", this.props.horasCargadasDia );
+
         return (
             <Grid key={this.props.value} item>
                 <Paper square className="dia-paper">
@@ -121,8 +133,19 @@ class Dia extends Component {
                         variant="subtitle1"
                         color="textPrimary"
                     >
-                        Fecha: { this.props.fecha }
+                        { this.props.fecha }
                     </Typography>
+                    <div className="horas-cargadas-en-el-dia-div">
+                        { this.props.horasCargadasDia.map((horas) => {
+                            let color = actividades.find(
+                                actividad => actividad.nombre === horas.actividad
+                            ).color;
+                            return <HoraCargada
+                                        color={ color }
+                                        cantidadHoras={ horas.cantidadHoras }
+                                    ></HoraCargada>
+                        })}
+                    </div>
                 </Paper>
             </Grid>
         )
@@ -132,11 +155,69 @@ class Dia extends Component {
 
 class Fecha {
     constructor(fecha) {
-        this.fechaProcesada = this.procesarFecha(fecha);
+        this.fechaProcesadaBarra = this.procesarFecha(fecha, '/');
+        this.fechaProcesadaGuion = this.procesarFecha(fecha, '-');
     }
 
-    procesarFecha(fecha) {
-        return `${fecha.getFullYear()}/${fecha.getMonth() + 1}/${fecha.getDate()}`;
+    procesarFecha(fecha, separador) {
+        let mes = fecha.getMonth() + 1;
+        if (mes <= 9) {
+            mes = `0${mes}`;
+        }
+        return `${fecha.getFullYear()}${separador}${mes}${separador}${fecha.getDate()}`;
     }
 
 }
+
+class HoraCargada extends Component {
+    
+    render() {
+        return (
+            <div 
+                className="hora-cargada-div"
+                style={{"background-color": this.props.color}}
+            >
+                { this.props.cantidadHoras }
+            </div>
+        )
+    }
+
+}
+
+const actividades = [
+    {
+        nombre: "TAREA",
+        color: "#F08080"
+    },
+    {
+        nombre: "VACACIONES",
+        color: "#FFE485"
+    },
+    {
+        nombre: "ENFERMEDAD",
+        color: "#20B2AA"
+    }
+]
+
+const horasCargadas = [
+    {
+        fecha: "2020-07-29",
+        cantidadHoras: 2,
+        actividad: "TAREA"
+    },
+    {
+        fecha: "2020-07-28",
+        cantidadHoras: 1,
+        actividad: "TAREA"
+    },
+    {
+        fecha: "2020-07-28",
+        cantidadHoras: 2,
+        actividad: "ENFERMEDAD"
+    },
+    {
+        fecha: "2020-07-26",
+        cantidadHoras: 5,
+        actividad: "VACACIONES"
+    }
+]

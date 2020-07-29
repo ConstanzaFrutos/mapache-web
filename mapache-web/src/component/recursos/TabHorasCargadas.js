@@ -7,7 +7,9 @@ import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 
-import ArrowBack from '@material-ui/icons/ArrowBack'
+import ArrowBack from '@material-ui/icons/ArrowBack';
+
+import RequestsHoras from "../../communication/RequesterHoras";
 
 class TabHorasCargadas extends Component {
 
@@ -16,10 +18,23 @@ class TabHorasCargadas extends Component {
 
         this.state = {
             fechaActual: new Date(),
-            fechaPivote: new Date()
+            fechaPivote: new Date(),
+            horasCargadas: []
         }
 
+        this.requesterHoras = new RequestsHoras();
+
         this.cambiarASemanaAnterior = this.cambiarASemanaAnterior.bind(this);
+    }
+
+    async componentDidMount() {
+        const horasCargadas = await this.requesterHoras.obtenerHorasCargadas(
+            this.props.match.params.legajo
+        );
+        console.log("Horas cargadas ", horasCargadas);
+        this.setState({
+            horasCargadas: horasCargadas
+        })
     }
 
     cambiarASemanaAnterior() {

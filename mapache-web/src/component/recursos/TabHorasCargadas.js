@@ -23,14 +23,17 @@ class TabHorasCargadas extends Component {
     }
 
     cambiarASemanaAnterior() {
-        let fechaPivoteAnterior = new Date();
-        const nuevoDia = this.state.fechaPivote.getDate() - 7;
-        fechaPivoteAnterior.setDate(nuevoDia);
-        console.log("Fecha Pivote anteiror", fechaPivoteAnterior);
-        
-        this.setState({
-            fechaPivote: fechaPivoteAnterior
-        })
+        console.log("Diferencia entre fechas ", this.state.fechaActual.getDate() - this.state.fechaPivote.getDate());
+        if (this.state.fechaActual.getDate() - this.state.fechaPivote.getDate() <= 21){
+            let fechaPivoteAnterior = new Date();
+            const nuevoDia = this.state.fechaPivote.getDate() - 7;
+            fechaPivoteAnterior.setDate(nuevoDia);
+            console.log("Fecha Pivote anteiror", fechaPivoteAnterior);
+
+            this.setState({
+                fechaPivote: fechaPivoteAnterior
+            })
+        }
     }
 
     render() {

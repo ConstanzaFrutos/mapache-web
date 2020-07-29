@@ -28,9 +28,20 @@ export default withRouter(TabHorasCargadas);
 class Semana extends Component {
 
     render() {
+        const fechasSemana = new Date().obtenerFechasSemana();
+        console.log("Fechas Semana: ", fechasSemana);
+        const fechas = fechasSemana.map((fecha) => {
+            return new Fecha(fecha);
+        });
+
+        console.log("Fechas procesadas", fechas);
+
         let gridSemana = <Grid container justify="center" spacing={2}>
             {[0, 1, 2, 3, 4, 5, 6].map((value) => (
-                <Dia value={ value }></Dia>
+                <Dia 
+                    value={ value }
+                    fecha={ fechas[value].fechaProcesada }
+                ></Dia>
             ))}
         </Grid>
 
@@ -56,16 +67,13 @@ Date.prototype.obtenerFechasSemana = function(){
 class Dia extends Component {    
 
     render() {
-        const fechasSemana = new Date().obtenerFechasSemana();
-        console.log("Fechas Semana: ", fechasSemana);
-
         return (
             <Grid key={this.props.value} item>
                 <Paper square>
                     <Typography 
                         variant="subtitle2"
                     >
-                        Fecha: { "0" }
+                        Fecha: { this.props.fecha }
                     </Typography>
                 </Paper>
             </Grid>
@@ -76,7 +84,7 @@ class Dia extends Component {
 
 class Fecha {
     constructor(fecha) {
-        const fechaProcesada = fecha;
+        this.fechaProcesada = this.procesarFecha(fecha);
     }
 
     procesarFecha(fecha) {

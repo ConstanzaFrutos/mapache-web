@@ -264,7 +264,8 @@ class Tabinformacion extends Component {
         this.props.history.push({
             pathname: `/empleados/${empleado.legajo}`,
             state: {
-                modo: "info"
+                modo: "info",
+                tab: "informacion"
             }
         }); 
     }
@@ -273,7 +274,8 @@ class Tabinformacion extends Component {
         this.props.history.push({
             pathname: `/empleados/${this.state.empleado.legajo}`,
             state: {
-                modo: "info"
+                modo: "info",
+                tab: "informacion"
             }
         }); 
     }
@@ -310,8 +312,9 @@ class Tabinformacion extends Component {
                      >
                      </Alerta>
         }
-
+        console.log("EN TAB INFORMACION ", this.props.modo);
         if (this.props.modo === "info") {
+            console.log("En info");
             let nombreYApellido = this.state.empleado.apellido + ", " + this.state.empleado.nombre;
             avatar = <div className={"foto-y-nombre"}>
                         <Avatar className="avatar">
@@ -350,7 +353,8 @@ class Tabinformacion extends Component {
                                     this.props.history.push({
                                         pathname: `/empleados/${this.state.empleado.legajo}`,
                                         state: {
-                                            modo: "edit"
+                                            modo: "edit",
+                                            tab: "informacion"
                                         }
                                     });
                                 }}

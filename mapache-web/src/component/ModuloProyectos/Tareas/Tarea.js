@@ -300,12 +300,12 @@ class Tarea extends Component {
                         </Card.Body>
                         <Card.Footer>
                             <ButtonGroup>
-                                <Button variant="success" type="submit" onClick={this.props.history.goBack}>
+                                <Button variant="outline-success" type="submit" onClick={this.props.history.goBack}>
                                     {this.state.id ? "Actualizar" : "Crear Tarea"}
                                 </Button>
                                 {this.state.id ?
-                                    <Button size="sm" variant="outline-danger" onClick={this.abrirConfirm}>
-                                        Delete
+                                    <Button size="sm" variant="danger" onClick={this.abrirConfirm}>
+                                        Eliminar
                                     </Button> : null
                                 }
                                 <Modal show={this.state.confirm} onHide={this.cerrarConfirm}>

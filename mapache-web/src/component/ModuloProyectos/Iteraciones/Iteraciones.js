@@ -1,6 +1,6 @@
 import React, { Component }  from 'react';
 import axios from 'axios';
-import {Card, Form, Col, Button, Table, ButtonGroup} from "react-bootstrap";
+import {Card, Form, Col, Button, Table, ButtonGroup, Modal} from "react-bootstrap";
 import {Link} from "react-router-dom";
 import { withRouter } from 'react-router';
 import "../../../assets/css/controller/ProyectosScreen.css";
@@ -18,6 +18,17 @@ class Iteraciones extends Component {
             tareas: [],
             tareasDropdown: [],
             tareaAgregar: ''
+        }
+    }
+
+    componentDidMount() {
+        this.obtenerIteraciones();
+        this.obtenerTareasSinIteracion();
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if(prevState.iteracionActualDropdown !== this.state.iteracionActualDropdown){
+            this.obtenerTareasSinIteracion();
         }
     }
 
@@ -73,17 +84,6 @@ class Iteraciones extends Component {
                 alert("Ocurrio un error desconocido");
             }
         });
-    }
-
-    componentDidMount() {
-        this.obtenerIteraciones();
-        this.obtenerTareasSinIteracion();
-    }
-
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        if(prevState.tareasDropdown.length !== this.state.tareasDropdown.length){
-            this.obtenerTareasSinIteracion();
-        }
     }
 
     obtenerTareas() {
@@ -201,6 +201,7 @@ class Iteraciones extends Component {
             .then(respuesta=> {
                 if(respuesta.data != null){
                     alert("La iteracion fue finalizada");
+                    this.cerrarConfirm();
                 }
             }).catch(function(err){
             if(err.response){
@@ -335,6 +336,15 @@ class Iteraciones extends Component {
         return '#000000';
     }
 
+    abrirConfirm = event => {
+        event.preventDefault();
+        this.setState({confirm : true})
+    }
+
+    cerrarConfirm = () => {
+        this.setState({confirm : false});
+    }
+
     render() {
         const proyectoId = +this.props.match.params.id;
         const {iteraciones, iteracionActual, iteracionActualDropdown, tareasDropdown, tareaAgregar} = this.state;
@@ -385,10 +395,24 @@ class Iteraciones extends Component {
                                         Actualizar
                                     </Button>
                                     {this.state.iteracionActual.estado === "Activa" ?
-                                        <Button variant="success" onClick={this.finalizarIteracion.bind(this)}>
+                                        <Button variant="success" onClick={this.abrirConfirm.bind(this)}>
                                             Finalizar iteracion
                                         </Button> : null
                                     }
+                                    <Modal show={this.state.confirm} onHide={this.cerrarConfirm}>
+                                        <Modal.Header closeButton>
+                                            <Modal.Title>Eliminar Tarea</Modal.Title>
+                                        </Modal.Header>
+                                        <Modal.Body>Desea finalizar la iteracion actual? En caso de hacerlo no se puede volver atras.</Modal.Body>
+                                        <Modal.Footer>
+                                            <Button variant="secondary" onClick={this.cerrarConfirm}>
+                                                Cancelar
+                                            </Button>
+                                            <Button variant="success" onClick={this.finalizarIteracion.bind(this)}>
+                                                Finalizar
+                                            </Button>
+                                        </Modal.Footer>
+                                    </Modal>
                                 </ButtonGroup>
                             </Card.Body>
                             <Table>

@@ -130,11 +130,11 @@ class Fase extends Component {
                     </Form.Group>
                 </Card.Body>
                 <Card.Footer>
-                    <Button variant="success" type="submit">
+                    <Button variant="outline-success" type="submit">
                         Actualizar
                     </Button>
                     <Link to={"/proyectos/"+proyectoId+"/fases/"+this.state.id}>
-                        <Button>
+                        <Button variant="outline-primary">
                             Iteraciones
                         </Button>
                     </Link>

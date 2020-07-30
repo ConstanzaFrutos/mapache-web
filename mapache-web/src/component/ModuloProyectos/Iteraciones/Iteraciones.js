@@ -80,6 +80,12 @@ class Iteraciones extends Component {
         this.obtenerTareasSinIteracion();
     }
 
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if(prevState.tareasDropdown.length !== this.state.tareasDropdown.length){
+            this.obtenerTareasSinIteracion();
+        }
+    }
+
     obtenerTareas() {
         const proyectoId = +this.props.match.params.id;
         const faseId = +this.props.match.params.id_fase;
@@ -170,6 +176,31 @@ class Iteraciones extends Component {
             .then(respuesta=> {
                 if(respuesta.data != null){
                     alert("La iteracion fue actualizada correctamente");
+                }
+            }).catch(function(err){
+            if(err.response){
+                let mensaje = "Error: " + err.response.data.status;
+                if(err.response.data.error){
+                    mensaje += '\n' + err.response.data.error;
+                }
+                alert(mensaje);
+            } else {
+                alert("Ocurrio un error desconocido");
+            }
+        });
+    }
+
+    finalizarIteracion = event => {
+        if(!this.state.iteracionActual){
+            return;
+        }
+        const aux = {};
+        const proyectoId = +this.props.match.params.id;
+        const faseId = +this.props.match.params.id_fase;
+        axios.put(URL+proyectoId+'/fases/'+faseId+'/iteraciones/'+this.state.iteracionActual.id+'/finalizar', aux)
+            .then(respuesta=> {
+                if(respuesta.data != null){
+                    alert("La iteracion fue finalizada");
                 }
             }).catch(function(err){
             if(err.response){
@@ -318,12 +349,14 @@ class Iteraciones extends Component {
                         handleChange={ this.seleccionarIteracion }
                     >
                     </Dropdown>
-                    <Button onClick={this.crearIteracion.bind(this)}>
-                        Nueva Iteracion
-                    </Button>
-                    <Button variant="danger" onClick={this.eliminarIteracion.bind(this)}>
-                        Eliminar Iteracion
-                    </Button>
+                    <ButtonGroup>
+                        <Button variant="outline-primary" onClick={this.crearIteracion.bind(this)}>
+                            Nueva Iteracion
+                        </Button>
+                        <Button variant="outline-danger" onClick={this.eliminarIteracion.bind(this)}>
+                            Eliminar Iteracion
+                        </Button>
+                    </ButtonGroup>
                     {this.state.iteracionActual ?
                         <Form id="formularioFaseEditar" onSubmit={this.actualizarIteracion}>
                             <Card.Body>
@@ -347,10 +380,17 @@ class Iteraciones extends Component {
                                         />
                                     </Form.Group>
                                 </Form.Row>
+                                <ButtonGroup>
+                                    <Button variant="outline-success" size="sm" type="submit">
+                                        Actualizar
+                                    </Button>
+                                    {this.state.iteracionActual.estado === "Activa" ?
+                                        <Button variant="success" onClick={this.finalizarIteracion.bind(this)}>
+                                            Finalizar iteracion
+                                        </Button> : null
+                                    }
+                                </ButtonGroup>
                             </Card.Body>
-                            <Button variant="success" type="submit">
-                                Actualizar
-                            </Button>
                             <Table>
                                 <thead>
                                 <tr>
@@ -398,16 +438,17 @@ class Iteraciones extends Component {
                                 handleChange={ this.seleccionarTarea }
                             >
                             </Dropdown>
-                            <Button onClick={this.agregarTarea.bind(this)}>
-                                Agregar
-                            </Button>
-                            <Link to={"/proyectos/"+proyectoId+'/tareas/:id'}>
-                                <Button size="sm" variant="outline-primary">
-                                    Crear tarea
+                            <ButtonGroup>
+                                <Button size={"sm"} onClick={this.agregarTarea.bind(this)}>
+                                    Agregar
                                 </Button>
-                            </Link>
-                        </Form> : null
-                    }
+                                <Link to={"/proyectos/"+proyectoId+'/tareas/:id'}>
+                                    <Button size="sm" variant="outline-primary">
+                                        Crear tarea
+                                    </Button>
+                                </Link>
+                            </ButtonGroup>
+                        </Form> : null}
                 </Card>
             </div>
         );

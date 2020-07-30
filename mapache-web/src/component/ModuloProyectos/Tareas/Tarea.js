@@ -201,6 +201,7 @@ class Tarea extends Component {
                 if(respuesta.data != null){
                     alert("La tarea fue eliminada correctamente");
                     this.setState({confirm : false});
+                    this.props.history.goBack();
                 }
             }).catch(function(err){
             if(err.response){

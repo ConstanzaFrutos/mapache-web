@@ -39,6 +39,12 @@ class Backlog extends Component {
         this.obtenerTareas();
     }
 
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if(prevState.tareas.length !== this.state.tareas.length){
+            this.obtenerTareas();
+        }
+    }
+
     definirColor(estado){
         if(estado === "No iniciada"){
             //negro

@@ -26,7 +26,8 @@ class Fase extends Component {
             nombre : this.state.nombre,
             fechaDeInicio: this.state.fechaDeInicio,
             descripcion: this.state.descripcion,
-            fechaDeFinalizacion: this.state.fechaDeFinalizacion
+            fechaDeFinalizacion: this.state.fechaDeFinalizacion,
+            iteraciones: this.state.iteraciones
         };
         axios.put(URL+proyectoId+'/fases/'+this.state.id, aux)
             .then(respuesta=> {

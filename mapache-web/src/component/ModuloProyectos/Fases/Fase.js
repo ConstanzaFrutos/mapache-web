@@ -132,14 +132,14 @@ class Fase extends Component {
                     <Button variant="success" type="submit">
                         Actualizar
                     </Button>
-                    <Button onClick={this.abrirConfirm}>
-                        Delete
-                    </Button>
                     <Link to={"/proyectos/"+proyectoId+"/fases/"+this.state.id}>
                         <Button>
                             Iteraciones
                         </Button>
                     </Link>
+                    <Button variant="danger" onClick={this.abrirConfirm}>
+                        Delete
+                    </Button>
                     <Modal show={this.state.confirm} onHide={this.cerrarConfirm}>
                         <Modal.Header closeButton>
                             <Modal.Title>Eliminar Fase</Modal.Title>

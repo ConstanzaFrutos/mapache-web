@@ -15,11 +15,13 @@ class Iteraciones extends Component {
             iteraciones: [],
             iteracionActual: null,
             iteracionActualDropdown: '',
-            tareas: []
+            tareas: [],
+            tareasDropdown: [],
+            tareaAgregar: ''
         }
     }
 
-    componentDidMount() {
+    obtenerIteraciones() {
         const proyectoId = +this.props.match.params.id;
         const faseId = +this.props.match.params.id_fase;
         axios.get(URL+proyectoId+'/fases/'+faseId+'/iteraciones')
@@ -47,6 +49,37 @@ class Iteraciones extends Component {
         });
     }
 
+    obtenerTareasSinIteracion() {
+        const proyectoId = +this.props.match.params.id;
+        axios.get(URL+proyectoId+'/tareas_sin_iteracion')
+            .then(respuesta => {
+                let aux = respuesta.data.map((tarea) => {
+                    return {
+                        name: tarea.nombre,
+                        value: tarea.id
+                    }
+                });
+                this.setState({
+                    tareasDropdown: aux
+                });
+            }).catch(function(err){
+            if(err.response){
+                let mensaje = "Error: " + err.response.data.status;
+                if(err.response.data.error){
+                    mensaje += '\n' + err.response.data.error;
+                }
+                alert(mensaje);
+            } else {
+                alert("Ocurrio un error desconocido");
+            }
+        });
+    }
+
+    componentDidMount() {
+        this.obtenerIteraciones();
+        this.obtenerTareasSinIteracion();
+    }
+
     obtenerTareas() {
         const proyectoId = +this.props.match.params.id;
         const faseId = +this.props.match.params.id_fase;
@@ -71,9 +104,10 @@ class Iteraciones extends Component {
         });
     }
 
-    seleccionarIteracion = event => {
-        event.preventDefault();
-        const iterId = event.target.value;
+    obtenerIteracion(iterId) {
+        if(!iterId || iterId <= 0){
+            return;
+        }
         const proyectoId = +this.props.match.params.id;
         const faseId = +this.props.match.params.id_fase;
         axios.get(URL+proyectoId+'/fases/'+faseId+'/iteraciones/'+iterId)
@@ -95,7 +129,18 @@ class Iteraciones extends Component {
                 alert("Ocurrio un error desconocido");
             }
         });
+    }
+
+    seleccionarIteracion = event => {
+        event.preventDefault();
+        const iterId = event.target.value;
+        this.obtenerIteracion(iterId);
         this.setState({iteracionActualDropdown: event.target.value});
+    }
+
+    seleccionarTarea = event => {
+        event.preventDefault();
+        this.setState({tareaAgregar: event.target.value});
     }
 
     cambioIteracion = event => {
@@ -139,6 +184,108 @@ class Iteraciones extends Component {
         });
     }
 
+    eliminarIteracion = event => {
+        event.preventDefault();
+        if(!this.state.iteracionActual){
+            return;
+        }
+        const proyectoId = +this.props.match.params.id;
+        const faseId = +this.props.match.params.id_fase;
+        axios.delete(URL+proyectoId+'/fases/'+faseId+'/iteraciones/'+this.state.iteracionActual.id)
+            .then(respuesta => {
+                if(respuesta.data != null){
+                    alert("La iteracion fue eliminada correctamente");
+                    this.obtenerIteraciones();
+                }
+            }).catch(function(err){
+            if(err.response){
+                let mensaje = "Error: " + err.response.data.status;
+                if(err.response.data.error){
+                    mensaje += '\n' + err.response.data.error;
+                }
+                alert(mensaje);
+            } else {
+                alert("Ocurrio un error desconocido");
+            }
+        });
+    }
+
+    agregarTarea = event => {
+        event.preventDefault();
+        if(!this.state.tareaAgregar){
+            return;
+        }
+        const proyectoId = +this.props.match.params.id;
+        const faseId = +this.props.match.params.id_fase;
+        axios.put(URL+proyectoId+'/fases/'+faseId+'/iteraciones/'+this.state.iteracionActual.id+'/tareas?id_tarea='+this.state.tareaAgregar)
+            .then(respuesta=> {
+                if(respuesta.data != null){
+                    alert("La Tarea fue agregada correctamente");
+                    this.obtenerTareas();
+                    this.obtenerTareasSinIteracion();
+                    this.obtenerIteracion(this.state.iteracionActual.id);
+                    this.setState({tareaAgregar: ''});
+                }
+            }).catch(function(err){
+            if(err.response){
+                let mensaje = "Error: " + err.response.data.status;
+                if(err.response.data.error){
+                    mensaje += '\n' + err.response.data.error;
+                }
+                alert(mensaje);
+            } else {
+                alert("Ocurrio un error desconocido");
+            }
+        });
+    }
+
+    eliminarTarea = (tareaId) => {
+        const proyectoId = +this.props.match.params.id;
+        const faseId = +this.props.match.params.id_fase;
+        axios.delete(URL+proyectoId+'/fases/'+faseId+'/iteraciones/'+this.state.iteracionActual.id+'/tareas/'+tareaId)
+            .then(respuesta => {
+                if(respuesta.data != null){
+                    alert("La tarea fue eliminada de la iteracion correctamente");
+                    this.obtenerTareas();
+                    this.obtenerTareasSinIteracion();
+                }
+            }).catch(function(err){
+            if(err.response){
+                let mensaje = "Error: " + err.response.data.status;
+                if(err.response.data.error){
+                    mensaje += '\n' + err.response.data.error;
+                }
+                alert(mensaje);
+            } else {
+                alert("Ocurrio un error desconocido");
+            }
+        });
+    }
+
+    crearIteracion() {
+        const proyectoId = +this.props.match.params.id;
+        const faseId = +this.props.match.params.id_fase;
+        const iteracion = {};
+        axios.post(URL+proyectoId+'/fases/'+faseId+'/iteraciones', iteracion)
+            .then(respuesta => {
+                if(respuesta.data){
+                    this.setState({nuevaFase: this.estadoInicial});
+                    alert("La iteracion se creo exitosamente");
+                    this.obtenerIteraciones();
+                }
+            }).catch(function(err){
+            if(err.response){
+                let mensaje = "Error: " + err.response.data.status;
+                if(err.response.data.error){
+                    mensaje += '\n' + err.response.data.error;
+                }
+                alert(mensaje);
+            } else {
+                alert("Ocurrio un error desconocido");
+            }
+        });
+    }
+
     definirColor(estado){
         if(estado === "No iniciada"){
             //negro
@@ -157,13 +304,11 @@ class Iteraciones extends Component {
         return '#000000';
     }
 
-    /*Crear iteracion y asignar tarea a una iteracion, eliminar tarea de la iteracion*/
-
     render() {
         const proyectoId = +this.props.match.params.id;
-        const {iteraciones, iteracionActual, iteracionActualDropdown} = this.state;
+        const {iteraciones, iteracionActual, iteracionActualDropdown, tareasDropdown, tareaAgregar} = this.state;
         return(
-            <div className="proyectos-screen-div" style={{width:"100%", height:"100%"}}>
+            <div className="tablaProyectos" style={{width: "100%", height: "100%"}}>
                 <Card className="tablaCrearProyectos">
                     <Dropdown
                         renderDropdown={ true }
@@ -173,6 +318,12 @@ class Iteraciones extends Component {
                         handleChange={ this.seleccionarIteracion }
                     >
                     </Dropdown>
+                    <Button onClick={this.crearIteracion.bind(this)}>
+                        Nueva Iteracion
+                    </Button>
+                    <Button variant="danger" onClick={this.eliminarIteracion.bind(this)}>
+                        Eliminar Iteracion
+                    </Button>
                     {this.state.iteracionActual ?
                         <Form id="formularioFaseEditar" onSubmit={this.actualizarIteracion}>
                             <Card.Body>
@@ -229,6 +380,9 @@ class Iteraciones extends Component {
                                                                 Abrir
                                                             </Button>
                                                         </Link>
+                                                        <Button size="sm" variant="danger" onClick={this.eliminarTarea.bind(this, tarea.id)}>
+                                                            Eliminar
+                                                        </Button>
                                                     </ButtonGroup>
                                                 </td>
                                             </tr>
@@ -236,6 +390,22 @@ class Iteraciones extends Component {
                                     }
                                 </tbody>
                             </Table>
+                            <Dropdown
+                                renderDropdown={ true }
+                                label="Agregar Tarea"
+                                value={ tareaAgregar }
+                                values={ tareasDropdown }
+                                handleChange={ this.seleccionarTarea }
+                            >
+                            </Dropdown>
+                            <Button onClick={this.agregarTarea.bind(this)}>
+                                Agregar
+                            </Button>
+                            <Link to={"/proyectos/"+proyectoId+'/tareas/:id'}>
+                                <Button size="sm" variant="outline-primary">
+                                    Crear tarea
+                                </Button>
+                            </Link>
                         </Form> : null
                     }
                 </Card>

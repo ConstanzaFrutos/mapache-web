@@ -1,7 +1,6 @@
 import React, {Component} from "react";
 import { withRouter } from 'react-router';
 import {Button,ButtonGroup, Card, Col, Form, Modal} from "react-bootstrap";
-import { Redirect } from "react-router-dom";
 import axios from "axios";
 import "../../../assets/css/controller/ProyectosScreen.css";
 import "../../../assets/css/ModuloProyectos/TablaCrearProyecto.css";
@@ -15,7 +14,7 @@ class Tarea extends Component {
     }
 
     estadoInicial = {id:'', nombre:'', descripcion: '', fechaDeInicio: '',
-        fechaDeFinalizacion: '', estado: 'No iniciado', redirect: false, responsable: -1, recursos: []};
+        fechaDeFinalizacion: '', estado: 'No iniciado', responsable: -1, recursos: []};
 
     componentDidMount() {
         const proyectoId = +this.props.match.params.id;
@@ -119,7 +118,6 @@ class Tarea extends Component {
             .then(respuesta => {
                 if(respuesta.data){
                     alert("La tarea se creo exitosamente");
-                    this.setState({redirect: true});
                 }
             }).catch(function(err){
                 if(err.response){
@@ -155,7 +153,6 @@ class Tarea extends Component {
             .then(respuesta=> {
                 if(respuesta.data != null){
                     alert("La tarea: " + tarea.nombre+ " se actualizo exitosamente");
-                    this.setState({redirect : true});
                 }
             }).catch(function(err){
                 if(err.response){
@@ -203,7 +200,7 @@ class Tarea extends Component {
             .then(respuesta => {
                 if(respuesta.data != null){
                     alert("La tarea fue eliminada correctamente");
-                    this.setState({confirm : false, redirect:true});
+                    this.setState({confirm : false});
                 }
             }).catch(function(err){
             if(err.response){
@@ -228,11 +225,7 @@ class Tarea extends Component {
     }
 
     render() {
-        const proyectoId = +this.props.match.params.id;
         const {nombre, descripcion, fechaDeInicio, fechaDeFinalizacion, estado, responsable} = this.state;
-        if (this.state.redirect) {
-            return <Redirect to={"/proyectos/" +proyectoId+"/tareas"} />
-        }
         return(
             <div className="proyectos-screen-div" style={{width:"100%", height:"100%"}}>
                 <Card className="tablaCrearProyectos">
@@ -306,7 +299,7 @@ class Tarea extends Component {
                         </Card.Body>
                         <Card.Footer>
                             <ButtonGroup>
-                                <Button variant="success" type="submit">
+                                <Button variant="success" type="submit" onClick={this.props.history.goBack}>
                                     {this.state.id ? "Actualizar" : "Crear Tarea"}
                                 </Button>
                                 {this.state.id ?

@@ -1,10 +1,10 @@
 import React, {Component} from "react";
 import { withRouter } from 'react-router';
 import {Button,ButtonGroup, Card, Col, Form, Modal} from "react-bootstrap";
-import { Redirect } from "react-router-dom";
 import axios from "axios";
 import "../../../assets/css/controller/ProyectosScreen.css";
 import "../../../assets/css/ModuloProyectos/TablaCrearProyecto.css";
+import {Dropdown} from "../../general/Dropdown";
 const URL = 'https://mapache-proyectos.herokuapp.com/proyectos/';
 
 class Tarea extends Component {
@@ -14,14 +14,20 @@ class Tarea extends Component {
     }
 
     estadoInicial = {id:'', nombre:'', descripcion: '', fechaDeInicio: '',
-        fechaDeFinalizacion: '', estado: 'No iniciado', redirect: false};
+        fechaDeFinalizacion: '', estado: 'No iniciado', responsable: -1, recursos: []};
 
     componentDidMount() {
         const proyectoId = +this.props.match.params.id;
         const tareaId = +this.props.match.params.id_tarea;
-        if(!proyectoId || !tareaId){
-            return;
+        if(proyectoId && tareaId){
+            this.obtenerTarea();
         }
+        this.obtenerRecursos();
+    }
+
+    obtenerTarea() {
+        const proyectoId = +this.props.match.params.id;
+        const tareaId = +this.props.match.params.id_tarea;
         axios.get(URL+proyectoId+"/tareas/"+tareaId)
             .then(respuesta => {
                 if(respuesta.data != null){
@@ -45,6 +51,39 @@ class Tarea extends Component {
                 alert("Ocurrio un error desconocido");
             }
         });
+    }
+
+    obtenerRecursos(){
+        axios.get("https://mapache-recursos.herokuapp.com/empleados/")
+            .then(respuesta => {
+                if(respuesta.data != null){
+                    let recursosDropdown = respuesta.data.map((recurso) => {
+                        return {
+                            name: recurso.apellido + ', ' + recurso.nombre,
+                            value: recurso.legajo
+                        }
+                    });
+                    recursosDropdown.push({name: "Sin responsable", value: -1});
+                    this.setState({
+                        recursos: [...recursosDropdown, "Sin responsable"]
+                    });
+                }
+            }).catch(function(err){
+            if(err.response){
+                let mensaje = "Error: " + err.response.data.status;
+                if(err.response.data.error){
+                    mensaje += ': ' + err.response.data.error;
+                }
+                alert(mensaje);
+            } else {
+                alert("Ocurrio un error desconocido");
+            }
+        });
+    }
+
+    seleccionarRecurso = event => {
+        event.preventDefault();
+        this.setState({responsable: event.target.value});
     }
 
     definirColor(estado){
@@ -78,9 +117,7 @@ class Tarea extends Component {
         axios.post(URL+proyectoId+"/tareas", tarea)
             .then(respuesta => {
                 if(respuesta.data){
-                    this.setState(this.estadoInicial);
                     alert("La tarea se creo exitosamente");
-                    this.setState({redirect: true});
                 }
             }).catch(function(err){
                 if(err.response){
@@ -92,7 +129,7 @@ class Tarea extends Component {
                 } else {
                     alert("Ocurrio un error desconocido");
                 }
-            })
+            });
     }
 
     cambioTarea = event => {
@@ -116,7 +153,6 @@ class Tarea extends Component {
             .then(respuesta=> {
                 if(respuesta.data != null){
                     alert("La tarea: " + tarea.nombre+ " se actualizo exitosamente");
-                    this.setState({redirect : true});
                 }
             }).catch(function(err){
                 if(err.response){
@@ -129,6 +165,32 @@ class Tarea extends Component {
                     alert("Ocurrio un error desconocido");
                 }
             });
+        if(this.state.responsable !== -1){
+            this.agregarTareaEmpleado();
+        }
+    }
+
+    agregarTareaEmpleado() {
+        const proyectoId = +this.props.match.params.id;
+        let fecha = new Date();
+        let mes = ("0" + (fecha.getMonth() + 1)).slice(-2);
+        let dia = ("0" + fecha.getDate()).slice(-2);
+        let aux = fecha.getFullYear() + "-" + mes + "-" + dia;
+        axios.post(`https://mapache-recursos.herokuapp.com/empleados/${this.state.responsable}/proyectos/${proyectoId}/tareas/${this.state.id}/horas?fecha=${aux}&horas=${0}`)
+            .catch(function(err){
+            if(err.response){
+                let mensaje = "Error: " + err.response.data.status;
+                if(err.response.data.error){
+                    mensaje += '\n' + err.response.data.error;
+                }
+                if(err.response.data.message){
+                    mensaje += '\n' + err.response.data.message;
+                }
+                alert(mensaje);
+            } else {
+                alert("Ocurrio un error desconocido");
+            }
+        });
     }
 
     eliminarTarea = event => {
@@ -138,7 +200,8 @@ class Tarea extends Component {
             .then(respuesta => {
                 if(respuesta.data != null){
                     alert("La tarea fue eliminada correctamente");
-                    this.setState({confirm : false, redirect:true});
+                    this.setState({confirm : false});
+                    this.props.history.goBack();
                 }
             }).catch(function(err){
             if(err.response){
@@ -163,11 +226,7 @@ class Tarea extends Component {
     }
 
     render() {
-        const proyectoId = +this.props.match.params.id;
-        const {nombre, descripcion, fechaDeInicio, fechaDeFinalizacion, estado} = this.state;
-        if (this.state.redirect) {
-            return <Redirect to={"/proyectos/" +proyectoId+"/tareas"} />
-        }
+        const {nombre, descripcion, fechaDeInicio, fechaDeFinalizacion, estado, responsable} = this.state;
         return(
             <div className="proyectos-screen-div" style={{width:"100%", height:"100%"}}>
                 <Card className="tablaCrearProyectos">
@@ -228,15 +287,25 @@ class Tarea extends Component {
                                     </Form.Control>
                                 </Form.Group>
                             </Form.Row>
+                            {this.state.id ?
+                                <Dropdown
+                                    renderDropdown={ true }
+                                    label="Responsable"
+                                    value={ responsable }
+                                    values={ this.state.recursos }
+                                    handleChange={ this.seleccionarRecurso }
+                                >
+                                </Dropdown> : null
+                            }
                         </Card.Body>
                         <Card.Footer>
                             <ButtonGroup>
-                                <Button variant="success" type="submit">
+                                <Button variant="outline-success" type="submit" onClick={this.props.history.goBack}>
                                     {this.state.id ? "Actualizar" : "Crear Tarea"}
                                 </Button>
                                 {this.state.id ?
-                                    <Button size="sm" variant="outline-danger" onClick={this.abrirConfirm}>
-                                        Delete
+                                    <Button size="sm" variant="danger" onClick={this.abrirConfirm}>
+                                        Eliminar
                                     </Button> : null
                                 }
                                 <Modal show={this.state.confirm} onHide={this.cerrarConfirm}>

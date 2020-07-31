@@ -7,6 +7,6 @@ export default class EditorBacklogScreen extends Component {
             <div>
                 <Backlog/>
             </div>
-        )
+        );
     }
 }

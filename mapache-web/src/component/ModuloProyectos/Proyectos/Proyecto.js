@@ -275,17 +275,17 @@ class Proyecto extends Component {
                         </Card.Body>
                         <Card.Footer>
                             <ButtonGroup>
-                                <Button variant="success" type="submit">
+                                <Button variant="outline-success" type="submit">
                                     {this.state.id ? "Actualizar" : "Crear Proyecto"}
                                 </Button>
                                 {this.state.id && this.state.estado !== "No iniciado" ?
-                                    <Button onClick={this.redireccionarFase.bind(this)}>
+                                    <Button variant="outline-primary" onClick={this.redireccionarFase.bind(this)}>
                                         Fases
                                     </Button> : null
                                 }
                                 {this.state.id && this.state.estado === 'No iniciado' ?
-                                    <Button size="sm" variant="outline-danger" onClick={this.abrirConfirm}>
-                                        Delete
+                                    <Button size="sm" variant="danger" onClick={this.abrirConfirm}>
+                                        Eliminar
                                     </Button> : null
                                 }
                                 <Modal show={this.state.confirm} onHide={this.cerrarConfirm}>

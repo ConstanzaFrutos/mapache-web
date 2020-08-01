@@ -33,11 +33,11 @@ class TabHorasCargadas extends Component {
     }
 
     async componentDidMount() {
-        const horasCargadas = await this.requesterHoras.obtenerHorasCargadasSemana(
+        /*const horasCargadas = await this.requesterHoras.obtenerHorasCargadasSemana(
             this.props.match.params.legajo, 
             this.state.fechaActual,
             this.props.mostrarAlerta
-        );
+        );*/
         /*console.log("Horas cargadas ", horasCargadas);
         this.setState({
             horasCargadasSemana: horasCargadas

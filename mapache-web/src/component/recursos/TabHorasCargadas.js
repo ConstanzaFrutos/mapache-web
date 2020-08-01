@@ -136,6 +136,7 @@ class Semana extends Component {
 
 }
 
+// eslint-disable-next-line no-extend-native
 Date.prototype.obtenerFechasSemana = function(){
     return [new Date(this.setDate(this.getDate()-this.getDay()))]
     .concat(

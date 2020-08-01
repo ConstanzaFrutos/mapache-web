@@ -9,6 +9,9 @@ import Typography from '@material-ui/core/Typography';
 
 import ArrowBack from '@material-ui/icons/ArrowBack';
 import ArrowForward from '@material-ui/icons/ArrowForward';
+import Work from '@material-ui/icons/Work';
+import BeachAccess from '@material-ui/icons/BeachAccess';
+import SentimentDissatisfied from '@material-ui/icons/SentimentDissatisfied';
 
 import RequestsHoras from "../../communication/RequesterHoras";
 
@@ -167,13 +170,15 @@ class Dia extends Component {
                     </Typography>
                     <div className="horas-cargadas-en-el-dia-div">
                         { this.props.horasCargadasDia.map((horas) => {
-                            let color = actividades.find(
+                            let actividad = actividades.find(
                                 actividad => actividad.nombre === horas.actividad
-                            ).color;
+                            );
+                            let color = actividad.color;
+                            let icono = actividad.icono;
                             return <HoraCargada
                                         color={ color }
                                         cantidadHoras={ horas.cantidadHoras }
-                                        actividad={ horas.actividad }
+                                        icono={ icono }
                                     ></HoraCargada>
                         })}
                     </div>
@@ -209,15 +214,17 @@ class Fecha {
 class HoraCargada extends Component {
     
     render() {
+        const alturaPorHora = 2;
         return (
             <div 
                 className="hora-cargada-div"
-                style={{"background-color": this.props.color}}
+                style={{
+                    "background-color": this.props.color, 
+                    "height": `${this.props.cantidadHoras * alturaPorHora}em`
+                }}
             >
-                <Typography variant="body1" align="center">
-                    { this.props.actividad }
-                </Typography>
-                <Typography variant="subtitle2" align="center">
+                { this.props.icono }
+                <Typography variant="subtitle1" align="center">
                     { this.props.cantidadHoras } horas
                 </Typography>
             </div>
@@ -229,15 +236,18 @@ class HoraCargada extends Component {
 const actividades = [
     {
         nombre: "TAREA",
-        color: "#F08080"
+        color: "#F08080",
+        icono: <Work/>
     },
     {
         nombre: "VACACIONES",
-        color: "#FFE485"
+        color: "#FFE485",
+        icono: <BeachAccess/>
     },
     {
         nombre: "ENFERMEDAD",
-        color: "#20B2AA"
+        color: "#20B2AA",
+        icono: <SentimentDissatisfied/>
     }
 ]
 

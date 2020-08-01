@@ -8,6 +8,6 @@ export default class EditorTareaScreen extends Component {
             <div>
                 <Tarea/>
             </div>
-        )
+        );
     }
 }

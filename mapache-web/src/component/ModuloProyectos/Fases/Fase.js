@@ -2,6 +2,7 @@ import React, {Component} from "react";
 import {Button, Card, Col, Form, Modal} from "react-bootstrap";
 import { withRouter } from 'react-router';
 import axios from 'axios';
+import {Link} from "react-router-dom";
 import "../../../assets/css/controller/ProyectosScreen.css";
 import "../../../assets/css/ModuloProyectos/TablaCrearProyecto.css";
 const URL = 'https://mapache-proyectos.herokuapp.com/proyectos/';
@@ -25,7 +26,8 @@ class Fase extends Component {
             nombre : this.state.nombre,
             fechaDeInicio: this.state.fechaDeInicio,
             descripcion: this.state.descripcion,
-            fechaDeFinalizacion: this.state.fechaDeFinalizacion
+            fechaDeFinalizacion: this.state.fechaDeFinalizacion,
+            iteraciones: this.state.iteraciones
         };
         axios.put(URL+proyectoId+'/fases/'+this.state.id, aux)
             .then(respuesta=> {
@@ -80,6 +82,7 @@ class Fase extends Component {
 
     render() {
         const {nombre, fechaDeInicio, fechaDeFinalizacion, descripcion} = this.state;
+        const proyectoId = +this.props.match.params.id;
         return(
             <Form id="formularioFaseEditar" onSubmit={this.actualizarFase}>
                 <Card.Header>
@@ -127,10 +130,15 @@ class Fase extends Component {
                     </Form.Group>
                 </Card.Body>
                 <Card.Footer>
-                    <Button variant="success" type="submit">
+                    <Button variant="outline-success" type="submit">
                         Actualizar
                     </Button>
-                    <Button onClick={this.abrirConfirm}>
+                    <Link to={"/proyectos/"+proyectoId+"/fases/"+this.state.id}>
+                        <Button variant="outline-primary">
+                            Iteraciones
+                        </Button>
+                    </Link>
+                    <Button variant="danger" onClick={this.abrirConfirm}>
                         Delete
                     </Button>
                     <Modal show={this.state.confirm} onHide={this.cerrarConfirm}>

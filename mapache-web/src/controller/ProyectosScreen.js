@@ -9,7 +9,7 @@ class ProyectosScreen extends Component {
             <div>
                 <ListadoProyectos/>
             </div>
-        )
+        );
     }
 
 }

@@ -17,6 +17,7 @@ import EditorTareaScreen from "../component/ModuloProyectos/Tareas/EditorTareaSc
 //Recursos
 import EmpleadosScreen from "../controller/EmpleadosScreen";
 import PerfilEmpleado from "../component/recursos/PerfilEmpleado";
+import EditorIteracionesScreen from "../component/ModuloProyectos/Iteraciones/EditorIteracionesScreen";
 
 class Routes extends Component {
     render() {
@@ -35,6 +36,7 @@ class Routes extends Component {
                 <Route exact path={"/proyectos/:id"} component={ EditorProyectosScreen }/>
                 <Route exact path={"/proyectos/:id/tareas"} component={EditorBacklogScreen} />
                 <Route exact path={"/proyectos/:id/tareas/:id_tarea"} component={EditorTareaScreen} />
+                <Route exact path={"/proyectos/:id/fases/:id_fase"} component={EditorIteracionesScreen} />
 
                 {/* Rutas Soporte */}
                 <Route exact path={"/soporte"} component={ SoporteScreen }/>

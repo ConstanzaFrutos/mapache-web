@@ -111,6 +111,7 @@ class Semana extends Component {
         let gridSemana = <Grid container justify="center" spacing={2}>
             {[0, 1, 2, 3, 4, 5, 6].map((value) => (
                 <Dia 
+                    key = { value }
                     value={ value }
                     diaSemana={ fechas[value].diaSemana }
                     fecha={ fechas[value].fechaProcesadaBarra }
@@ -228,7 +229,7 @@ class HoraCargada extends Component {
             <div 
                 className="hora-cargada-div"
                 style={{
-                    "background-color": this.props.color, 
+                    "backgroundColor": this.props.color, 
                     "height": `${this.props.cantidadHoras * alturaPorHora}em`
                 }}
             >

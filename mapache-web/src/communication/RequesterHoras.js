@@ -16,7 +16,6 @@ class RequesterHoras {
             if (response.ok){
                 return response.json();
             } else {
-                alert.log(`Error al consultar horas del empleado ${legajo}`);
                 mostrarAlerta(
                     `Error al consultar horas del empleado ${legajo}`,
                     "error"
@@ -55,8 +54,7 @@ class RequesterHoras {
         .then(response => {
             if (response.ok){
                 return response.json();
-            } else {
-                alert(`Error al consultar horas del empleado ${legajo}`);
+            } else {                
                 mostrarAlerta(
                     `Error al consultar horas del empleado ${legajo}`,
                     "error"

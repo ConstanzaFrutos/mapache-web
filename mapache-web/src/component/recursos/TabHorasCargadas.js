@@ -13,7 +13,7 @@ import Work from '@material-ui/icons/Work';
 import BeachAccess from '@material-ui/icons/BeachAccess';
 import SentimentDissatisfied from '@material-ui/icons/SentimentDissatisfied';
 
-import RequestsHoras from "../../communication/RequesterHoras";
+import RequesterHoras from "../../communication/RequesterHoras";
 
 class TabHorasCargadas extends Component {
 
@@ -26,7 +26,7 @@ class TabHorasCargadas extends Component {
             horasCargadasSemana: []
         }
 
-        this.requesterHoras = new RequestsHoras();
+        this.requesterHoras = new RequesterHoras();
 
         this.cambiarASemanaAnterior = this.cambiarASemanaAnterior.bind(this);
         this.cambiarASemanaPosterior = this.cambiarASemanaPosterior.bind(this);

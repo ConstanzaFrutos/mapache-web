@@ -10,13 +10,17 @@ class RequesterHoras {
         this.obtenerHorasCargadasSemana = this.obtenerHorasCargadasSemana.bind(this);
     }
 
-    async obtenerHorasCargadas(legajo){
+    async obtenerHorasCargadas(legajo, mostrarAlerta){
         let horasCargadas = await this.requester.get(`/empleados/${legajo}/horas`)
         .then(response => {
             if (response.ok){
                 return response.json();
             } else {
                 alert.log(`Error al consultar horas del empleado ${legajo}`);
+                mostrarAlerta(
+                    `Error al consultar horas del empleado ${legajo}`,
+                    "error"
+                )
             }
         }).then(response => {
             console.log("response ",response);
@@ -39,7 +43,7 @@ class RequesterHoras {
         return `${fecha.getFullYear()}-${mes}-${dia}`;
     }
 
-    async obtenerHorasCargadasSemana(legajo, fechaFin){
+    async obtenerHorasCargadasSemana(legajo, fechaFin, mostrarAlerta){
         let fechaInicio = new Date();
         const nuevoDia = fechaFin.getDate() - 7;
         fechaInicio.setDate(nuevoDia);
@@ -53,6 +57,10 @@ class RequesterHoras {
                 return response.json();
             } else {
                 alert(`Error al consultar horas del empleado ${legajo}`);
+                mostrarAlerta(
+                    `Error al consultar horas del empleado ${legajo}`,
+                    "error"
+                )
             }
         }).then(response => {
             console.log("response ",response);

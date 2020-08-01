@@ -28,7 +28,15 @@ class RequesterHoras {
     }
 
     procesarFecha(fecha) {
-        return `${fecha.getFullYear()}-0${fecha.getMonth() + 1}-${fecha.getDate()}`;
+        let mes = fecha.getMonth() + 1;
+        if (mes <= 9) {
+            mes = `0${mes}`;
+        }
+        let dia = fecha.getDate();
+        if (dia <= 9) {
+            dia = `0${dia}`;
+        }
+        return `${fecha.getFullYear()}-${mes}-${dia}`;
     }
 
     async obtenerHorasCargadasSemana(legajo, fechaFin){

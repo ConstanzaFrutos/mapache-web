@@ -92,8 +92,8 @@ export default withRouter(TabHorasCargadas);
 class Semana extends Component {
 
     obtenerHorasCargadasDia(dia) {
-        console.log("Obteniendo las horas cargadas del dia ", dia);
-        console.log(this.props.horasCargadasSemana.filter(hora => hora.fecha === dia));
+        //console.log("Obteniendo las horas cargadas del dia ", dia);
+        //console.log(this.props.horasCargadasSemana.filter(hora => hora.fecha === dia));
         //let horasCargadasDia = this.props.horasCargadasSemana.filter(dia => dia.fecha > 6);
         return this.props.horasCargadasSemana.filter(hora => hora.fecha === dia);
     }
@@ -150,7 +150,7 @@ Date.prototype.obtenerFechasSemana = function(){
 class Dia extends Component {    
 
     render() {
-        console.log("Horas cargadas dia ", this.props.horasCargadasDia );
+        //console.log("Horas cargadas dia ", this.props.horasCargadasDia );
 
         return (
             <Grid key={this.props.value} item>
@@ -202,7 +202,11 @@ class Fecha {
         if (mes <= 9) {
             mes = `0${mes}`;
         }
-        return `${fecha.getFullYear()}${separador}${mes}${separador}${fecha.getDate()}`;
+        let dia = fecha.getDate();
+        if (dia <= 9) {
+            dia = `0${dia}`;
+        }
+        return `${fecha.getFullYear()}${separador}${mes}${separador}${dia}`;
     }
 
     obtenerDiaSemana(fecha) {

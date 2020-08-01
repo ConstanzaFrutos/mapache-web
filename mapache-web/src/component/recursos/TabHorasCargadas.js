@@ -44,9 +44,11 @@ class TabHorasCargadas extends Component {
     }
 
     cambiarASemanaAnterior() {
-        console.log("Diferencia entre fechas ", this.state.fechaActual.getDate() - this.state.fechaPivote.getDate());
-        if (this.state.fechaActual.getDate() - this.state.fechaPivote.getDate() <= 21){
-            let fechaPivoteAnterior = new Date();
+        let diferenciaDeTiempo = this.state.fechaActual.getTime() - this.state.fechaPivote.getTime(); 
+        let diferenciaDeDias = diferenciaDeTiempo / (1000 * 3600 * 24);
+        
+        if (diferenciaDeDias <= 21){
+            let fechaPivoteAnterior = this.state.fechaPivote;
             const nuevoDia = this.state.fechaPivote.getDate() - 7;
             fechaPivoteAnterior.setDate(nuevoDia);
             console.log("Fecha Pivote anteiror", fechaPivoteAnterior);
@@ -58,8 +60,10 @@ class TabHorasCargadas extends Component {
     }
 
     cambiarASemanaPosterior() {
-        if (this.state.fechaPivote.getDate() < this.state.fechaActual.getDate()){
-            let fechaPivotePosterior = new Date();
+        console.log("Diferencia entre fechas avanzar ", this.state.fechaPivote < this.state.fechaActual);
+        console.log("Fecha pivote anterior ", this.state.fechaPivote);
+        if (this.state.fechaPivote < this.state.fechaActual){
+            let fechaPivotePosterior = this.state.fechaPivote;
             const nuevoDia = this.state.fechaPivote.getDate() + 7;
             fechaPivotePosterior.setDate(nuevoDia);
             console.log("Fecha Pivote posterior", fechaPivotePosterior);

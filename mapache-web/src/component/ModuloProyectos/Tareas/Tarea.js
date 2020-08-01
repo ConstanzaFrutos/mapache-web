@@ -112,7 +112,8 @@ class Tarea extends Component {
             descripcion: this.state.descripcion,
             fechaDeInicio: this.state.fechaDeInicio,
             fechaDeFinalizacion: this.state.fechaDeFinalizacion,
-            estado: this.state.estado
+            estado: this.state.estado,
+            responsable: this.state.responsable
         };
         axios.post(URL+proyectoId+"/tareas", tarea)
             .then(respuesta => {
@@ -226,7 +227,10 @@ class Tarea extends Component {
     }
 
     render() {
-        const {nombre, descripcion, fechaDeInicio, fechaDeFinalizacion, estado, responsable} = this.state;
+        const {nombre, descripcion, fechaDeInicio, fechaDeFinalizacion, estado} = this.state;
+
+        let responsable = this.state.responsable;
+
         return(
             <div className="proyectos-screen-div" style={{width:"100%", height:"100%"}}>
                 <Card className="tablaCrearProyectos">
@@ -287,16 +291,14 @@ class Tarea extends Component {
                                     </Form.Control>
                                 </Form.Group>
                             </Form.Row>
-                            {this.state.id ?
-                                <Dropdown
-                                    renderDropdown={ true }
-                                    label="Responsable"
-                                    value={ responsable }
-                                    values={ this.state.recursos }
-                                    handleChange={ this.seleccionarRecurso }
-                                >
-                                </Dropdown> : null
-                            }
+                            <Dropdown
+                                renderDropdown={ true }
+                                label="Responsable"
+                                value={ responsable }
+                                values={ this.state.recursos }
+                                handleChange={ this.seleccionarRecurso }
+                            >
+                            </Dropdown>
                         </Card.Body>
                         <Card.Footer>
                             <ButtonGroup>

@@ -8,6 +8,8 @@ class RequesterHoras {
 
         this.obtenerHorasCargadas = this.obtenerHorasCargadas.bind(this);
         this.obtenerHorasCargadasSemana = this.obtenerHorasCargadasSemana.bind(this);
+
+        this.obtenerHorasCargadasEnTarea = this.obtenerHorasCargadasEnTarea.bind(this);
     }
 
     async obtenerHorasCargadas(legajo, mostrarAlerta){
@@ -69,6 +71,25 @@ class RequesterHoras {
         return horasCargadas;
     }
 
+    async obtenerHorasCargadasEnTarea(legajo, codigoProyecto, codigoTarea, mostrarAlerta) {
+        const uri = `/empleados/${legajo}/proyectos/${codigoProyecto}/tareas/${codigoTarea}/horas`;
+        let horasCargadas = await this.requester.get(uri)
+            .then(response => {
+                if (response.ok){
+                    return response.json();
+                } else {
+                    mostrarAlerta(
+                        `Error al consultar horas cargadas del empleado ${legajo}`,
+                        "error"
+                    )
+                }
+            }).then(response => {
+                if (response) {
+                    return response;
+                }
+            });
+        return horasCargadas;
+    }
 }
 
 export default RequesterHoras;

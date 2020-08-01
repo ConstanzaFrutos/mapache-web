@@ -9,6 +9,7 @@ import AccessTime from '@material-ui/icons/AccessTime';
 
 import { TablaAdministracion } from "../general/TablaAdministracion";
 
+import RequesterHoras from "../../communication/RequesterHoras";
 import Requester from "../../communication/Requester";
 
 const mapacheRecursosBaseUrl = "https://mapache-recursos.herokuapp.com";
@@ -21,6 +22,7 @@ class TabTareas extends Component {
     constructor(props) {
         super(props);
 
+        this.requesterHoras = new RequesterHoras();
         this.requesterRecursos = new Requester(mapacheRecursosBaseUrl);
         this.requesterProyectos = new Requester(mapacheProyectosBaseUrl);
 
@@ -33,6 +35,7 @@ class TabTareas extends Component {
         this.handleCargaHoras = this.handleCargaHoras.bind(this);
 
         this.obtenerTareasDeEmpleado = this.obtenerTareasDeEmpleado.bind(this);
+        this.obtenerProgresoDelEmpleado = this.obtenerProgresoDelEmpleado.bind(this);
     }
 
     async componentDidMount() {
@@ -40,8 +43,9 @@ class TabTareas extends Component {
         
         let tareas = await this.obtenerTareasDeEmpleado(legajo);
         if (tareas) {
+            let tareasConProgreso = await this.obtenerProgresoDelEmpleado(legajo, tareas);
             this.setState({
-                tareas: tareas
+                tareas: tareasConProgreso
             });
         }
     }
@@ -62,6 +66,17 @@ class TabTareas extends Component {
                     return response;
                 }
             });
+    }
+
+    async obtenerProgresoDelEmpleado(legajo, tareas) {
+        let progreso = await Promise.all(tareas.map(async (tarea) => {
+            let horas = await this.requesterHoras.obtenerHorasCargadasEnTarea(
+                legajo, 1, tarea.id, this.props.mostrarAlerta
+            );
+            tarea.progreso = horas.length == 0 ? 0 : horas;
+            return tarea;
+        }));
+        return progreso;
     }
 
     handleCargaHoras(tarea) {

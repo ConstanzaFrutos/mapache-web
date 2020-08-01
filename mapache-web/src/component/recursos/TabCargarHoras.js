@@ -26,14 +26,14 @@ class TabCargarHoras extends Component {
 
         this.state = {
             legajoEmpleado: {},
-            contratoEmpleado: null,
+            contratoEmpleado: '',
             proyectos: {},
             tareas: [],
             tareasDropdown: [],
-            actividadSeleccionada: null,
+            actividadSeleccionada: '',
             mostrarDropdownTareas: true,
-            tareaSeleccionada: null,
-            fechaSeleccionada: null,
+            tareaSeleccionada: '',
+            fechaSeleccionada: '',
             horaSeleccionada: horasDropdown[0].value,
             semanaSeleccionada: semanasDropdown[0].value,
             mostrarDropdownHoras: true,
@@ -76,10 +76,12 @@ class TabCargarHoras extends Component {
                     if (response.ok){
                         return response.json();
                     } else {
-                        console.log("Error al consultar asignaciones del empleado");
+                        this.props.mostrarAlerta(
+                            `Error al consultar asignaciones del empleado ${legajo}`,
+                            "error"
+                        )
                     }
-                })
-                .then(response => {
+                }).then(response => {
                     if (response) {
                         return response;
                     }
@@ -87,20 +89,22 @@ class TabCargarHoras extends Component {
                     if(asignacionProyectos) {
                         let tareas = await this.requestTareas(asignacionProyectos);
                         console.log("Tareas", tareas);
-                        let tareasDropdown = tareas.map((tarea) => {
-                            return {
-                                name: tarea.nombre,
-                                value: tarea.codigoTarea
-                            }
-                        })
-
-                        this.setState({
-                            tareas: tareas,
-                            tareaSeleccionada: tareasDropdown[0].value,
-                            tareasDropdown: tareasDropdown,
-                            legajoEmpleado: legajo,
-                            contratoEmpleado: this.props.match.params.contrato
-                        });
+                        if (tareas.length > 0) {
+                            let tareasDropdown = tareas.map((tarea) => {
+                                return {
+                                    name: tarea.nombre,
+                                    value: tarea.codigoTarea
+                                }
+                            })
+    
+                            this.setState({
+                                tareas: tareas,
+                                tareaSeleccionada: tareasDropdown[0].value,
+                                tareasDropdown: tareasDropdown,
+                                legajoEmpleado: legajo,
+                                contratoEmpleado: this.props.match.params.contrato
+                            });
+                        }
                     }
                 });
     }
@@ -111,7 +115,10 @@ class TabCargarHoras extends Component {
                 if (response.ok){
                     return response.json();
                 } else {
-                    console.log(`Error al consultar tareas del proyecto ${codigoProyecto}`);
+                    this.props.mostrarAlerta(
+                        `Error al consultar tareas del proyecto ${codigoProyecto}`,
+                        "error"
+                    )
                 }
             }).then(response => {
                 if (response) {
@@ -126,7 +133,10 @@ class TabCargarHoras extends Component {
                 if (response.ok){
                     return response.json();
                 } else {
-                    console.log(`Error al consultar tareas del proyecto ${codigoProyecto}`);
+                    this.props.mostrarAlerta(
+                        `Error al consultar tareas del proyecto ${codigoProyecto}`,
+                        "error"
+                    )
                 }
             }).then(response => {
                 if (response) {
@@ -287,6 +297,7 @@ class TabCargarHoras extends Component {
                         <br></br>
                     </Paper>
                 </div>
+                { this.props.alerta }
             </div>
         )
     }

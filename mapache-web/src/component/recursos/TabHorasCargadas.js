@@ -236,17 +236,17 @@ class HoraCargada extends Component {
 const actividades = [
     {
         nombre: "TAREA",
-        color: "#F08080",
+        color: "#FFCCCC",
         icono: <Work/>
     },
     {
         nombre: "VACACIONES",
-        color: "#FFE485",
+        color: "#FFFF99",
         icono: <BeachAccess/>
     },
     {
         nombre: "ENFERMEDAD",
-        color: "#20B2AA",
+        color: "#CCFFFF",
         icono: <SentimentDissatisfied/>
     }
 ]

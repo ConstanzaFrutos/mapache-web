@@ -73,7 +73,7 @@ class TabTareas extends Component {
             let horas = await this.requesterHoras.obtenerHorasCargadasEnTarea(
                 legajo, 1, tarea.id, this.props.mostrarAlerta
             );
-            tarea.progreso = horas.length == 0 ? 0 : horas;
+            tarea.progreso = horas.length === 0 ? 0 : horas;
             return tarea;
         }));
         return progreso;

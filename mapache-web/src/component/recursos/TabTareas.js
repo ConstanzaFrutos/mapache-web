@@ -31,69 +31,29 @@ class TabTareas extends Component {
         }
 
         this.handleCargaHoras = this.handleCargaHoras.bind(this);
-        
-        this.requestTareas = this.requestTareas.bind(this);
-        this.obtenerProyecto = this.obtenerProyecto.bind(this);
-        this.obtenerTareasDeProyecto = this.obtenerTareasDeProyecto.bind(this);
+
+        this.obtenerTareasDeEmpleado = this.obtenerTareasDeEmpleado.bind(this);
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         let legajo = this.props.match.params.legajo;
         
-        this.requesterRecursos.get(`/empleados/${legajo}/proyectos/`)
-            .then(response => {
-                if (response.ok){
-                    return response.json();
-                } else {
-                    this.props.mostrarAlerta(
-                        `Error al consultar asignaciones del empleado ${this.state.empleadoSeleccionado.legajo}`,
-                        "error"
-                    );
-                    console.log("Error al consultar asignaciones del empleado");
-                }
-            })
-            .then(response => {
-                if (response) {
-                    return response;
-                }
-            }).then(async (asignacionProyectos) => {
-                let tareas = await this.requestTareas(asignacionProyectos);
-                if (tareas) {
-                    console.log("Setting tareas state")
-                    this.setState({
-                        tareas: tareas
-                    });
-                }
+        let tareas = await this.obtenerTareasDeEmpleado(legajo);
+        if (tareas) {
+            this.setState({
+                tareas: tareas
             });
+        }
     }
 
-    obtenerTareasDeProyecto(codigoProyecto) {
-        return this.requesterProyectos.get(`/proyectos/${codigoProyecto}/tareas`)
+    obtenerTareasDeEmpleado(legajo) {
+        return this.requesterProyectos.get(`/responsables/${legajo}/tareas`)
             .then(response => {
                 if (response.ok){
                     return response.json();
                 } else {
                     this.props.mostrarAlerta(
-                        `Error al consultar tareas del proyecto ${codigoProyecto}`,
-                        "error"
-                    )
-                    console.log(`Error al consultar tareas del proyecto ${codigoProyecto}`);
-                }
-            }).then(response => {
-                if (response) {
-                    return response;
-                }
-            });
-    }
-
-    obtenerProyecto(codigoProyecto) {
-        return this.requesterProyectos.get(`/proyectos/${codigoProyecto}`)
-            .then(response => {
-                if (response.ok){
-                    return response.json();
-                } else {
-                    this.props.mostrarAlerta(
-                        `Error al consultar tareas del proyecto ${codigoProyecto}`,
+                        `Error al consultar tareas del empleado ${legajo}`,
                         "error"
                     )
                 }
@@ -102,32 +62,6 @@ class TabTareas extends Component {
                     return response;
                 }
             });
-    }
-
-    async requestTareas(asignacionProyectos) {
-        let array = await Promise.all(
-            asignacionProyectos.map(async (asignacion) => {
-                console.log("Asignacion proyecto", asignacion);
-                const tareas = await this.obtenerTareasDeProyecto(asignacion.codigo); 
-                const proyecto = await this.obtenerProyecto(asignacion.codigo);
-                if (tareas){
-                    return tareas.map( (tarea) => {                    
-                        return {
-                            codigoTarea: tarea.id,
-                            codigoProyecto: proyecto.id,
-                            nombre: tarea.nombre,
-                            proyecto: proyecto.nombre,
-                            progreso: 10,
-                            estado: tarea.estado
-                        }
-                    })
-                } else {
-                    return [];
-                }
-            })
-        );    
-        console.log("Array", array.flatMap(aux => aux));
-        return array.flatMap(aux => aux);;
     }
 
     handleCargaHoras(tarea) {

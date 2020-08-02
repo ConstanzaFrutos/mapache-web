@@ -264,7 +264,7 @@ const actividades = [
     },
     {
         nombre: "DIA_DE_ESTUDIO",
-        color: "#E0FFFF",
+        color: "#FFE4B5",
         icono: <School/>
     }
 ]
@@ -274,6 +274,11 @@ const horasCargadas = [
         fecha: "2020-07-29",
         cantidadHoras: 2,
         actividad: "TAREA"
+    },
+    {
+        fecha: "2020-07-29",
+        cantidadHoras: 2,
+        actividad: "DIA_DE_ESTUDIO"
     },
     {
         fecha: "2020-07-28",

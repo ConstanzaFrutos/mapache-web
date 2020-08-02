@@ -12,6 +12,7 @@ import ArrowForward from '@material-ui/icons/ArrowForward';
 import Work from '@material-ui/icons/Work';
 import BeachAccess from '@material-ui/icons/BeachAccess';
 import SentimentDissatisfied from '@material-ui/icons/SentimentDissatisfied';
+import School from '@material-ui/icons/School';
 
 import RequesterHoras from "../../communication/RequesterHoras";
 
@@ -33,15 +34,15 @@ class TabHorasCargadas extends Component {
     }
 
     async componentDidMount() {
-        /*const horasCargadas = await this.requesterHoras.obtenerHorasCargadasSemana(
+        const horasCargadas = await this.requesterHoras.obtenerHorasCargadasSemana(
             this.props.match.params.legajo, 
             this.state.fechaActual,
             this.props.mostrarAlerta
-        );*/
-        /*console.log("Horas cargadas ", horasCargadas);
+        );
+        console.log("Horas cargadas ", horasCargadas);
         this.setState({
             horasCargadasSemana: horasCargadas
-        })*/
+        })
     }
 
     cambiarASemanaAnterior() {
@@ -260,6 +261,11 @@ const actividades = [
         nombre: "ENFERMEDAD",
         color: "#CCFFFF",
         icono: <SentimentDissatisfied/>
+    },
+    {
+        nombre: "DIA_DE_ESTUDIO",
+        color: "#E0FFFF",
+        icono: <School/>
     }
 ]
 

@@ -109,7 +109,7 @@ class SoporteScreen extends Component {
 
     handleChangeValue = (event, data) => {
         this.setState({value: data});
-        if (data === 0)
+        if (data === 1)
             this.getCharts()
     }
 
@@ -180,9 +180,6 @@ class SoporteScreen extends Component {
 
     drawLineGraph(chart_title, x_label, y_label, div_name, series) {
 
-        console.log('Series: ', series)
-
-
         let chart = am4core.create(div_name, am4charts.XYChart);
         let title = chart.titles.create();
         title.text = chart_title;
@@ -199,8 +196,6 @@ class SoporteScreen extends Component {
         valueAxis.renderer.minWidth = 35;
 
         for (let i=0; i<series.length; i++){
-            console.log('label: ', series[i].label)
-            console.log('data: ', series[i].data)
             this.createSeries(chart, "cantidad", series[i].label, series[i].data)
         }
 
@@ -227,7 +222,6 @@ class SoporteScreen extends Component {
             }
         })
         .then(response => {
-            console.log(response);
             if (response) {
                 let chart1 = this.drawLineGraph('Tickets diarios', '', '', 'chartdiv', [{label: "Tickets cerrados", data: response.tickets_cerrados}, {label: "Tickets abiertos", data: response.tickets_abiertos}]);
                 this.chart1 = chart1
@@ -243,7 +237,6 @@ class SoporteScreen extends Component {
             }
         })
         .then(response => {
-            console.log(response);
             if (response) {
                 let chart2 = this.drawLineGraph('Tickets acumulados', '', '', 'chartdiv_2', [{label: "Tickets cerrados", data: response}]);
                 this.chart2 = chart2
@@ -262,7 +255,7 @@ class SoporteScreen extends Component {
             }
         })
         .then(response => {
-            console.log(response);
+
             if (response) {
                 this.setState({
                     tickets: response
@@ -291,17 +284,11 @@ class SoporteScreen extends Component {
                 <div className={useStyles}>
                     <AppBar style={{background: '#3497c4'}}  position="static">
                         <Tabs value={this.state.value} onChange={this.handleChangeValue} aria-label="simple tabs example">
-                            <Tab label="Estadísticas" {...a11yProps(0)}/>
-                            <Tab label="Tickets" {...a11yProps(1)}/>
+                            <Tab label="Tickets" {...a11yProps(0)}/>
+                            <Tab label="Estadísticas" {...a11yProps(1)}/>
                         </Tabs>
                     </AppBar>
                     <TabPanel value={this.state.value} index={0}>
-                        <div className="tickets-screen-div">
-                            <div id="chartdiv" style={{ width: "80%", height: "500px" }}></div>
-                            <div id="chartdiv_2" style={{ width: "80%", height: "500px" }}></div>
-                        </div>     
-                    </TabPanel>
-                    <TabPanel value={this.state.value} index={1}>
                         <div className="tickets-screen-div">
                             <TablaAdministracion
                                 title={ title }
@@ -343,6 +330,12 @@ class SoporteScreen extends Component {
                                 ]}
                             ></TablaAdministracion>
                         </div>
+                    </TabPanel>
+                    <TabPanel value={this.state.value} index={1}>
+                        <div className="tickets-screen-div">
+                            <div id="chartdiv" style={{ width: "80%", height: "500px" }}></div>
+                            <div id="chartdiv_2" style={{ width: "80%", height: "500px" }}></div>
+                        </div>     
                     </TabPanel>
                 </div>
         </div>

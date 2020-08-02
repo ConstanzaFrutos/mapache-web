@@ -73,7 +73,7 @@ class Backlog extends Component {
     }
 
     render() {
-        const proyectoId = +this.props.match.params.id;
+        
         return (
             <div className="proyectos-screen-div">
                  <TablaAdministracion

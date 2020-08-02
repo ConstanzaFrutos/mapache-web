@@ -29,16 +29,16 @@ class ListadoProyectos extends Component {
             .then((data) => {
                 this.setState({proyectos : data})
             }).catch(function(err){
-            if(err.response){
-                let mensaje = "Error: " + err.response.data.status;
-                if(err.response.data.error){
-                    mensaje += '\n' + err.response.data.error;
+                if(err.response){
+                    let mensaje = "Error: " + err.response.data.status;
+                    if(err.response.data.error){
+                        mensaje += '\n' + err.response.data.error;
+                    }
+                    alert(mensaje);
+                } else {
+                    alert("Ocurrio un error desconocido");
                 }
-                alert(mensaje);
-            } else {
-                alert("Ocurrio un error desconocido");
-            }
-        });
+            });
     }
 
     componentDidMount() {
@@ -64,32 +64,6 @@ class ListadoProyectos extends Component {
         }
         //negro
         return '#000000';
-    }
-
-    ordenarProyectos(proyecto1, proyecto2) {
-        if(proyecto1.estado === proyecto2.estado){
-            return proyecto2.id - proyecto1.id;
-        } else if(proyecto1.estado === "Activo"){
-            return -1;
-        } else if(proyecto2.estado === "Activo"){
-            return 1;
-        } else if(proyecto1.estado === "No iniciado"){
-            return -1;
-        } else if(proyecto2.estado === "No iniciado"){
-            return 1;
-        } else if(proyecto1.estado === "Finalizado"){
-            return -1;
-        } else if(proyecto2.estado === "Finalizado"){
-            return 1;
-        } else if(proyecto1.estado === "Suspendido"){
-            return -1;
-        } else if(proyecto2.estado === "Suspendido"){
-            return 1;
-        } else if(proyecto1.estado === "Cancelado"){
-            return -1;
-        } else if(proyecto2.estado === "Cancelado"){
-            return 1;
-        }
     }
 
     handleAdd() {
@@ -188,6 +162,32 @@ const coloresEstado = [
     }
 ]
 
+function ordenarProyectos(proyecto1, proyecto2) {
+    if(proyecto1.estado === proyecto2.estado){
+        return proyecto2.id - proyecto1.id;
+    } else if(proyecto1.estado === "Activo"){
+        return -1;
+    } else if(proyecto2.estado === "Activo"){
+        return 1;
+    } else if(proyecto1.estado === "No iniciado"){
+        return -1;
+    } else if(proyecto2.estado === "No iniciado"){
+        return 1;
+    } else if(proyecto1.estado === "Finalizado"){
+        return -1;
+    } else if(proyecto2.estado === "Finalizado"){
+        return 1;
+    } else if(proyecto1.estado === "Suspendido"){
+        return -1;
+    } else if(proyecto2.estado === "Suspendido"){
+        return 1;
+    } else if(proyecto1.estado === "Cancelado"){
+        return -1;
+    } else if(proyecto2.estado === "Cancelado"){
+        return 1;
+    }
+}
+
 const title = "Proyectos";
 
 const columns = [
@@ -210,7 +210,8 @@ const columns = [
                         color:`${coloresEstado.find((estado) => estado.estado === rowData.estado).color}`,
                         paddingTop: '1em'
                     }}
-                >{ rowData.estado }</p>
+                >{ rowData.estado }</p>,
+        customSort: (a,b) => ordenarProyectos(a,b)
     },
     {
         title: "Tipo de proyecto", 

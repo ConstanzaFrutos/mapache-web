@@ -10,9 +10,9 @@ import Requester from "../communication/Requester";
 
 import "../assets/css/controller/SoporteScreen.css";
 
-
+const mapacheRecursosBaseUrl = "https://mapache-recursos.herokuapp.com";
 const mapacheSoporteBaseUrl = "https://psa-api-support.herokuapp.com";
-//const mapacheSoporteBaseUrl = "http://localhost:5000"
+// const mapacheSoporteBaseUrl = "http://localhost:5000"
 
 class SoporteScreen extends Component {
 
@@ -20,9 +20,11 @@ class SoporteScreen extends Component {
         super(props);
 
         this.requester = new Requester(mapacheSoporteBaseUrl);
+        this.recursosRequester = new Requester(mapacheRecursosBaseUrl);
 
         this.state = {
-            tickets: []
+            tickets: [],
+            empleados: []
         }
 
 
@@ -57,22 +59,39 @@ class SoporteScreen extends Component {
     }
 
     componentDidMount() {
-        this.requester.get('/tickets')
-        .then(response => {
-            if (response.ok){
+        this.recursosRequester.get('/empleados/')
+        .then((response) => {
+            if (response.ok) {
                 return response.json();
             } else {
-                console.log("Error al consultar tickets");
+                console.error("Error al consultar empleados");
             }
         })
-        .then(response => {
-            console.log(response);
-            if (response) {
-                this.setState({
-                    tickets: response
-                });
-            }
+        .then((recursos) => {
+            this.setState({ empleados: recursos })
+            this.requester.get('/tickets')
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    console.error("Error al consultar tickets");
+                }
+            })
+            .then(tickets => {
+                if (tickets) {
+                    tickets.forEach((ticket) => {
+                        if (ticket.legajo_responsable === -1) {
+                            ticket.responsable = "-";
+                        } else {
+                            let empleado = this.state.empleados.find((empleado) => parseInt(empleado.legajo) === ticket.legajo_responsable);
+                            ticket.responsable = `${empleado.nombre} ${empleado.apellido}`;
+                        }
+                    });
+                    this.setState({ tickets: tickets });
+                }
+            });
         });
+
     }
 
     render() {
@@ -127,7 +146,7 @@ class SoporteScreen extends Component {
 
 export default withRouter(SoporteScreen);
 
-const title = "Ticket";
+const title = "Tickets";
 
 const columns = [
     {
@@ -145,6 +164,14 @@ const columns = [
     {
         title: "Severidad",
         field: "severidad"
+    },
+    {
+        title: "Cliente",
+        field: "cliente.razon_social"
+    },
+    {
+        title: "Responsable",
+        field: "responsable"
     }
 ]
 

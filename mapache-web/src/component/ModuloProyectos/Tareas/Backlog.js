@@ -56,28 +56,6 @@ class Backlog extends Component {
         }
     }
 
-    ordenarTareas(tarea1, tarea2) {
-        if(tarea1.estado === tarea2.estado){
-            return tarea2.id - tarea1.id;
-        } else if(tarea1.estado === "En curso"){
-            return -1;
-        } else if(tarea2.estado === "En curso"){
-            return 1;
-        } else if(tarea1.estado === "No iniciada"){
-            return -1;
-        } else if(tarea2.estado === "No iniciada"){
-            return 1;
-        } else if(tarea1.estado === "Bloqueada"){
-            return -1;
-        } else if(tarea2.estado === "Bloqueada"){
-            return 1;
-        } else if(tarea1.estado === "Finalizada"){
-            return -1;
-        } else if(tarea2.estado === "Finalizada"){
-            return 1;
-        }
-    }
-
     handleAdd() {
         this.props.history.push({
             pathname: `/proyectos/${this.state.proyectoId}/tareas/:id`
@@ -154,6 +132,27 @@ const coloresEstado = [
     }
 ]
 
+function ordenarTareas(tarea1, tarea2) {
+    if(tarea1.estado === tarea2.estado){
+        return tarea2.id - tarea1.id;
+    } else if(tarea1.estado === "En curso"){
+        return -1;
+    } else if(tarea2.estado === "En curso"){
+        return 1;
+    } else if(tarea1.estado === "No iniciada"){
+        return -1;
+    } else if(tarea2.estado === "No iniciada"){
+        return 1;
+    } else if(tarea1.estado === "Bloqueada"){
+        return -1;
+    } else if(tarea2.estado === "Bloqueada"){
+        return 1;
+    } else if(tarea1.estado === "Finalizada"){
+        return -1;
+    } else if(tarea2.estado === "Finalizada"){
+        return 1;
+    }
+}
 
 const title = "Backlog";
 
@@ -177,7 +176,8 @@ const columns = [
                         color:`${coloresEstado.find((estado) => estado.estado === rowData.estado).color}`,
                         paddingTop: '1em'
                     }}
-                >{ rowData.estado }</p>
+                >{ rowData.estado }</p>,
+        customSort: (a,b) => ordenarTareas(a,b)
     },
     {
         title: "Fecha de finalización", 

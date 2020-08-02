@@ -3,6 +3,7 @@ import { withRouter } from 'react-router';
 import {Button,ButtonGroup, Card, Col, Form, Modal} from "react-bootstrap";
 import { Redirect } from "react-router-dom";
 import axios from "axios";
+import { Alerta } from "../../general/Alerta";
 import "../../../assets/css/controller/ProyectosScreen.css";
 import "../../../assets/css/ModuloProyectos/TablaCrearProyecto.css";
 const URL = 'https://mapache-proyectos.herokuapp.com/';
@@ -11,12 +12,19 @@ class Proyecto extends Component {
     constructor(props) {
         super(props);
         this.state = this.estadoInicial;
+        
         this.crearProyecto = this.crearProyecto.bind(this);
         this.cambioProyecto = this.cambioProyecto.bind(this);
+
+        this.mostrarAlerta = this.mostrarAlerta.bind(this);
+        this.handleCloseAlerta = this.handleCloseAlerta.bind(this);
     }
 
-    estadoInicial = {id:'', nombre:'', tipo:"Implementación", descripcion: '', fechaDeInicio: '',
-        fechaDeFinalizacion: '', estado: 'No iniciado', redirectListado: false, redirectFases: false, fases : []};
+    estadoInicial = {
+        id:'', nombre:'', tipo:"Implementación", descripcion: '', fechaDeInicio: '',
+        fechaDeFinalizacion: '', estado: 'No iniciado', redirectListado: false, redirectFases: false, fases : [],
+        mostrarAlerta: false, tipoAlerta: "", mensajeAlerta: ""
+    };
 
     crearProyecto = event => {
         event.preventDefault();
@@ -38,7 +46,10 @@ class Proyecto extends Component {
             .then(respuesta => {
                 if(respuesta.data){
                     this.setState(this.estadoInicial);
-                    alert("El proyecto se creo exitosamente");
+                    this.mostrarAlerta(
+                        "El proyecto se creo exitosamente",
+                        "success"
+                    )
                     this.setState({redirectListado: true});
                 }
             }).catch(function(err){
@@ -47,9 +58,15 @@ class Proyecto extends Component {
                     if(err.response.data.error){
                         mensaje += '\n' + err.response.data.error;
                     }
-                    alert(mensaje);
+                    this.mostrarAlerta(
+                        mensaje,
+                        "error"
+                    )
                 } else {
-                    alert("Ocurrio un error desconocido");
+                    this.mostrarAlerta(
+                        "Ocurrio un error desconocido",
+                        "error"
+                    )
                 }
             });
     }
@@ -87,9 +104,15 @@ class Proyecto extends Component {
                 if(err.response.data.error){
                     mensaje += '\n' + err.response.data.error;
                 }
-                alert(mensaje);
+                this.mostrarAlerta(
+                    mensaje,
+                    "error"
+                )
             } else {
-                alert("Ocurrio un error desconocido");
+                this.mostrarAlerta(
+                    "Ocurrio un error desconocido",
+                    "error"
+                )
             }
         });
     }
@@ -190,6 +213,20 @@ class Proyecto extends Component {
         return '#000000';
     }
 
+    mostrarAlerta(mensaje, tipo) {
+        this.setState({
+            mostrarAlerta: true,
+            tipoAlerta: tipo,
+            mensajeAlerta: mensaje
+        });
+    }
+
+    handleCloseAlerta() {
+        this.setState({
+            mostrarAlerta: false
+        });
+    }
+
     render() {
         if (this.state.redirectListado) {
             return <Redirect to="/proyectos" />
@@ -197,6 +234,18 @@ class Proyecto extends Component {
             return <Redirect to={"/proyectos/" + this.state.id + "/fases"}/>
         }
         const {nombre, tipo, descripcion, fechaDeInicio, fechaDeFinalizacion, estado} = this.state;
+
+        let alerta = null;
+        if (this.state.mostrarAlerta) {
+            alerta = <Alerta
+                        open={ true }
+                        mensaje={ this.state.mensajeAlerta }
+                        tipo={ this.state.tipoAlerta }
+                        handleClose={ this.handleCloseAlerta }
+                     >
+                     </Alerta>
+        }
+
         return(
             <div className="proyectos-screen-div" style={{width:"100%", height:"100%"}}>
                 <Card className="tablaCrearProyectos">
@@ -306,6 +355,7 @@ class Proyecto extends Component {
                         </Card.Footer>
                     </Form>
                 </Card>
+                { alerta }
             </div>
         );
     }

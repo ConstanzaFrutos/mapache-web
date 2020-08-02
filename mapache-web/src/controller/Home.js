@@ -19,7 +19,7 @@ export class Home extends Component {
                             Este es un sistema para gestionar proyectos, productos y sus versiones.
                             Facilitando la creación y seguimiento de las tareas y tickets que los componen.
                             <br/><br/>
-                            A su vez permite realizarYo  un seguimiento de los empleados de la empresa,
+                            A su vez permite realizar un seguimiento de los empleados de la empresa,
                             las tareas que desempeñan y las horas que invierten en cada tarea.
                         </Typography>
                     </CardContent>

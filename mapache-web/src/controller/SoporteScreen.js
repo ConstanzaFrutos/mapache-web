@@ -269,11 +269,11 @@ class SoporteScreen extends Component {
             .then(tickets => {
                 if (tickets) {
                     tickets.forEach((ticket) => {
-                        if (ticket.legajo_responsable === -1) {
-                            ticket.responsable = "-";
-                        } else {
+                        if (ticket.legajo_responsable >0) {
                             let empleado = this.state.empleados.find((empleado) => parseInt(empleado.legajo) === ticket.legajo_responsable);
                             ticket.responsable = `${empleado.nombre} ${empleado.apellido}`;
+                        } else {
+                            ticket.responsable = "-";
                         }
                     });
                     this.setState({ tickets: tickets });

@@ -1,9 +1,10 @@
 import React, { Component }  from 'react';
 import axios from 'axios';
-import {ButtonGroup, Table, Button, Card} from "react-bootstrap";
-import {Link} from "react-router-dom";
-import Paper from "@material-ui/core/Paper";
-import TableContainer from "@material-ui/core/TableContainer";
+
+import { TablaAdministracion } from "../../general/TablaAdministracion";
+import InfoOutlined from '@material-ui/icons/InfoOutlined';
+import Add from '@material-ui/icons/Add';
+
 import { withRouter } from 'react-router';
 import "../../../assets/css/ModuloProyectos/TablasProyectos.css";
 import "../../../assets/css/controller/ProyectosScreen.css";
@@ -13,15 +14,25 @@ const URL = 'https://mapache-proyectos.herokuapp.com/proyectos/';
 class Backlog extends Component {
     constructor(props) {
         super(props);
-        this.state = {tareas:[]};
+        this.state = {
+            tareas: [],
+            proyectoId: 0
+        };
+
+        this.handleAdd = this.handleAdd.bind(this);
+        this.handleEdit = this.handleEdit.bind(this);
     }
 
     obtenerTareas(){
         const proyectoId = +this.props.match.params.id;
+
         axios.get(URL+proyectoId+'/tareas')
             .then(respuesta => respuesta.data)
             .then((data) => {
-                this.setState({tareas : data})
+                this.setState({
+                    tareas : data,
+                    proyectoId: proyectoId
+                })
             }).catch(function(err){
             if(err.response){
                 let mensaje = "Error: " + err.response.data.status;
@@ -43,24 +54,6 @@ class Backlog extends Component {
         if(prevState.tareas.length !== this.state.tareas.length){
             this.obtenerTareas();
         }
-    }
-
-    definirColor(estado){
-        if(estado === "No iniciada"){
-            //negro
-            return '#000000';
-        } else if(estado === "En curso"){
-            //azul
-            return '#0033FF';
-        } else if(estado === "Bloqueada"){
-            //rojo
-            return '#ff0000';
-        } else if(estado === "Finalizada"){
-            //verde
-            return '#00ff00';
-        }
-        //negro
-        return '#000000';
     }
 
     ordenarTareas(tarea1, tarea2) {
@@ -85,64 +78,117 @@ class Backlog extends Component {
         }
     }
 
+    handleAdd() {
+        this.props.history.push({
+            pathname: `/proyectos/${this.state.proyectoId}/tareas/:id`
+        });    
+    }
+
+    handleEdit(oldData) {
+        // Esta funcion en el caso de las tareas 
+        // se usa para redirigir a la información de
+        // la tarea seleccionada
+        
+        this.props.history.push({
+            pathname: `/proyectos/${this.state.proyectoId}/tareas/${oldData.id}`
+        });
+    }
+
     render() {
         const proyectoId = +this.props.match.params.id;
-        return(
+        return (
             <div className="proyectos-screen-div">
-                <div className="tablaProyectos">
-                    <TableContainer component={Paper}>
-                        <Table  aria-label="simple table">
-                            <thead>
-                            <tr>
-                                <th>Id</th>
-                                <th>Nombre</th>
-                                <th>Estado</th>
-                                <th>Fecha de Finalizacion</th>
-                                <th>Acciones</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {this.state.tareas.length === 0 ?
-                                <tr align="center">
-                                    <td colSpan="4">Este proyecto no contiene tareas</td>
-                                </tr> :
-                                this.state.tareas.sort((a, b) => this.ordenarTareas(a,b)).map((tarea) => (
-                                    <tr key={tarea.id}>
-                                        <td>{tarea.id}</td>
-                                        <td>{tarea.nombre}</td>
-                                        <td
-                                            style={{color: this.definirColor(tarea.estado)}}>
-                                            {tarea.estado}
-                                        </td>
-                                        <td>{tarea.fechaDeFinalizacion ?
-                                            tarea.fechaDeFinalizacion.split('T')[0] :
-                                            "No contiene"}</td>
-                                        <td>
-                                            <ButtonGroup>
-                                                <Link to={"/proyectos/"+proyectoId+"/tareas/"+tarea.id}>
-                                                    <Button size="sm" variant="outline-primary">
-                                                        Abrir
-                                                    </Button>
-                                                </Link>
-                                            </ButtonGroup>
-                                        </td>
-                                    </tr>
-                                ))
+                 <TablaAdministracion
+                    title={ title }
+                    columns={ columns }
+                    data={ this.state.tareas }
+                    handleAdd={ this.handleAdd }
+                    handleEdit={ this.handleEdit }
+                    editable = { null }
+                    actions={[
+                        {
+                            icon: Add,
+                            tooltip: "Agregar tarea",
+                            position: "toolbar",
+                            onClick: () => {
+                                this.handleAdd()
                             }
-                            </tbody>
-                        </Table>
-                        <Card>
-                            <Link to={"/proyectos/"+proyectoId+"/tareas/:id"}>
-                                <Button>
-                                    Crear Tarea
-                                </Button>
-                            </Link>
-                        </Card>
-                    </TableContainer>
-                </div>
+                        },
+                        {
+                            icon: editIcon,
+                            tooltip: "Abrir tarea",
+                            onClick: (event, rowData) => {
+                                this.handleEdit(rowData)  
+                            }
+                        }
+                    ]}
+                >
+                </TablaAdministracion>
             </div>
-        );
+        )
     }
 }
 
 export default withRouter(Backlog);
+
+const coloresEstado = [
+    {
+        estado: "No iniciada",
+        color: '#000000'
+    },
+    {
+        estado: "En curso",
+        color: '#0033FF'
+    },
+    {
+        estado: "Bloqueada",
+        color: '#ff0000'
+    },
+    {
+        estado: "Finalizada",
+        color: '#00ff00'
+    },
+    {
+        estado: "Default",
+        color: '#000000'
+    }
+]
+
+
+const title = "Backlog";
+
+const columns = [
+    {
+        title: "Código", 
+        field: "id",
+        editable: "never",
+        defaultSort: "asc"
+    },
+    {
+        title: "Nombre", 
+        field: "nombre",
+        editable: "never"
+    },
+    {
+        title: "Estado", 
+        field: "estado",
+        render: rowData => <p 
+                    style={{
+                        color:`${coloresEstado.find((estado) => estado.estado === rowData.estado).color}`,
+                        paddingTop: '1em'
+                    }}
+                >{ rowData.estado }</p>
+    },
+    {
+        title: "Fecha de finalización", 
+        field: "fechaDeFinalizacion",
+        editable: "never",
+        render: rowData => <p>
+                                { rowData.fechaDeFinalizacion ?
+                                    rowData.fechaDeFinalizacion.split('T')[0] :
+                                    "No contiene" }
+                            </p>
+    }
+];
+
+const editIcon = InfoOutlined;

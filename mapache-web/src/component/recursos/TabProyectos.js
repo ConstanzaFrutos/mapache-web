@@ -109,18 +109,17 @@ class TabProyectos extends Component {
     async createData(asignacionProyectos) {
         let array = await Promise.all(
             asignacionProyectos.map(async (asignacion) => {
-                console.log(asignacion);
-                
-                const proyecto = await this.requestDataProyecto(asignacion.codigo);
+                const proyecto = await this.requestDataProyecto(asignacion.codigoProyecto);
                 const horas = await this.requestHorasProyecto(
                     this.props.legajo, 
-                    asignacion.codigo
+                    asignacion.codigoProyecto
                 );
+
                 if (proyecto && horas) {
                     let aux = {
                         nombre: proyecto.nombre,
                         titulo: asignacion.rolEmpleado,
-                        progreso: horas.cantidadDeHorasTrabajadas,
+                        progreso: horas.horasTrabajadas,
                     }
                     return aux;
                 } else {

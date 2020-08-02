@@ -30,9 +30,9 @@ class TabCargarHoras extends Component {
             proyectos: {},
             tareas: [],
             tareasDropdown: [],
-            actividadSeleccionada: '',
+            actividadSeleccionada: actividades[0].value,
             mostrarDropdownTareas: true,
-            tareaSeleccionada: '',
+            tareaSeleccionada: 0,
             fechaSeleccionada: '',
             horaSeleccionada: horasDropdown[0].value,
             semanaSeleccionada: semanasDropdown[0].value,
@@ -148,8 +148,8 @@ class TabCargarHoras extends Component {
     async requestTareas(asignacionProyectos) {
         let array = await Promise.all(
             asignacionProyectos.map(async (asignacion) => {
-                const tareas = await this.obtenerTareasDeProyecto(asignacion.codigo); 
-                const proyecto = await this.obtenerProyecto(asignacion.codigo);
+                const tareas = await this.obtenerTareasDeProyecto(asignacion.codigoProyecto); 
+                const proyecto = await this.obtenerProyecto(asignacion.codigoProyecto);
 
                 if (tareas) {
                     return tareas.map( (tarea) => {                    
@@ -218,15 +218,35 @@ class TabCargarHoras extends Component {
         let tareaId = this.state.tareaSeleccionada;
         let proyectoId = this.state.tareas.find(tarea => tarea.codigoTarea === tareaId).codigoProyecto;
         
-        this.requesterRecursos.post(
-            `/empleados/${this.state.legajoEmpleado}/proyectos/${proyectoId}/tareas/${tareaId}/horas?fecha=${this.state.fechaSeleccionada}&horas=${this.state.horaSeleccionada}`
-        ).then(response => {
-            if (response.ok){
-                console.log("ok");
-            } else {
-                console.log(`Error al cargar horas al empleado con legajo ${this.state.empleado.legajo}`);
-            }
-        });
+        const uri = `/empleados/${this.state.legajoEmpleado}/horas`;
+        const payload = {
+            "actividad": this.state.actividadSeleccionada,
+            "cantidadHoras": this.state.horaSeleccionada,
+            "contrato": "PART_TIME",
+            "fecha": this.state.fechaSeleccionada,
+            "horas": {},
+            "horasTotales": 0,
+            "proyectoid": "string",
+            "tareaId": this.state.tareaSeleccionada
+        }
+
+        console.log("Uri ", uri);
+        console.log("Payload ", payload);
+
+        this.requesterRecursos.post(uri, payload)
+            .then(response => {
+                if (response.ok){
+                    this.props.mostrarAlerta(
+                        `Carga de horas exitosa`,
+                        "success"
+                    );
+                } else {
+                    this.props.mostrarAlerta(
+                        `Error al cargar horas al empleado con legajo ${this.state.legajoEmpleado}`,
+                        "error"
+                    );
+                }
+            });
     }
 
     render() {

@@ -37,7 +37,8 @@ class Tarea extends Component {
                         descripcion: respuesta.data.descripcion,
                         fechaDeInicio: respuesta.data.fechaDeInicio,
                         fechaDeFinalizacion: respuesta.data.fechaDeFinalizacion,
-                        estado: respuesta.data.estado
+                        estado: respuesta.data.estado,
+                        responsable: respuesta.data.responsable
                     });
                 }
             }).catch(function(err){

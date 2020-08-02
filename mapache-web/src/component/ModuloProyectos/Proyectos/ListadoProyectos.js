@@ -45,27 +45,6 @@ class ListadoProyectos extends Component {
         this.obtenerProyectos();
     }
 
-    definirColor(estado){
-        if(estado === "No iniciado"){
-            //negro
-            return '#000000';
-        } else if(estado === "Activo"){
-            //azul
-            return '#0033FF';
-        } else if(estado === "Suspendido"){
-            //gris
-            return '#808080';
-        } else if(estado === "Cancelado"){
-            //rojo
-            return '#ff0000';
-        } else if(estado === "Finalizado"){
-            //verde
-            return '#00ff00';
-        }
-        //negro
-        return '#000000';
-    }
-
     handleAdd() {
         this.props.history.push({
             pathname: `/proyectos/:id`

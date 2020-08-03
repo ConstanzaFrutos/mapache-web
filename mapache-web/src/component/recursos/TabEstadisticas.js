@@ -50,7 +50,7 @@ class TabEstadisticas extends Component {
     }
 
     async obtenerHorasSemana() {
-        const fecha = this.state.fechaSeleccionada ? this.state.fechaSeleccionada : new Date();
+        const fecha = this.state.fechaSeleccionada ? new Date(this.state.fechaSeleccionada) : new Date();
         const horasCargadas = await this.requesterHoras.obtenerHorasCargadasSemana(
             this.props.match.params.legajo, 
             fecha
@@ -180,7 +180,7 @@ class ChartDiario extends Component {
 
 class ChartSemanal extends Component {
     
-    componentDidMount() {
+    componentDidUpdate() {
         let chart = am4core.create("chart-semanal", am4charts.PieChart);
 
         // Add data
@@ -189,15 +189,16 @@ class ChartSemanal extends Component {
             { "actividad": "Enfermedad", "size": 0 },
             { "actividad": "Día de estudio", "size": 0 },
             { "actividad": "Tarea", "size": 8 },
-            { "actividad": "Ocio", "size": 1 },
+            { "actividad": "No ocupado", "size": 1 },
             { "actividad": "Disponible", "size": 1 }
         ];
         
         // Add label
-        chart.innerRadius = 100;
+        chart.innerRadius = 90;
         let label = chart.seriesContainer.createChild(am4core.Label);
         
         let fechaSeleccionada = this.props.fechaSeleccionada;
+        // TODO mostrar inicio y fin semana
         console.log("Horas ", this.props.horasCargadas)
 
         label.text = fechaSeleccionada;

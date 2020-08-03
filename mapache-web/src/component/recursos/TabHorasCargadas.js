@@ -197,7 +197,7 @@ class Dia extends Component {
 
 }
 
-class Fecha {
+export class Fecha {
     constructor(fecha) {
         this.diaSemana = this.obtenerDiaSemana(fecha);
         this.fechaProcesadaBarra = this.procesarFecha(fecha, '/');

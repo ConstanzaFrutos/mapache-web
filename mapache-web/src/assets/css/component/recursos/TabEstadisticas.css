@@ -5,7 +5,7 @@
     justify-content: center;
     margin-top: 2em;
     height: 100%;
-    width: 80%;
+    width: 90%;
 }
 
 .header-div {
@@ -13,12 +13,13 @@
     flex-direction: row;
     width: auto;
     display: flex;
-    justify-content: flex-end;
-    margin-right: 7em;
+    justify-content: space-between;
+    margin: 1em;
+    align-items: baseline;
 }
 
 .chart-div {
-    height: 20em;
+    height: 23em;
     justify-content: center;
 }
 
@@ -27,16 +28,13 @@
 }
 
 .chart-semanal {
-    width: 70%;
-    height: 70%;
+    height: 100%;
 }
 
 .chart-mensual {
-    width: 80%;
-    height: 90%;
+    height: 100%;
 }
 
 .chart-anual {
-    width: 80%;
-    height: 90%;
+    height: 100%;
 }

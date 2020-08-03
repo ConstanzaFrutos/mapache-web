@@ -64,25 +64,32 @@ class TabEstadisticas extends Component {
         let fecha = this.state.fechaSeleccionada 
                         ? this.state.fechaSeleccionada : 
                         fechaHoy.fechaProcesadaGuion;
+        let fechaFormatoDate = this.state.fechaSeleccionada ? 
+                new Date(this.state.fechaSeleccionada) : new Date();
         
         let chart = <ChartDiario></ChartDiario>
+        let label = '';
         if (this.state.frecuencia === 0) {
             chart = <ChartDiario
                         fechaSeleccionada={ fecha }
                     ></ChartDiario>
+            label = `Ocupación del empleado en el día ${ fecha }`;
         } else if (this.state.frecuencia === 1) {
             chart = <ChartSemanal
                         fechaSeleccionada={ this.state.fechaSeleccionada }
                         horasCargadas={ this.obtenerHorasSemana() }
                     ></ChartSemanal>
+            label = `Ocupación del empleado en la semana ${ fecha } - ${ fecha }`;
         } else if (this.state.frecuencia === 2) {
             chart = <ChartMensual
                         fechaSeleccionada={ this.state.fechaSeleccionada }
                     ></ChartMensual>
+            label = `Ocupación del empleado en el mes ${ fechaFormatoDate.getMonth() + 1 }`;
         } else if (this.state.frecuencia === 3) {
             chart = <ChartAnual
                         fechaSeleccionada={ this.state.fechaSeleccionada }
                     ></ChartAnual>
+            label = `Ocupación del empleado en el año ${ fechaFormatoDate.getFullYear() }`;
         }
 
         return (
@@ -107,6 +114,11 @@ class TabEstadisticas extends Component {
                     </div>
                     <div className="chart-div">
                         { chart }
+                    </div>
+                    <div className="footer-div">
+                        <Typography variant="subtitle1" align="center">
+                            { label }
+                        </Typography>      
                     </div>
                 </Paper>
             </div>
@@ -548,12 +560,12 @@ class ChartAnual extends Component {
 
         // Set up a rotation adapter which would rotate the triangle if its a negative change
         arrow.adapter.add("rotation", function(rotation, target) {
-        return getVariancePercent(target.dataItem) < 0 ? 180 : rotation;
+            return getVariancePercent(target.dataItem) < 0 ? 180 : rotation;
         });
 
         // Set up a rotation adapter which adjusts Y position
         arrow.adapter.add("dy", function(dy, target) {
-        return getVariancePercent(target.dataItem) < 0 ? 1 : dy;
+            return getVariancePercent(target.dataItem) < 0 ? 1 : dy;
         });
 
         // Add a label
@@ -568,28 +580,28 @@ class ChartAnual extends Component {
 
         // Adapter for label text which calculates change in percent
         label.adapter.add("textOutput", function(text, target) {
-        var percent = getVariancePercent(target.dataItem);
-        return percent ? percent + "%" : text;
+        let percent = getVariancePercent(target.dataItem);
+            return percent ? percent + "%" : text;
         });
 
         // Adapter which shifts the label if it's below the variance column
         label.adapter.add("verticalCenter", function(center, target) {
-        return getVariancePercent(target.dataItem) < 0 ? "top" : center;
+            return getVariancePercent(target.dataItem) < 0 ? "top" : center;
         });
 
         // Adapter which changes color of label to red
         label.adapter.add("fill", function(fill, target) {
-        return getVariancePercent(target.dataItem) < 0 ? am4core.color("#c00") : fill;
+            return getVariancePercent(target.dataItem) < 0 ? am4core.color("#c00") : fill;
         });
 
         function getVariancePercent(dataItem) {
-        if (dataItem) {
-            var value = dataItem.valueY;
-            var openValue = dataItem.openValueY;
-            var change = value - openValue;
-            return Math.round(change / openValue * 100);
-        }
-        return 0;
+            if (dataItem) {
+                let value = dataItem.valueY;
+                let openValue = dataItem.openValueY;
+                let change = value - openValue;
+                return Math.round(change / openValue * 100);
+            }
+            return 0;
         }
 
 

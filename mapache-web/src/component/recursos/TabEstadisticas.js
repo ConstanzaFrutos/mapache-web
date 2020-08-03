@@ -11,6 +11,8 @@ import { Fecha } from "./TabHorasCargadas";
 import { Dropdown } from "../general/Dropdown";
 import { DatePicker } from "../general/DatePicker";
 
+import RequesterHoras from "../../communication/RequesterHoras";
+
 am4core.useTheme(am4themes_animated);
 
 class TabEstadisticas extends Component {
@@ -24,8 +26,12 @@ class TabEstadisticas extends Component {
             fechaSeleccionada: null
         }
 
+        this.requesterHoras = new RequesterHoras();
+
         this.handleFrecuenciaChange = this.handleFrecuenciaChange.bind(this);
         this.handleDateInput = this.handleDateInput.bind(this);
+        
+        this.obtenerHorasSemana = this.obtenerHorasSemana.bind(this);
     }
 
     handleFrecuenciaChange(event) {
@@ -38,6 +44,15 @@ class TabEstadisticas extends Component {
         this.setState({
             fechaSeleccionada: event.target.value
         });
+    }
+
+    async obtenerHorasSemana() {
+        const fecha = this.state.fechaSeleccionada ? this.state.fechaSeleccionada : new Date();
+        const horasCargadas = await this.requesterHoras.obtenerHorasCargadasSemana(
+            this.props.match.params.legajo, 
+            fecha
+        );
+        return horasCargadas;
     }
 
     render() {
@@ -55,6 +70,7 @@ class TabEstadisticas extends Component {
         } else if (this.state.frecuencia === 1) {
             chart = <ChartSemanal
                         fechaSeleccionada={ this.state.fechaSeleccionada }
+                        horasCargadas={ this.obtenerHorasSemana() }
                     ></ChartSemanal>
         } else if (this.state.frecuencia === 2) {
             chart = <ChartMensual
@@ -166,15 +182,18 @@ class ChartSemanal extends Component {
         
         // Add label
         chart.innerRadius = 100;
-        var label = chart.seriesContainer.createChild(am4core.Label);
-        let fechaHoy = new Fecha(new Date());
-        label.text = fechaHoy.fechaProcesadaBarra;
+        let label = chart.seriesContainer.createChild(am4core.Label);
+        
+        let fechaSeleccionada = this.props.fechaSeleccionada;
+        console.log("Horas ", this.props.horasCargadas)
+
+        label.text = fechaSeleccionada;
         label.horizontalCenter = "middle";
         label.verticalCenter = "middle";
         label.fontSize = 30;
         
         // Add and configure Series
-        var pieSeries = chart.series.push(new am4charts.PieSeries());
+        let pieSeries = chart.series.push(new am4charts.PieSeries());
         pieSeries.dataFields.value = "size";
         pieSeries.dataFields.category = "actividad";
   

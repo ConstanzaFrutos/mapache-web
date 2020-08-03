@@ -138,12 +138,13 @@ const frecuencias = [
 
 class ChartDiario extends Component {
     
-    componentDidMount() {
+    componentDidUpdate() {
         let chart = am4core.create("chart-diario", am4charts.PieChart);
 
         // Add data
         chart.data = [
             { "actividad": "Ocupado", "size": 7 },
+            { "actividad": "No ocupado", "size": 0 },
             { "actividad": "Disponible", "size": 2 }
         ];
         

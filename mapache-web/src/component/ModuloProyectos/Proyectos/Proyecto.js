@@ -6,6 +6,7 @@ import axios from "axios";
 import { Alerta } from "../../general/Alerta";
 import "../../../assets/css/controller/ProyectosScreen.css";
 import "../../../assets/css/ModuloProyectos/TablaCrearProyecto.css";
+import {Dropdown} from "../../general/Dropdown";
 const URL = 'https://mapache-proyectos.herokuapp.com/';
 
 class Proyecto extends Component {
@@ -23,7 +24,7 @@ class Proyecto extends Component {
     estadoInicial = {
         id:'', nombre:'', tipo:"Implementación", descripcion: '', fechaDeInicio: '',
         fechaDeFinalizacion: '', estado: 'No iniciado', redirectListado: false, redirectFases: false, fases : [],
-        mostrarAlerta: false, tipoAlerta: "", mensajeAlerta: ""
+        mostrarAlerta: false, tipoAlerta: "", mensajeAlerta: "", recursos: [], liderDeProyecto: -1
     };
 
     crearProyecto = event => {
@@ -95,6 +96,7 @@ class Proyecto extends Component {
                             estado: respuesta.data.estado,
                             fases: respuesta.data.fases
                         });
+                        this.obtenerRecursos();
                     }
                 }).catch((error) => {
                     console.error("Error - "+error);
@@ -117,8 +119,37 @@ class Proyecto extends Component {
         });
     }
 
+    obtenerRecursos(){
+        axios.get("https://mapache-recursos.herokuapp.com/empleados/")
+            .then(respuesta => {
+                if(respuesta.data != null){
+                    let recursosDropdown = respuesta.data.map((recurso) => {
+                        return {
+                            name: recurso.apellido + ', ' + recurso.nombre,
+                            value: recurso.legajo
+                        }
+                    });
+                    recursosDropdown.push({name: "Sin responsable", value: -1});
+                    this.setState({
+                        recursos: [...recursosDropdown, "Sin responsable"]
+                    });
+                }
+            }).catch(function(err){
+            if(err.response){
+                let mensaje = "Error: " + err.response.data.status;
+                if(err.response.data.error){
+                    mensaje += ': ' + err.response.data.error;
+                }
+                alert(mensaje);
+            } else {
+                alert("Ocurrio un error desconocido");
+            }
+        });
+    }
+
     actualizarProyecto = (event, listado) => {
         event.preventDefault();
+        alert(this.state.liderDeProyecto);
         const proyecto = {
             id: this.state.id,
             nombre: this.state.nombre,
@@ -151,6 +182,10 @@ class Proyecto extends Component {
         });
     };
 
+    seleccionarLider = event => {
+        event.preventDefault();
+        this.setState({liderDeProyecto: event.target.value});
+    }
 
     eliminarProyecto = event => {
         event.preventDefault();
@@ -233,7 +268,7 @@ class Proyecto extends Component {
         } else if(this.state.redirectFases){
             return <Redirect to={"/proyectos/" + this.state.id + "/fases"}/>
         }
-        const {nombre, tipo, descripcion, fechaDeInicio, fechaDeFinalizacion, estado} = this.state;
+        const {nombre, tipo, descripcion, fechaDeInicio, fechaDeFinalizacion, estado, recursos, liderDeProyecto} = this.state;
 
         let alerta = null;
         if (this.state.mostrarAlerta) {
@@ -321,6 +356,14 @@ class Proyecto extends Component {
                                     </Form.Control>
                                 </Form.Group>
                             </Form.Row>
+                            <Dropdown
+                                renderDropdown={ true }
+                                label="Lider de proyecto"
+                                value={ liderDeProyecto }
+                                values={ recursos }
+                                handleChange={ this.seleccionarLider }
+                            >
+                            </Dropdown>
                         </Card.Body>
                         <Card.Footer>
                             <ButtonGroup>

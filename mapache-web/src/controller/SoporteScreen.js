@@ -3,8 +3,6 @@ import { withRouter } from 'react-router';
 
 import Add from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
-import BugReportIcon from '@material-ui/icons/BugReport';
-import ShowChartIcon from '@material-ui/icons/ShowChart';
 
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
@@ -252,7 +250,9 @@ class SoporteScreen extends Component {
                 this.setState({ empleados: recursos })
                 this.requester.get('/tickets')
                     .then(response => {
-                        this.state.loading = false;
+                        this.setState({
+                            loading: false
+                        });
                         if (response.ok) {
                             return response.json();
                         } else {
@@ -303,9 +303,9 @@ class SoporteScreen extends Component {
         } else {
             contenido = <div className={useStyles}>
                 <AppBar style={{ background: '#3497c4' }} position="static">
-                    <Tabs centered value={this.state.value} onChange={this.handleChangeValue} aria-label="simple tabs example">
-                        <Tab icon={<BugReportIcon />} label="Tickets" {...a11yProps(0)} />
-                        <Tab icon={<ShowChartIcon />} label="Estadísticas" {...a11yProps(1)} />
+                    <Tabs value={this.state.value} onChange={this.handleChangeValue} aria-label="simple tabs example">
+                        <Tab label="Tickets" {...a11yProps(0)} />
+                        <Tab label="Estadísticas" {...a11yProps(1)} />
                     </Tabs>
                 </AppBar>
                 <TabPanel value={this.state.value} index={0}>

@@ -93,7 +93,9 @@ class ClientesScreen extends Component {
 
         this.requester.get('/clientes')
             .then(response => {
-                this.state.loading = false;
+                this.setState({
+                    loading: false
+                });
                 if (response.ok) {
                     return response.json();
                 } else {

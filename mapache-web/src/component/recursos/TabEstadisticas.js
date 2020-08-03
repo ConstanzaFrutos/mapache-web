@@ -8,6 +8,7 @@ import * as am4charts from "@amcharts/amcharts4/charts";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 
 import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
 
 import { Fecha } from "./TabHorasCargadas";
 import { Dropdown } from "../general/Dropdown";
@@ -84,31 +85,13 @@ class TabEstadisticas extends Component {
                     ></ChartAnual>
         }
 
-        /*return (
-            <div className="tab-estadisticas-div">
-                <div className="header-div">
-                    <DatePicker 
-                        label="Fecha"
-                        handleDateInput={ this.handleDateInput }
-                    ></DatePicker>
-                    <Dropdown
-                        renderDropdown={ true }
-                        label="Frecuencia"
-                        value={ this.state.frecuencia }
-                        values={ frecuencias }
-                        handleChange={ this.handleFrecuenciaChange }
-                    >
-                    </Dropdown> 
-                </div>
-                <div className="chart-div">
-                    { chart }
-                </div>
-            </div>
-        )*/
         return (
             <div className="tab-estadisticas-div">
                 <Paper square> 
                     <div className="header-div">
+                        <Typography variant="h6">
+                            Disponibilidad: Full-Time (40 hs semanales)
+                        </Typography>                        
                         <DatePicker 
                             label="Fecha"
                             handleDateInput={ this.handleDateInput }

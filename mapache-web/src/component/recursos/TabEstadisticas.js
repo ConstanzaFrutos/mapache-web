@@ -9,6 +9,7 @@ import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 
 import { Fecha } from "./TabHorasCargadas";
 import { Dropdown } from "../general/Dropdown";
+import { DatePicker } from "../general/DatePicker";
 
 am4core.useTheme(am4themes_animated);
 
@@ -19,10 +20,12 @@ class TabEstadisticas extends Component {
 
         this.state = {
             data: [],
-            frecuencia: frecuencias[0].value
+            frecuencia: frecuencias[0].value,
+            fechaSeleccionada: null
         }
 
         this.handleFrecuenciaChange = this.handleFrecuenciaChange.bind(this);
+        this.handleDateInput = this.handleDateInput.bind(this);
     }
 
     handleFrecuenciaChange(event) {
@@ -31,20 +34,41 @@ class TabEstadisticas extends Component {
         });
     }
 
+    handleDateInput(event) {
+        this.setState({
+            fechaSeleccionada: event.target.value
+        });
+    }
+
     render() {
 
+        const fechaHoy = new Fecha(new Date());
+        let fecha = this.state.fechaSeleccionada 
+                        ? this.state.fechaSeleccionada : 
+                        fechaHoy.fechaProcesadaGuion;
+        
         let chart = <ChartDiario></ChartDiario>
         if (this.state.frecuencia === 0) {
-            chart = <ChartDiario></ChartDiario>
+            chart = <ChartDiario
+                        fechaSeleccionada={ fecha }
+                    ></ChartDiario>
         } else if (this.state.frecuencia === 1) {
-            chart = <ChartSemanal></ChartSemanal>
+            chart = <ChartSemanal
+                        fechaSeleccionada={ this.state.fechaSeleccionada }
+                    ></ChartSemanal>
         } else if (this.state.frecuencia === 2) {
-            chart = <ChartMensual></ChartMensual>
+            chart = <ChartMensual
+                        fechaSeleccionada={ this.state.fechaSeleccionada }
+                    ></ChartMensual>
         }
 
         return (
             <div className="tab-estadisticas-div">
                 <div className="header-div">
+                    <DatePicker 
+                        label="Fecha"
+                        handleDateInput={ this.handleDateInput }
+                    ></DatePicker>
                     <Dropdown
                         renderDropdown={ true }
                         label="Frecuencia"
@@ -97,15 +121,14 @@ class ChartDiario extends Component {
         
         // Add label
         chart.innerRadius = 100;
-        var label = chart.seriesContainer.createChild(am4core.Label);
-        let fechaHoy = new Fecha(new Date());
-        label.text = fechaHoy.fechaProcesadaBarra;
+        let label = chart.seriesContainer.createChild(am4core.Label);
+        label.text = this.props.fechaSeleccionada;
         label.horizontalCenter = "middle";
         label.verticalCenter = "middle";
         label.fontSize = 30;
         
         // Add and configure Series
-        var pieSeries = chart.series.push(new am4charts.PieSeries());
+        let pieSeries = chart.series.push(new am4charts.PieSeries());
         pieSeries.dataFields.value = "size";
         pieSeries.dataFields.category = "actividad";
   

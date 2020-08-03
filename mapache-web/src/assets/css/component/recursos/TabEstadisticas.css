@@ -8,6 +8,8 @@
 }
 
 .header-div {
+    display: flex;
+    flex-direction: row;
     width: auto;
     display: flex;
     justify-content: flex-end;
@@ -24,8 +26,8 @@
 }
 
 .chart-semanal {
-    width: 80%;
-    height: 90%;
+    width: 70%;
+    height: 70%;
 }
 
 .chart-mensual {

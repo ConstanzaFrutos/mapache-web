@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { forwardRef } from 'react';
+
 import MaterialTable from 'material-table';
+
 import Search from '@material-ui/icons/Search'
 import SaveAlt from '@material-ui/icons/SaveAlt'
 import ChevronLeft from '@material-ui/icons/ChevronLeft'
@@ -19,7 +21,6 @@ import ArrowDownward from '@material-ui/icons/ArrowDownward';
 import "../../assets/css/component/Tabla.css";
 
 export class TablaAdministracion extends Component {
-
     constructor(props) {
         super(props);
 
@@ -37,7 +38,6 @@ export class TablaAdministracion extends Component {
     }
 
     render() {
-
         let tabla = null;
 
         let icons = {
@@ -60,66 +60,68 @@ export class TablaAdministracion extends Component {
             ThirdStateCheck: Remove,
         };
 
-        console.log('acciones')
-        console.log(this.props.editable)
-        console.log(this.props.editable===undefined)
+        /* console.log('acciones');
+        console.log(this.props.editable);
+        console.log(this.props.editable === undefined); */
 
         tabla = <MaterialTable
-                    icons={ icons }
-                    style={ {width:"auto"} }
-                    title={ this.props.title }
-                    columns={ this.props.columns }
-                    data={ this.props.data }
-                    editable= { this.props.editable===undefined? ({onRowAdd: (newData) =>
-                        new Promise((resolve) => {
-                            resolve();
-                            this.props.handleAdd(newData);
-                        }),
-                        onRowUpdate: (newData, oldData) =>
-                        new Promise((resolve) => {
-                            resolve();
-                            if (oldData) {
-                                this.props.handleEdit(oldData);
-                            }
-                        }),
-                        onRowDelete: (oldData) =>
-                        new Promise((resolve) => {
-                            resolve();
-                            this.props.handleDelete(oldData);
-                        })}) : (this.props.editable) }
-                    options={{
-                        actionsColumnIndex: -1
-                    }}
-                    actions = { this.props.actions }
-                    localization={{
-                        body: {
-                          emptyDataSourceMessage: 'No hay ningún registro para mostrar'
-                        },
-                        toolbar: {
-                            searchPlaceholder: 'Buscar...'
-                        },
-                        pagination: {
-                          labelRowsSelect: 'registros',
-                          labelDisplayedRows: '{count} de {from}-{to}',
-                          firstTooltip: 'Primera página',
-                          previousTooltip: 'Página anterior',
-                          nextTooltip: 'Página siguiente',
-                          lastTooltip: 'Última página'
+            icons={icons}
+            style={{ width: "auto" }}
+            title={this.props.title}
+            columns={this.props.columns}
+            data={this.props.data}
+            editable={this.props.editable === undefined ? ({
+                onRowAdd: (newData) =>
+                    new Promise((resolve) => {
+                        resolve();
+                        this.props.handleAdd(newData);
+                    }),
+                onRowUpdate: (newData, oldData) =>
+                    new Promise((resolve) => {
+                        resolve();
+                        if (oldData) {
+                            this.props.handleEdit(oldData);
                         }
-                    }}
-                >
-                </MaterialTable>
-
+                    }),
+                onRowDelete: (oldData) =>
+                    new Promise((resolve) => {
+                        resolve();
+                        this.props.handleDelete(oldData);
+                    })
+            }) : (this.props.editable)}
+            options={{
+                filtering: this.props.filtering,
+                actionsColumnIndex: -1
+            }}
+            actions={this.props.actions}
+            localization={{
+                body: {
+                    emptyDataSourceMessage: 'No hay ningún registro para mostrar'
+                },
+                header: {
+                    actions: "Acciones"
+                },
+                toolbar: {
+                    searchPlaceholder: 'Buscar...'
+                },
+                pagination: {
+                    labelRowsSelect: 'registros',
+                    labelDisplayedRows: '{count} de {from}-{to}',
+                    firstTooltip: 'Primera página',
+                    previousTooltip: 'Página anterior',
+                    nextTooltip: 'Página siguiente',
+                    lastTooltip: 'Última página'
+                }
+            }}
+        >
+        </MaterialTable>
 
         return (
             <div class="center-v">
                 <div className="tabla">
-                    { tabla }
+                    {tabla}
                 </div>
             </div>
         )
     }
-
 }
-
-

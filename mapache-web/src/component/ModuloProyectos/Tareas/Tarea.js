@@ -37,7 +37,8 @@ class Tarea extends Component {
                         descripcion: respuesta.data.descripcion,
                         fechaDeInicio: respuesta.data.fechaDeInicio,
                         fechaDeFinalizacion: respuesta.data.fechaDeFinalizacion,
-                        estado: respuesta.data.estado
+                        estado: respuesta.data.estado,
+                        responsable: respuesta.data.responsable
                     });
                 }
             }).catch(function(err){
@@ -147,7 +148,8 @@ class Tarea extends Component {
             descripcion: this.state.descripcion,
             fechaDeInicio: this.state.fechaDeInicio,
             fechaDeFinalizacion: this.state.fechaDeFinalizacion,
-            estado: this.state.estado
+            estado: this.state.estado,
+            responsable: this.state.responsable
         };
         const proyectoId = +this.props.match.params.id;
         axios.put(URL+proyectoId+"/tareas/"+tarea.id, tarea)
@@ -166,32 +168,6 @@ class Tarea extends Component {
                     alert("Ocurrio un error desconocido");
                 }
             });
-        if(this.state.responsable !== -1){
-            this.agregarTareaEmpleado();
-        }
-    }
-
-    agregarTareaEmpleado() {
-        const proyectoId = +this.props.match.params.id;
-        let fecha = new Date();
-        let mes = ("0" + (fecha.getMonth() + 1)).slice(-2);
-        let dia = ("0" + fecha.getDate()).slice(-2);
-        let aux = fecha.getFullYear() + "-" + mes + "-" + dia;
-        axios.post(`https://mapache-recursos.herokuapp.com/empleados/${this.state.responsable}/proyectos/${proyectoId}/tareas/${this.state.id}/horas?fecha=${aux}&horas=${0}`)
-            .catch(function(err){
-            if(err.response){
-                let mensaje = "Error: " + err.response.data.status;
-                if(err.response.data.error){
-                    mensaje += '\n' + err.response.data.error;
-                }
-                if(err.response.data.message){
-                    mensaje += '\n' + err.response.data.message;
-                }
-                alert(mensaje);
-            } else {
-                alert("Ocurrio un error desconocido");
-            }
-        });
     }
 
     eliminarTarea = event => {

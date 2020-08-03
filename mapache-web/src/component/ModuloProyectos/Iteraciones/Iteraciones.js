@@ -5,6 +5,7 @@ import {Link} from "react-router-dom";
 import { withRouter } from 'react-router';
 import "../../../assets/css/controller/ProyectosScreen.css";
 import "../../../assets/css/ModuloProyectos/TablaCrearProyecto.css";
+import "../../../assets/css/ModuloProyectos/Iteraciones.css";
 import {Dropdown} from "../../general/Dropdown";
 const URL = 'https://mapache-proyectos.herokuapp.com/proyectos/';
 
@@ -348,9 +349,9 @@ class Iteraciones extends Component {
     render() {
         const proyectoId = +this.props.match.params.id;
         const {iteraciones, iteracionActual, iteracionActualDropdown, tareasDropdown, tareaAgregar} = this.state;
-        return(
-            <div className="tablaProyectos" style={{width: "100%", height: "100%"}}>
-                <Card className="tablaCrearProyectos">
+        return (
+            <div className="tablaIteraciones">
+                <Card className="tablaCrearIteracion">
                     <Dropdown
                         renderDropdown={ true }
                         label="Iteraciones"

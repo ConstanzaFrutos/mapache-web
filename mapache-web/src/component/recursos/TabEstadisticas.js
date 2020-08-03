@@ -91,11 +91,8 @@ class ChartDiario extends Component {
 
         // Add data
         chart.data = [
-            { "actividad": "Vacaciones", "size": 0 },
-            { "actividad": "Enfermedad", "size": 0 },
-            { "actividad": "Día de estudio", "size": 0 },
-            { "actividad": "Tarea", "size": 8 },
-            { "actividad": "Libre", "size": 1 }
+            { "actividad": "Ocupado", "size": 7 },
+            { "actividad": "Disponible", "size": 2 }
         ];
         
         // Add label

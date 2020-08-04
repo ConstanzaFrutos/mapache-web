@@ -252,7 +252,7 @@ class Tarea extends Component {
                             </Form.Group>
                             <Form.Row>
                                 <Form.Group as={Col}>
-                                    <Form.Label>Fecha de Inicio</Form.Label>
+                                    <Form.Label>Fecha de Creacion</Form.Label>
                                     <Form.Control
                                         autoComplete="off"
                                         type="date" name="fechaDeInicio"

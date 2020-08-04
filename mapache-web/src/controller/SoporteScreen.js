@@ -77,6 +77,7 @@ class SoporteScreen extends Component {
 
         this.state = {
             tickets: [],
+            notificacion: this.props.location.state,
             value: 0,
             empleados: [],
             loading: true,
@@ -92,6 +93,9 @@ class SoporteScreen extends Component {
         this.handleEdit = this.handleEdit.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
         this.handleChangeValue = this.handleChangeValue.bind(this);
+
+        this.mostrarAlerta = this.mostrarAlerta.bind(this);
+        this.handleCloseAlerta = this.handleCloseAlerta.bind(this);
     }
 
     mostrarAlerta(mensaje, tipo, duracion = null) {
@@ -144,8 +148,10 @@ class SoporteScreen extends Component {
             this.getCharts()
     }
 
-    createSeries(chart, s, name, series_data) {
+    createSeries(chart, s, name, series_data, color) {
         var series = chart.series.push(new am4charts.LineSeries());
+        series.stroke = am4core.color(color);
+        series.strokeWidth = 3; // 3px
         series.dataFields.valueY = s;
         series.dataFields.dateX = "fecha";
         series.name = name;
@@ -169,24 +175,25 @@ class SoporteScreen extends Component {
         return series;
     }
 
-    drawLineGraph(chart_title, x_label, y_label, div_name, series) {
+    drawLineGraph(chart_title, div_name, series) {
         let chart = am4core.create(div_name, am4charts.XYChart);
+        chart.paddingRight = 20;
+
         let title = chart.titles.create();
         title.text = chart_title;
         title.fontSize = 25;
         title.marginBottom = 0;
 
-        chart.paddingRight = 20;
-
-        let dateAxis = chart.xAxes.push(new am4charts.DateAxis());
+        var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
         dateAxis.renderer.grid.template.location = 0;
 
         let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
         valueAxis.tooltip.disabled = true;
         valueAxis.renderer.minWidth = 35;
 
+        let colores = ["#f95d6a", "#003f5c"];
         for (let i = 0; i < series.length; i++) {
-            this.createSeries(chart, "cantidad", series[i].label, series[i].data)
+            this.createSeries(chart, "cantidad", series[i].label, series[i].data, colores[i])
         }
 
         chart.legend = new am4charts.Legend();
@@ -198,7 +205,7 @@ class SoporteScreen extends Component {
         let scrollbarX = new am4charts.XYChartScrollbar();
         chart.scrollbarX = scrollbarX;
 
-        return chart
+        return chart;
     }
 
     getCharts() {
@@ -212,7 +219,9 @@ class SoporteScreen extends Component {
             })
             .then(response => {
                 if (response) {
-                    let chart1 = this.drawLineGraph('Tickets diarios', '', '', 'chartdiv', [{ label: "Tickets cerrados", data: response.tickets_cerrados }, { label: "Tickets abiertos", data: response.tickets_abiertos }]);
+                    let chart1 = this.drawLineGraph('Tickets Diarios', 'chartdiv',
+                        [{ label: "Abiertos", data: response.tickets_abiertos },
+                        { label: "Cerrados", data: response.tickets_cerrados }]);
                     this.chart1 = chart1
                 }
             });
@@ -227,7 +236,8 @@ class SoporteScreen extends Component {
             })
             .then(response => {
                 if (response) {
-                    let chart2 = this.drawLineGraph('Tickets acumulados', '', '', 'chartdiv_2', [{ label: "Tickets cerrados", data: response }]);
+                    let chart2 = this.drawLineGraph('Tickets Acumulados', 'chartdiv_2',
+                        [{ label: "Abiertos", data: response }]);
                     this.chart2 = chart2
                 }
             });

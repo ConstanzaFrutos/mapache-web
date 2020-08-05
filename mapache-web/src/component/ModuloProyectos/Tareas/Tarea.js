@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import { withRouter } from 'react-router';
-import {Button,ButtonGroup, Card, Col, Form, Modal} from "react-bootstrap";
+import {Button,ButtonGroup, Card, Col, Form, Modal, ListGroup} from "react-bootstrap";
 import axios from "axios";
 import "../../../assets/css/controller/ProyectosScreen.css";
 import "../../../assets/css/ModuloProyectos/TablaCrearProyecto.css";
@@ -14,7 +14,8 @@ class Tarea extends Component {
     }
 
     estadoInicial = {id:'', nombre:'', descripcion: '', fechaDeInicio: '',
-        fechaDeFinalizacion: '', estado: 'No iniciado', responsable: -1, recursos: []};
+        fechaDeFinalizacion: '', estado: 'No iniciado', responsable: -1, recursos: [], duracionEstimada: 0, idsTickets: [],
+        prioridad: ''};
 
     componentDidMount() {
         const proyectoId = +this.props.match.params.id;
@@ -38,7 +39,10 @@ class Tarea extends Component {
                         fechaDeInicio: respuesta.data.fechaDeInicio,
                         fechaDeFinalizacion: respuesta.data.fechaDeFinalizacion,
                         estado: respuesta.data.estado,
-                        responsable: respuesta.data.responsable
+                        responsable: respuesta.data.responsable,
+                        duracionEstimada: respuesta.data.duracionEstimada,
+                        idsTickets: respuesta.data.idsTickets,
+                        prioridad: respuesta.data.prioridad
                     });
                 }
             }).catch(function(err){
@@ -114,7 +118,9 @@ class Tarea extends Component {
             fechaDeInicio: this.state.fechaDeInicio,
             fechaDeFinalizacion: this.state.fechaDeFinalizacion,
             estado: this.state.estado,
-            responsable: this.state.responsable
+            responsable: this.state.responsable,
+            duracionEstimada: this.state.duracionEstimada,
+            prioridad: this.state.prioridad
         };
         axios.post(URL+proyectoId+"/tareas", tarea)
             .then(respuesta => {
@@ -149,7 +155,10 @@ class Tarea extends Component {
             fechaDeInicio: this.state.fechaDeInicio,
             fechaDeFinalizacion: this.state.fechaDeFinalizacion,
             estado: this.state.estado,
-            responsable: this.state.responsable
+            responsable: this.state.responsable,
+            duracionEstimada: this.state.duracionEstimada,
+            idsTickets: this.state.idsTickets,
+            prioridad: this.state.prioridad
         };
         const proyectoId = +this.props.match.params.id;
         axios.put(URL+proyectoId+"/tareas/"+tarea.id, tarea)
@@ -203,7 +212,7 @@ class Tarea extends Component {
     }
 
     render() {
-        const {nombre, descripcion, fechaDeInicio, fechaDeFinalizacion, estado} = this.state;
+        const {nombre, descripcion, fechaDeInicio, fechaDeFinalizacion, estado, duracionEstimada, idsTickets, prioridad} = this.state;
 
         let responsable = this.state.responsable;
 
@@ -213,15 +222,36 @@ class Tarea extends Component {
                     <Form id="formularioProyecto" onSubmit={this.state.id ? this.actualizarTarea : this.crearTarea}>
                         <Card.Header>{this.state.id ? "Editar Tarea": "Crear Tarea"}</Card.Header>
                         <Card.Body>
-                            <Form.Group as={Col}>
-                                <Form.Label>Nombre</Form.Label>
-                                <Form.Control
-                                    required autoComplete="off"
-                                    type="text" name="nombre"
-                                    value={nombre}
-                                    onChange={this.cambioTarea}
-                                />
-                            </Form.Group>
+                            <Form.Row>
+                                <Form.Group as={Col}>
+                                    <Form.Label>Nombre</Form.Label>
+                                    <Form.Control
+                                        required autoComplete="off"
+                                        type="text" name="nombre"
+                                        value={nombre}
+                                        onChange={this.cambioTarea}
+                                    />
+                                </Form.Group>
+                                <Form.Group as={Col}>
+                                    <Form.Label>Duracion Estimada</Form.Label>
+                                    <Form.Control
+                                        autoComplete="off"
+                                        min = "0"
+                                        type="number" name="duracionEstimada"
+                                        value={duracionEstimada}
+                                        onChange={this.cambioTarea}
+                                    />
+                                </Form.Group>
+                                <Form.Group as={Col}>
+                                    <Form.Label>Prioridad</Form.Label>
+                                    <Form.Control
+                                        autoComplete="off"
+                                        type="text" name="prioridad"
+                                        value={prioridad}
+                                        onChange={this.cambioTarea}
+                                    />
+                                </Form.Group>
+                            </Form.Row>
                             <Form.Group>
                                 <Form.Label>Descripcion (Max 250 caracteres)</Form.Label>
                                 <Form.Control
@@ -235,7 +265,7 @@ class Tarea extends Component {
                             </Form.Group>
                             <Form.Row>
                                 <Form.Group as={Col}>
-                                    <Form.Label>Fecha de Inicio</Form.Label>
+                                    <Form.Label>Fecha de Creacion</Form.Label>
                                     <Form.Control
                                         autoComplete="off"
                                         type="date" name="fechaDeInicio"
@@ -275,6 +305,16 @@ class Tarea extends Component {
                                 handleChange={ this.seleccionarRecurso }
                             >
                             </Dropdown>
+                            {idsTickets.length > 0 ?
+                                <div>
+                                    Tickets asociados
+                                    <ListGroup horizontal>
+                                        {this.state.idsTickets.map((id) => (
+                                            <ListGroup.Item> {id} </ListGroup.Item>
+                                        ))}
+                                    </ListGroup>
+                                </div>
+                                : null}
                         </Card.Body>
                         <Card.Footer>
                             <ButtonGroup>

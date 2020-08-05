@@ -20,7 +20,7 @@ class Proyecto extends Component {
     estadoInicial = {
         id:'', nombre:'', tipo:"Implementación", descripcion: '', fechaDeInicio: '',
         fechaDeFinalizacion: '', estado: 'No iniciado', redirectListado: false, redirectFases: false, fases : [],
-        recursos: [], liderDeProyecto: -1, cliente: '', producto: ''
+        recursos: [], liderDeProyecto: -1, cliente: '', producto: '', clientes: []
     };
 
     crearProyecto = event => {
@@ -66,6 +66,7 @@ class Proyecto extends Component {
         const proyectoId = +this.props.match.params.id;
         if(!proyectoId){
             this.obtenerRecursos();
+            this.obtenerClientes();
             return;
         }
         axios.get(URL+"proyectos/"+proyectoId)
@@ -88,6 +89,7 @@ class Proyecto extends Component {
                             this.setState({lideDeProyecto: -1});
                         }
                         this.obtenerRecursos();
+                        this.obtenerClientes();
                     }
                 }).catch(function(err){
             if(err.response){
@@ -115,6 +117,34 @@ class Proyecto extends Component {
                     recursosDropdown.push({name: "Sin responsable", value: -1});
                     this.setState({
                         recursos: [...recursosDropdown, "Sin responsable"]
+                    });
+                }
+            }).catch(function(err){
+            if(err.response){
+                let mensaje = "Error: " + err.response.data.status;
+                if(err.response.data.error){
+                    mensaje += ': ' + err.response.data.error;
+                }
+                alert(mensaje);
+            } else {
+                alert("Ocurrio un error desconocido");
+            }
+        });
+    }
+
+    obtenerClientes() {
+        axios.get("https://psa-api-support.herokuapp.com/clientes")
+            .then(respuesta => {
+                if(respuesta.data != null){
+                    let clientesDropdown = respuesta.data.map((cliente) => {
+                        return {
+                            name: cliente.razon_social,
+                            value: cliente.razon_social
+                        }
+                    });
+                    clientesDropdown.push({name: "Sin cliente", value: "Sin cliente"});
+                    this.setState({
+                        clientes: clientesDropdown
                     });
                 }
             }).catch(function(err){
@@ -168,6 +198,11 @@ class Proyecto extends Component {
     seleccionarLider = event => {
         event.preventDefault();
         this.setState({liderDeProyecto: event.target.value});
+    }
+
+    seleccionarCliente = event => {
+        event.preventDefault();
+        this.setState({cliente: event.target.value});
     }
 
     eliminarProyecto = event => {
@@ -267,15 +302,18 @@ class Proyecto extends Component {
                                     </Form.Control>
                                 </Form.Group>
                                 <Form.Group as={Col}>
-                                    <Form.Label>{tipo === "Implementación" ? "Cliente" : "Producto"}</Form.Label>
+                                    {tipo === "Implementación" ? null :
+                                        <Form.Label>Producto</Form.Label>
+                                    }
                                     {tipo === "Implementación" ?
-                                        <Form.Control
-                                            value={cliente}
-                                            onChange={this.cambioProyecto}
-                                            autoComplete="off"
-                                            type="text" name="cliente"
+                                        <Dropdown
+                                            renderDropdown={ true }
+                                            label="Cliente"
+                                            value={ cliente }
+                                            values={ this.state.clientes }
+                                            handleChange={ this.seleccionarCliente }
                                         >
-                                        </Form.Control> :
+                                        </Dropdown> :
                                         <Form.Control
                                             value={producto}
                                             onChange={this.cambioProyecto}

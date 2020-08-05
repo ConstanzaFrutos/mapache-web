@@ -416,12 +416,31 @@ class Iteraciones extends Component {
                                 </Modal.Footer>
                             </Modal>
                         </ButtonGroup>
+                        <Dropdown
+                            renderDropdown={ true }
+                            label="Agregar Tarea"
+                            value={ tareaAgregar }
+                            values={ tareasDropdown }
+                            handleChange={ this.seleccionarTarea }
+                        >
+                        </Dropdown>
+                        <ButtonGroup>
+                            <Button size={"sm"} onClick={this.agregarTarea.bind(this)}>
+                                Agregar
+                            </Button>
+                            <Link to={"/proyectos/"+proyectoId+'/tareas/:id'}>
+                                <Button size="sm" variant="outline-primary">
+                                    Crear tarea
+                                </Button>
+                            </Link>
+                        </ButtonGroup>
                         <Table>
                             <thead>
                             <tr>
                                 <th>Id</th>
                                 <th>Nombre</th>
                                 <th>Estado</th>
+                                <th>Prioridad</th>
                                 <th>Acciones</th>
                             </tr>
                             </thead>
@@ -437,6 +456,9 @@ class Iteraciones extends Component {
                                             <td
                                                 style={{color: this.definirColor(tarea.estado)}}>
                                                 {tarea.estado}
+                                            </td>
+                                            <td>
+                                                {tarea.prioridad ? tarea.prioridad : "Sin especificar"}
                                             </td>
                                             <td>
                                                 <ButtonGroup>
@@ -459,24 +481,6 @@ class Iteraciones extends Component {
                                 }
                             </tbody>
                         </Table>
-                        <Dropdown
-                            renderDropdown={ true }
-                            label="Agregar Tarea"
-                            value={ tareaAgregar }
-                            values={ tareasDropdown }
-                            handleChange={ this.seleccionarTarea }
-                        >
-                        </Dropdown>
-                        <ButtonGroup>
-                            <Button size={"sm"} onClick={this.agregarTarea.bind(this)}>
-                                Agregar
-                            </Button>
-                            <Link to={"/proyectos/"+proyectoId+'/tareas/:id'}>
-                                <Button size="sm" variant="outline-primary">
-                                    Crear tarea
-                                </Button>
-                            </Link>
-                        </ButtonGroup>
                     </Form> : null}
                 </Card>
             </div>

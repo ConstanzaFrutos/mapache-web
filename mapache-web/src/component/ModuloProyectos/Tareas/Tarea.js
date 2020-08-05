@@ -14,7 +14,8 @@ class Tarea extends Component {
     }
 
     estadoInicial = {id:'', nombre:'', descripcion: '', fechaDeInicio: '',
-        fechaDeFinalizacion: '', estado: 'No iniciado', responsable: -1, recursos: [], duracionEstimada: 0, idsTickets: []};
+        fechaDeFinalizacion: '', estado: 'No iniciado', responsable: -1, recursos: [], duracionEstimada: 0, idsTickets: [],
+        prioridad: ''};
 
     componentDidMount() {
         const proyectoId = +this.props.match.params.id;
@@ -40,7 +41,8 @@ class Tarea extends Component {
                         estado: respuesta.data.estado,
                         responsable: respuesta.data.responsable,
                         duracionEstimada: respuesta.data.duracionEstimada,
-                        idsTickets: respuesta.data.idsTickets
+                        idsTickets: respuesta.data.idsTickets,
+                        prioridad: respuesta.data.prioridad
                     });
                 }
             }).catch(function(err){
@@ -117,7 +119,8 @@ class Tarea extends Component {
             fechaDeFinalizacion: this.state.fechaDeFinalizacion,
             estado: this.state.estado,
             responsable: this.state.responsable,
-            duracionEstimada: this.state.duracionEstimada
+            duracionEstimada: this.state.duracionEstimada,
+            prioridad: this.state.prioridad
         };
         axios.post(URL+proyectoId+"/tareas", tarea)
             .then(respuesta => {
@@ -154,7 +157,8 @@ class Tarea extends Component {
             estado: this.state.estado,
             responsable: this.state.responsable,
             duracionEstimada: this.state.duracionEstimada,
-            idsTickets: this.state.idsTickets
+            idsTickets: this.state.idsTickets,
+            prioridad: this.state.prioridad
         };
         const proyectoId = +this.props.match.params.id;
         axios.put(URL+proyectoId+"/tareas/"+tarea.id, tarea)
@@ -208,7 +212,7 @@ class Tarea extends Component {
     }
 
     render() {
-        const {nombre, descripcion, fechaDeInicio, fechaDeFinalizacion, estado, duracionEstimada, idsTickets} = this.state;
+        const {nombre, descripcion, fechaDeInicio, fechaDeFinalizacion, estado, duracionEstimada, idsTickets, prioridad} = this.state;
 
         let responsable = this.state.responsable;
 
@@ -235,6 +239,15 @@ class Tarea extends Component {
                                         min = "0"
                                         type="number" name="duracionEstimada"
                                         value={duracionEstimada}
+                                        onChange={this.cambioTarea}
+                                    />
+                                </Form.Group>
+                                <Form.Group as={Col}>
+                                    <Form.Label>Prioridad</Form.Label>
+                                    <Form.Control
+                                        autoComplete="off"
+                                        type="text" name="prioridad"
+                                        value={prioridad}
                                         onChange={this.cambioTarea}
                                     />
                                 </Form.Group>

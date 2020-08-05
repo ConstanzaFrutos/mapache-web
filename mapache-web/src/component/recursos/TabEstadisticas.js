@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect } from 'react';
 import { withRouter } from 'react-router';
 
 import "../../assets/css/component/recursos/TabEstadisticas.css";
@@ -27,6 +27,7 @@ class TabEstadisticas extends Component {
         this.fechaHoy = new Fecha(new Date());
 
         this.state = {
+            legajo: '',
             data: [],
             frecuencia: frecuencias[0].value,
             fechaSeleccionada: this.fechaHoy.fechaProcesadaGuion
@@ -43,15 +44,38 @@ class TabEstadisticas extends Component {
     async componentDidMount() {
         let legajo = this.props.match.params.legajo;
         let horas = [];
-        console.log("Did mount ", this.state.frecuencia);
+        
         if (this.state.frecuencia === 0) {
-            console.log("En if");
             horas = await this.requesterHoras.obtenerHorasCargadasEnUnDia(
                 legajo, 
                 this.state.fechaSeleccionada, 
                 this.props.mostrarAlerta
             );
             console.log("Horas", horas);
+        } 
+        
+        console.log("Horas cargadas ", horas);
+        this.setState({
+            legajo: legajo,
+            data: horas
+        })
+    }
+
+    async actualizarValores() {
+        let horas = [];
+        if (this.state.frecuencia === 0) {
+            horas = await this.requesterHoras.obtenerHorasCargadasEnUnDia(
+                this.state.legajo, 
+                this.state.fechaSeleccionada, 
+                this.props.mostrarAlerta
+            );
+        } else if (this.state.frecuencia === 1) {
+            
+            horas = await this.requesterHoras.obtenerHorasCargadasSemana(
+                this.state.legajo, 
+                this.state.fechaSeleccionada,
+                this.props.mostrarAlerta
+            );
         }
         
         console.log("Horas cargadas ", horas);
@@ -67,6 +91,7 @@ class TabEstadisticas extends Component {
     }
 
     handleDateInput(event) {
+        console.log("Nueva fecha seleccionada ", event.target.value)
         this.setState({
             fechaSeleccionada: event.target.value
         });
@@ -92,6 +117,7 @@ class TabEstadisticas extends Component {
         
         let chart = <ChartDiario></ChartDiario>
         let label = '';
+
         if (this.state.frecuencia === 0) {
             chart = <ChartDiario
                         fechaSeleccionada={ fecha }
@@ -101,7 +127,7 @@ class TabEstadisticas extends Component {
         } else if (this.state.frecuencia === 1) {
             chart = <ChartSemanal
                         fechaSeleccionada={ this.state.fechaSeleccionada }
-                        horasCargadas={ this.obtenerHorasSemana() }
+                        obtenerHorasSemana={ this.obtenerHorasSemana }
                     ></ChartSemanal>
             label = `Ocupación del empleado en la semana ${ fecha } - ${ fecha }`;
         } else if (this.state.frecuencia === 2) {
@@ -195,7 +221,7 @@ class ChartDiario extends Component {
         });
 
         let horasNoOcupadas = totalHorasDia - horasOcupadas;
-        let horasDisponibles = 9; 
+        let horasDisponibles = 0;
 
         return [
             { "actividad": "Ocupado", "size": horasOcupadas },
@@ -240,20 +266,88 @@ class ChartDiario extends Component {
     
 }
 
-class ChartSemanal extends Component {
-    
-    componentDidUpdate() {
+function ChartSemanal(props) {
+    function procesarDataSemanal(data) {
+        const totalHorasDia = 9;
+        console.log("Horas recibidas semana ", data)
+
+        let horasVacaciones = 0;
+        let horasEnfermedad = 0;
+        let horasDiaDeEstudio = 0;
+        let horasTarea = 0;
+        let horasNoOcupadas = 40;
+        let horasDisponibles = 0;
+        data.forEach((data) => {
+            if (data.actividad === "VACACIONES"){
+                horasVacaciones += data.cantidadHoras;
+            } else if (data.actividad === "ENFERMEDAD"){
+                horasEnfermedad += data.cantidadHoras;
+            } else if (data.actividad === "DIA_DE_ESTUDIO"){
+                horasDiaDeEstudio += data.cantidadHoras;
+            } else if (data.actividad === "TAREA"){
+                horasTarea += data.cantidadHoras;
+            } else {
+                horasNoOcupadas -= data.cantidadHoras;
+            }
+        });
+
+        return [
+            { "actividad": "Vacaciones", "size": horasVacaciones },
+            { "actividad": "Enfermedad", "size": horasEnfermedad },
+            { "actividad": "Día de estudio", "size": horasDiaDeEstudio },
+            { "actividad": "Tarea", "size": horasTarea },
+            { "actividad": "No ocupado", "size": horasNoOcupadas },
+            { "actividad": "Disponible", "size": horasDisponibles }
+        ];
+    }
+
+    const obtenerChart = async () => {
         let chart = am4core.create("chart-semanal", am4charts.PieChart);
 
+        let data = await props.obtenerHorasSemana();
         // Add data
-        chart.data = [
-            { "actividad": "Vacaciones", "size": 9 },
-            { "actividad": "Enfermedad", "size": 0 },
-            { "actividad": "Día de estudio", "size": 0 },
-            { "actividad": "Tarea", "size": 8 },
-            { "actividad": "No ocupado", "size": 1 },
-            { "actividad": "Disponible", "size": 1 }
-        ];
+        chart.data = procesarDataSemanal(data);
+        
+        // Add label
+        chart.innerRadius = 90;
+        let label = chart.seriesContainer.createChild(am4core.Label);
+        
+        let fechaSeleccionada = props.fechaSeleccionada;
+        // TODO mostrar inicio y fin semana
+        console.log("Horas ", props.horasCargadas)
+
+        label.text = fechaSeleccionada;
+        label.horizontalCenter = "middle";
+        label.verticalCenter = "middle";
+        label.fontSize = 30;
+        
+        // Add and configure Series
+        let pieSeries = chart.series.push(new am4charts.PieSeries());
+        pieSeries.dataFields.value = "size";
+        pieSeries.dataFields.category = "actividad";
+        
+        return chart;
+    }
+
+    useEffect(() => {
+        obtenerChart();
+    });
+
+    return (
+        <div className="chart-semanal"></div>
+    );
+}
+/*
+class ChartSemanal extends Component {
+    
+    
+
+    async componentDidUpdate() {
+        let chart = am4core.create("chart-semanal", am4charts.PieChart);
+
+        let data = await this.props.obtenerHorasSemana();
+        // Add data
+        chart.data = this.procesarDataSemanal(data);
         
         // Add label
         chart.innerRadius = 90;
@@ -288,7 +382,7 @@ class ChartSemanal extends Component {
         );
     }
     
-}
+}*/
 
 class ChartMensual extends Component {
 

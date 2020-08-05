@@ -7,6 +7,7 @@ class RequesterHoras {
         this.requester = new Requester(mapacheRecursosBaseUrl);
 
         this.obtenerHorasCargadas = this.obtenerHorasCargadas.bind(this);
+        this.obtenerHorasCargadasEnUnDia = this.obtenerHorasCargadasEnUnDia.bind(this);
         this.obtenerHorasCargadasSemana = this.obtenerHorasCargadasSemana.bind(this);
 
         this.obtenerHorasCargadasEnTarea = this.obtenerHorasCargadasEnTarea.bind(this);
@@ -29,6 +30,26 @@ class RequesterHoras {
                 return response;
             }
         });
+        return horasCargadas;
+    }
+
+    async obtenerHorasCargadasEnUnDia(legajo, dia, mostrarAlerta){
+        const uri = `/empleados/${legajo}/horas?fechaFin=${dia}&fechaInicio=${dia}`;
+        let horasCargadas = await this.requester.get(uri)
+            .then(response => {
+                if (response.ok){
+                    return response.json();
+                } else {
+                    mostrarAlerta(
+                        `Error al consultar horas del empleado ${legajo}`,
+                        "error"
+                    )
+                }
+            }).then(response => {
+                if (response) {
+                    return response;
+                }
+            });
         return horasCargadas;
     }
 

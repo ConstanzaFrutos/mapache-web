@@ -25,6 +25,7 @@ import "../../assets/css/component/recursos/PerfilEmpleado.css";
 const mapacheRecursosBaseUrl = "https://mapache-recursos.herokuapp.com"
 const mapacheProyectosBaseUrl = "https://mapache-proyectos.herokuapp.com"
 const mapacheSoporteBaseUrl = "https://psa-api-support.herokuapp.com";
+//const mapacheSoporteBaseUrl = "http://localhost:5000"
 
 const tipos = [
     {
@@ -90,7 +91,8 @@ class VisualizarTicket extends Component {
                 "nombre": "",
                 "id_proyecto": "",
                 "prioridad": "",
-                "descripcion": ""
+                "descripcion": "",
+                "id_ticket": ""
             },
             "responsables": [{ "legajo": "-1", "nombre": "Ninguno", "apellido": "" }],
             "modal": false,
@@ -280,7 +282,10 @@ class VisualizarTicket extends Component {
         event.preventDefault();
 
         // Le pego a proyectos para crear una tarea asociada a este ticket
-        this.requesterProyectos.post('/proyectos/' + this.state.tarea.id_proyecto + '/tareas', this.state.tarea)
+        let tarea = this.state.tarea
+        tarea.id_ticket = this.state.ticket.id
+        console.log(tarea)
+        this.requesterProyectos.post('/proyectos/' + this.state.tarea.id_proyecto + '/tareas', tarea)
             .then(response => {
                 if (response.ok) {
                     return response.json()
@@ -392,7 +397,7 @@ class VisualizarTicket extends Component {
             <div class='form-crear-ticket'>
                 {alerta}
                 <div class="centrado">
-                    <h2>Editar Ticket</h2>
+                  <h2>Editar Ticket N° {this.state.ticket.id}</h2>
                 </div>
                 <br />
                 <form autoComplete="off" onSubmit={this.handleSubmit}>

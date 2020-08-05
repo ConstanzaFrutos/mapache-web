@@ -9,6 +9,7 @@ class RequesterHoras {
         this.obtenerHorasCargadas = this.obtenerHorasCargadas.bind(this);
         this.obtenerHorasCargadasEnUnDia = this.obtenerHorasCargadasEnUnDia.bind(this);
         this.obtenerHorasCargadasSemana = this.obtenerHorasCargadasSemana.bind(this);
+        this.obtenerHorasCargadasMes = this.obtenerHorasCargadasMes.bind(this);
 
         this.obtenerHorasCargadasEnTarea = this.obtenerHorasCargadasEnTarea.bind(this);
     }
@@ -89,6 +90,31 @@ class RequesterHoras {
                 return response;
             }
         });
+        return horasCargadas;
+    }
+
+    async obtenerHorasCargadasMes(legajo, fecha, mostrarAlerta){
+        let primerDia = this.procesarFecha(new Date(fecha.getFullYear(), fecha.getMonth(), 1));
+        let ultimoDia = this.procesarFecha(new Date(fecha.getFullYear(), fecha.getMonth() + 1, 0));
+        
+        const uri = `/empleados/${legajo}/horas?fechaFin=${ultimoDia}&fechaInicio=${primerDia}`;
+        let horasCargadas = await this.requester.get(uri)
+            .then(response => {
+                if (response.ok){
+                    return response.json();
+                } else {                
+                    mostrarAlerta(
+                        `Error al consultar horas del empleado ${legajo}`,
+                        "error"
+                    )
+                }
+            }).then(response => {
+                console.log("response ",response);
+                if (response) {
+                    return response;
+                }
+            });
+
         return horasCargadas;
     }
 

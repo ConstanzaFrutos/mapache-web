@@ -88,6 +88,9 @@ class Proyecto extends Component {
                         if(!this.state.liderDeProyecto) {
                             this.setState({lideDeProyecto: -1});
                         }
+                        if(!this.state.cliente){
+                            this.setState({cliente: "Sin cliente"});
+                        }
                         this.obtenerRecursos();
                         this.obtenerClientes();
                     }
@@ -170,7 +173,8 @@ class Proyecto extends Component {
             fechaDeInicio: this.state.fechaDeInicio,
             fechaDeFinalizacion: this.state.fechaDeFinalizacion,
             estado: this.state.estado,
-            liderDeProyecto: this.state.liderDeProyecto
+            liderDeProyecto: this.state.liderDeProyecto,
+            cliente: this.state.cliente
         };
         axios.patch(URL+"proyectos/"+proyecto.id, proyecto)
             .then(respuesta=> {

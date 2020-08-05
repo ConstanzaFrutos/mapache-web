@@ -118,6 +118,31 @@ class RequesterHoras {
         return horasCargadas;
     }
 
+    async obtenerHorasCargadasAnio(legajo, fecha, mostrarAlerta){
+        let primerDia = this.procesarFecha(new Date(fecha.getFullYear(), 0, 1));
+        let ultimoDia = this.procesarFecha(new Date(fecha.getFullYear(), 11, 31));
+        
+        const uri = `/empleados/${legajo}/horas?fechaFin=${ultimoDia}&fechaInicio=${primerDia}`;
+        let horasCargadas = await this.requester.get(uri)
+            .then(response => {
+                if (response.ok){
+                    return response.json();
+                } else {                
+                    mostrarAlerta(
+                        `Error al consultar horas del empleado ${legajo}`,
+                        "error"
+                    )
+                }
+            }).then(response => {
+                console.log("response ",response);
+                if (response) {
+                    return response;
+                }
+            });
+
+        return horasCargadas;
+    }
+
     async obtenerHorasCargadasEnTarea(legajo, codigoProyecto, codigoTarea, mostrarAlerta) {
         const uri = `/empleados/${legajo}/proyectos/${codigoProyecto}/tareas/${codigoTarea}/horas`;
         let horasCargadas = await this.requester.get(uri)

@@ -40,6 +40,7 @@ class TabEstadisticas extends Component {
         
         this.obtenerHorasDia = this.obtenerHorasDia.bind(this);
         this.obtenerHorasSemana = this.obtenerHorasSemana.bind(this);
+        this.obtenerHorasMes = this.obtenerHorasMes.bind(this);
     }
 
     async componentDidMount() {
@@ -94,6 +95,16 @@ class TabEstadisticas extends Component {
         return horasCargadas;
     }
 
+    async obtenerHorasMes() {
+        const fecha = this.state.fechaSeleccionada ? new Date(this.state.fechaSeleccionada) : new Date();
+        const horasCargadas = await this.requesterHoras.obtenerHorasCargadasMes(
+            this.props.match.params.legajo, 
+            fecha,
+            this.props.mostrarAlerta
+        );
+        return horasCargadas;
+    }
+
     render() {
 
         const fechaHoy = new Fecha(new Date());
@@ -121,6 +132,7 @@ class TabEstadisticas extends Component {
         } else if (this.state.frecuencia === 2) {
             chart = <ChartMensual
                         fechaSeleccionada={ this.state.fechaSeleccionada }
+                        obtenerHorasMes={ this.obtenerHorasMes }
                     ></ChartMensual>
             label = `Ocupación del empleado en el mes ${ fechaFormatoDate.getMonth() + 1 }`;
         } else if (this.state.frecuencia === 3) {
@@ -322,13 +334,13 @@ function ChartSemanal(props) {
     );
 }
 
-class ChartMensual extends Component {
+function ChartMensual(props) {
 
-    /*componentDidMount() {
-        let chart = am4core.create("chart-mensual", am4charts.XYChart);
-        chart.hiddenState.properties.opacity = 0; // this creates initial fade-in
+    function procesarDataMensual(data) {
+        console.log("data mes", data);
+        
 
-        chart.data = [
+        const d = [
             {
                 category: "One",
                 Vacaciones: 0,
@@ -336,182 +348,16 @@ class ChartMensual extends Component {
                 DíaDeEstudio: 9,
                 Tarea: 29,
                 NoOcupado: 2
-            },
-            {
-                category: "Two",
-                Vacaciones: 18,
-                Enfermedad: 0,
-                DíaDeEstudio: 0,
-                Tarea: 2,
-                NoOcupado: 2
-            },
-            {
-                category: "Three",
-                Vacaciones: 0,
-                Enfermedad: 0,
-                DíaDeEstudio: 0,
-                Tarea: 40,
-                NoOcupado: 0
-            },
-            {
-                category: "Four",
-                Vacaciones: 0,
-                Enfermedad: 9,
-                DíaDeEstudio: 0,
-                Tarea: 30,
-                NoOcupado: 1
             }
         ];
+    }
 
-        chart.colors.step = 2;
-        chart.padding(30, 30, 10, 30);
-        chart.legend = new am4charts.Legend();
-
-        var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
-        categoryAxis.dataFields.category = "category";
-        categoryAxis.renderer.grid.template.location = 0;
-
-        var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
-        valueAxis.min = 0;
-        valueAxis.max = 100;
-        valueAxis.strictMinMax = true;
-        valueAxis.calculateTotals = true;
-        valueAxis.renderer.minWidth = 50;
-
-
-        var series1 = chart.series.push(new am4charts.ColumnSeries());
-        series1.columns.template.width = am4core.percent(80);
-        series1.columns.template.tooltipText =
-        "{name}: {valueY.totalPercent.formatNumber('#.00')}%";
-        series1.name = "Vacaciones";
-        series1.dataFields.categoryX = "category";
-        series1.dataFields.valueY = "Vacaciones";
-        series1.dataFields.valueYShow = "totalPercent";
-        series1.dataItems.template.locations.categoryX = 0.5;
-        series1.stacked = true;
-        series1.tooltip.pointerOrientation = "vertical";
-
-        var bullet1 = series1.bullets.push(new am4charts.LabelBullet());
-        bullet1.interactionsEnabled = false;
-        bullet1.label.text = "{valueY.totalPercent.formatNumber('#.00')}%";
-        bullet1.label.fill = am4core.color("#ffffff");
-        bullet1.locationY = 0.5;
-
-        var series2 = chart.series.push(new am4charts.ColumnSeries());
-        series2.columns.template.width = am4core.percent(80);
-        series2.columns.template.tooltipText =
-        "{name}: {valueY.totalPercent.formatNumber('#.00')}%";
-        series2.name = "Enfermedad";
-        series2.dataFields.categoryX = "category";
-        series2.dataFields.valueY = "Enfermedad";
-        series2.dataFields.valueYShow = "totalPercent";
-        series2.dataItems.template.locations.categoryX = 0.5;
-        series2.stacked = true;
-        series2.tooltip.pointerOrientation = "vertical";
-
-        var bullet2 = series2.bullets.push(new am4charts.LabelBullet());
-        bullet2.interactionsEnabled = false;
-        bullet2.label.text = "{valueY.totalPercent.formatNumber('#.00')}%";
-        bullet2.locationY = 0.5;
-        bullet2.label.fill = am4core.color("#ffffff");
-
-        var series3 = chart.series.push(new am4charts.ColumnSeries());
-        series3.columns.template.width = am4core.percent(80);
-        series3.columns.template.tooltipText =
-        "{name}: {valueY.totalPercent.formatNumber('#.00')}%";
-        series3.name = "Día de estudio";
-        series3.dataFields.categoryX = "category";
-        series3.dataFields.valueY = "DíaDeEstudio";
-        series3.dataFields.valueYShow = "totalPercent";
-        series3.dataItems.template.locations.categoryX = 0.5;
-        series3.stacked = true;
-        series3.tooltip.pointerOrientation = "vertical";
-
-        var bullet3 = series3.bullets.push(new am4charts.LabelBullet());
-        bullet3.interactionsEnabled = false;
-        bullet3.label.text = "{valueY.totalPercent.formatNumber('#.00')}%";
-        bullet3.locationY = 0.5;
-        bullet3.label.fill = am4core.color("#ffffff");
-
-        var series4 = chart.series.push(new am4charts.ColumnSeries());
-        series4.columns.template.width = am4core.percent(80);
-        series4.columns.template.tooltipText =
-        "{name}: {valueY.totalPercent.formatNumber('#.00')}%";
-        series4.name = "Tarea";
-        series4.dataFields.categoryX = "category";
-        series4.dataFields.valueY = "Tarea";
-        series4.dataFields.valueYShow = "totalPercent";
-        series4.dataItems.template.locations.categoryX = 0.5;
-        series4.stacked = true;
-        series4.tooltip.pointerOrientation = "vertical";
-
-        var bullet4 = series4.bullets.push(new am4charts.LabelBullet());
-        bullet4.interactionsEnabled = false;
-        bullet4.label.text = "{valueY.totalPercent.formatNumber('#.00')}%";
-        bullet4.locationY = 0.5;
-        bullet4.label.fill = am4core.color("#ffffff");
-
-        var series5 = chart.series.push(new am4charts.ColumnSeries());
-        series5.columns.template.width = am4core.percent(80);
-        series5.columns.template.tooltipText =
-        "{name}: {valueY.totalPercent.formatNumber('#.00')}%";
-        series5.name = "No Ocupado";
-        series5.dataFields.categoryX = "category";
-        series5.dataFields.valueY = "NoOcupado";
-        series5.dataFields.valueYShow = "totalPercent";
-        series5.dataItems.template.locations.categoryX = 0.5;
-        series5.stacked = true;
-        series5.tooltip.pointerOrientation = "vertical";
-
-        var bullet5 = series5.bullets.push(new am4charts.LabelBullet());
-        bullet5.interactionsEnabled = false;
-        bullet5.label.text = "{valueY.totalPercent.formatNumber('#.00')}%";
-        bullet5.locationY = 0.5;
-        bullet5.label.fill = am4core.color("#ffffff");
-
-        chart.scrollbarX = new am4core.Scrollbar();
-
-        this.chart = chart;
-    }*/
-
-    componentDidMount() {
+    const obtenerChart = async () => {
         let chart = am4core.create("chart-mensual", am4charts.XYChart);
 
+        let data = await props.obtenerHorasMes();
         // Add data
-        chart.data = [
-            {
-                category: "One",
-                Vacaciones: 0,
-                Enfermedad: 0,
-                DíaDeEstudio: 9,
-                Tarea: 29,
-                NoOcupado: 2
-            },
-            {
-                category: "Two",
-                Vacaciones: 18,
-                Enfermedad: 0,
-                DíaDeEstudio: 0,
-                Tarea: 2,
-                NoOcupado: 2
-            },
-            {
-                category: "Three",
-                Vacaciones: 0,
-                Enfermedad: 0,
-                DíaDeEstudio: 0,
-                Tarea: 40,
-                NoOcupado: 0
-            },
-            {
-                category: "Four",
-                Vacaciones: 0,
-                Enfermedad: 9,
-                DíaDeEstudio: 0,
-                Tarea: 30,
-                NoOcupado: 1
-            }
-        ];
+        chart.data = procesarDataMensual(data);
         
         chart.legend = new am4charts.Legend();
         chart.legend.position = "right";
@@ -551,21 +397,16 @@ class ChartMensual extends Component {
         createSeries("Tarea", "Tarea");
         createSeries("NoOcupado", "No ocupado");
 
-        this.chart = chart;
+        return chart;
     }
 
-    componentWillUnmount() {
-        if (this.chart) {
-            this.chart.dispose();
-        }
-    }
-    
-    render() {
-        return (
-            <div className="chart-mensual"></div>
-        );
-    }
-    
+    useEffect(() => {
+        obtenerChart();
+    });
+
+    return (
+        <div className="chart-mensual"></div>
+    );
 }
 
 class ChartAnual extends Component {

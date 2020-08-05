@@ -41,6 +41,7 @@ class TabEstadisticas extends Component {
         this.obtenerHorasDia = this.obtenerHorasDia.bind(this);
         this.obtenerHorasSemana = this.obtenerHorasSemana.bind(this);
         this.obtenerHorasMes = this.obtenerHorasMes.bind(this);
+        this.obtenerHorasAnio = this.obtenerHorasAnio.bind(this);
     }
 
     async componentDidMount() {
@@ -105,6 +106,16 @@ class TabEstadisticas extends Component {
         return horasCargadas;
     }
 
+    async obtenerHorasAnio() {
+        const fecha = this.state.fechaSeleccionada ? new Date(this.state.fechaSeleccionada) : new Date();
+        const horasCargadas = await this.requesterHoras.obtenerHorasCargadasAnio(
+            this.props.match.params.legajo, 
+            fecha,
+            this.props.mostrarAlerta
+        );
+        return horasCargadas;
+    }
+
     render() {
 
         const fechaHoy = new Fecha(new Date());
@@ -138,6 +149,7 @@ class TabEstadisticas extends Component {
         } else if (this.state.frecuencia === 3) {
             chart = <ChartAnual
                         fechaSeleccionada={ this.state.fechaSeleccionada }
+                        obtenerHorasAnio={ this.obtenerHorasAnio }
                     ></ChartAnual>
             label = `Ocupación del empleado en el año ${ fechaFormatoDate.getFullYear() }`;
         }
@@ -412,51 +424,69 @@ function ChartMensual(props) {
 function ChartAnual(props) {
 
     function procesarDataAnual(data) {
+        let enero = 0;
+        let febrero = 0;
+        let marzo = 0;
+        let abril = 0;
+        let mayo = 0;
+        let junio = 0;
+        let julio = 0;
+        let agosto = 0;
+        let septiembre = 0;
+        let octubre = 0;
+        let noviembre = 0;
+        let diciembre = 0;
 
+        data.forEach((d) => {
+            if (d.fecha[1] === 0) {
+                enero += d.cantidadHoras;
+            } else if (d.fecha[1] === 1) {
+                febrero += d.cantidadHoras;
+            } else if (d.fecha[1] === 2) {
+                marzo += d.cantidadHoras;
+            } else if (d.fecha[1] === 3) {
+                abril += d.cantidadHoras;
+            } else if (d.fecha[1] === 4) {
+                mayo += d.cantidadHoras;
+            } else if (d.fecha[1] === 5) {
+                junio += d.cantidadHoras;
+            } else if (d.fecha[1] === 6) {
+                julio += d.cantidadHoras;
+            } else if (d.fecha[1] === 7) {
+                agosto += d.cantidadHoras;
+            } else if (d.fecha[1] === 8) {
+                septiembre += d.cantidadHoras;
+            } else if (d.fecha[1] === 9) {
+                octubre += d.cantidadHoras;
+            } else if (d.fecha[1] === 10) {
+                noviembre += d.cantidadHoras;
+            } else if (d.fecha[1] === 11) {
+                diciembre += d.cantidadHoras;
+            }
+        });
+
+        return [
+            {"mes": "Enero", "value": enero}, 
+            {"mes": "Febrero", "value": febrero}, 
+            {"mes": "Marzo", "value": marzo}, 
+            {"mes": "Abril", "value": abril}, 
+            {"mes": "Mayo", "value": mayo}, 
+            {"mes": "Junio", "value": junio}, 
+            {"mes": "Julio","value": julio}, 
+            {"mes": "Agosto","value": agosto}, 
+            {"mes": "Septiembre","value": septiembre}, 
+            {"mes": "Octubre", "value": octubre}, 
+            {"mes": "Noviembre","value": noviembre}, 
+            {"mes": "Diciembre","value": diciembre}
+        ]
     }
 
     const obtenerChart = async () => {
         let chart = am4core.create("chart-anual", am4charts.XYChart);
 
+        let data = await props.obtenerHorasAnio();
         // Add data
-        chart.data = [{
-            "mes": "Enero",
-            "value": 600000
-            }, {
-            "mes": "Febrero",
-            "value": 900000
-            }, {
-            "mes": "Marzo",
-            "value": 180000
-            }, {
-            "mes": "Abril",
-            "value": 600000
-            }, {
-            "mes": "Mayo",
-            "value": 350000
-            }, {
-            "mes": "Junio",
-            "value": 600000
-            }, {
-            "mes": "Julio",
-            "value": 670000
-            }, {
-                "mes": "Agosto",
-                "value": 600000
-            }, {
-                "mes": "Septiembre",
-                "value": 350000
-            }, {
-                "mes": "Octubre",
-                "value": 600000
-            }, {
-                "mes": "Noviembre",
-                "value": 670000
-            }, {
-                "mes": "Diciembre",
-                "value": 670000
-            }
-        ];
+        chart.data = procesarDataAnual(data);
 
         // Populate data
         for (var i = 0; i < (chart.data.length - 1); i++) {

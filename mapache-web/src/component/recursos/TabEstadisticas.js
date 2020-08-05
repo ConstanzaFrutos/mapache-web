@@ -13,6 +13,7 @@ import Typography from '@material-ui/core/Typography';
 import { Fecha } from "./TabHorasCargadas";
 import { Dropdown } from "../general/Dropdown";
 import { DatePicker } from "../general/DatePicker";
+import { Alerta } from "../general/Alerta";
 
 import RequesterHoras from "../../communication/RequesterHoras";
 
@@ -23,10 +24,12 @@ class TabEstadisticas extends Component {
     constructor(props) {
         super(props);
 
+        this.fechaHoy = new Fecha(new Date());
+
         this.state = {
             data: [],
             frecuencia: frecuencias[0].value,
-            fechaSeleccionada: null
+            fechaSeleccionada: this.fechaHoy.fechaProcesadaGuion
         }
 
         this.requesterHoras = new RequesterHoras();
@@ -35,6 +38,26 @@ class TabEstadisticas extends Component {
         this.handleDateInput = this.handleDateInput.bind(this);
         
         this.obtenerHorasSemana = this.obtenerHorasSemana.bind(this);
+    }
+
+    async componentDidMount() {
+        let legajo = this.props.match.params.legajo;
+        let horas = [];
+        console.log("Did mount ", this.state.frecuencia);
+        if (this.state.frecuencia === 0) {
+            console.log("En if");
+            horas = await this.requesterHoras.obtenerHorasCargadasEnUnDia(
+                legajo, 
+                this.state.fechaSeleccionada, 
+                this.props.mostrarAlerta
+            );
+            console.log("Horas", horas);
+        }
+        
+        console.log("Horas cargadas ", horas);
+        this.setState({
+            data: horas
+        })
     }
 
     handleFrecuenciaChange(event) {
@@ -72,6 +95,7 @@ class TabEstadisticas extends Component {
         if (this.state.frecuencia === 0) {
             chart = <ChartDiario
                         fechaSeleccionada={ fecha }
+                        data={ this.state.data }
                     ></ChartDiario>
             label = `Ocupación del empleado en el día ${ fecha }`;
         } else if (this.state.frecuencia === 1) {
@@ -90,6 +114,17 @@ class TabEstadisticas extends Component {
                         fechaSeleccionada={ this.state.fechaSeleccionada }
                     ></ChartAnual>
             label = `Ocupación del empleado en el año ${ fechaFormatoDate.getFullYear() }`;
+        }
+
+        let alerta = null;
+        if (this.state.mostrarAlerta) {
+            alerta = <Alerta
+                        open={ true }
+                        mensaje={ this.state.mensajeAlerta }
+                        tipo={ this.state.tipoAlerta }
+                        handleClose={ this.handleCloseAlerta }
+                     >
+                     </Alerta>
         }
 
         return (
@@ -121,6 +156,7 @@ class TabEstadisticas extends Component {
                         </Typography>      
                     </div>
                 </Paper>
+                { alerta }
             </div>
         )
     }
@@ -149,16 +185,30 @@ const frecuencias = [
 ]
 
 class ChartDiario extends Component {
-    
+
+    procesarDataDiaria(data) {
+        let horasOcupadas = 0;
+        
+        const totalHorasDia = 9;
+        data.forEach((data) => {
+            horasOcupadas += data.cantidadHoras;
+        });
+
+        let horasNoOcupadas = totalHorasDia - horasOcupadas;
+        let horasDisponibles = 9; 
+
+        return [
+            { "actividad": "Ocupado", "size": horasOcupadas },
+            { "actividad": "No ocupado", "size": horasNoOcupadas },
+            { "actividad": "Disponible", "size": horasDisponibles }
+        ];
+    }
+
     componentDidUpdate() {
         let chart = am4core.create("chart-diario", am4charts.PieChart);
 
         // Add data
-        chart.data = [
-            { "actividad": "Ocupado", "size": 7 },
-            { "actividad": "No ocupado", "size": 0 },
-            { "actividad": "Disponible", "size": 2 }
-        ];
+        chart.data = this.procesarDataDiaria(this.props.data);
         
         // Add label
         chart.innerRadius = 100;
@@ -612,7 +662,6 @@ class ChartAnual extends Component {
             }
             return 0;
         }
-
 
         this.chart = chart;
     }

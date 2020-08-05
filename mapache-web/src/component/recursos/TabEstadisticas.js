@@ -338,7 +338,7 @@ function ChartMensual(props) {
 
     function procesarDataMensual(data) {
         console.log("data mes", data);
-        
+
 
         const d = [
             {
@@ -409,9 +409,13 @@ function ChartMensual(props) {
     );
 }
 
-class ChartAnual extends Component {
+function ChartAnual(props) {
 
-    componentDidMount() {
+    function procesarDataAnual(data) {
+
+    }
+
+    const obtenerChart = async () => {
         let chart = am4core.create("chart-anual", am4charts.XYChart);
 
         // Add data
@@ -536,19 +540,14 @@ class ChartAnual extends Component {
             return 0;
         }
 
-        this.chart = chart;
     }
 
-    componentWillUnmount() {
-        if (this.chart) {
-            this.chart.dispose();
-        }
-    }
-    
-    render() {
-        return (
-            <div className="chart-anual"></div>
-        );
-    }
+    useEffect(() => {
+        obtenerChart();
+    });
+
+    return (
+        <div className="chart-anual"></div>
+    );
 
 }

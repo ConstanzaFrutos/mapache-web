@@ -25,6 +25,7 @@ import "../assets/css/controller/SoporteScreen.css";
 am4core.useTheme(am4themes_animated);
 
 const mapacheSoporteBaseUrl = "https://psa-api-support.herokuapp.com";
+//const mapacheSoporteBaseUrl = "http://localhost:5000"
 const mapacheRecursosBaseUrl = "https://mapache-recursos.herokuapp.com";
 
 function TabPanel(props) {
@@ -375,6 +376,11 @@ export default withRouter(SoporteScreen);
 const title = "Tickets";
 
 const columns = [
+    {
+        title: "Numero",
+        field: "id",
+        filtering: false
+    },
     {
         title: "Título",
         field: "nombre",

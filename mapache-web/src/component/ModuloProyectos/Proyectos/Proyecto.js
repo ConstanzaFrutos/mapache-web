@@ -174,7 +174,8 @@ class Proyecto extends Component {
             fechaDeFinalizacion: this.state.fechaDeFinalizacion,
             estado: this.state.estado,
             liderDeProyecto: this.state.liderDeProyecto,
-            cliente: this.state.cliente
+            cliente: this.state.cliente,
+            producto: this.state.producto
         };
         axios.patch(URL+"proyectos/"+proyecto.id, proyecto)
             .then(respuesta=> {

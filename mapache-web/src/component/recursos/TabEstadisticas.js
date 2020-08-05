@@ -38,6 +38,7 @@ class TabEstadisticas extends Component {
         this.handleFrecuenciaChange = this.handleFrecuenciaChange.bind(this);
         this.handleDateInput = this.handleDateInput.bind(this);
         
+        this.obtenerHorasDia = this.obtenerHorasDia.bind(this);
         this.obtenerHorasSemana = this.obtenerHorasSemana.bind(this);
     }
 
@@ -61,29 +62,6 @@ class TabEstadisticas extends Component {
         })
     }
 
-    async actualizarValores() {
-        let horas = [];
-        if (this.state.frecuencia === 0) {
-            horas = await this.requesterHoras.obtenerHorasCargadasEnUnDia(
-                this.state.legajo, 
-                this.state.fechaSeleccionada, 
-                this.props.mostrarAlerta
-            );
-        } else if (this.state.frecuencia === 1) {
-            
-            horas = await this.requesterHoras.obtenerHorasCargadasSemana(
-                this.state.legajo, 
-                this.state.fechaSeleccionada,
-                this.props.mostrarAlerta
-            );
-        }
-        
-        console.log("Horas cargadas ", horas);
-        this.setState({
-            data: horas
-        })
-    }
-
     handleFrecuenciaChange(event) {
         this.setState({
             frecuencia: event.target.value
@@ -97,11 +75,21 @@ class TabEstadisticas extends Component {
         });
     }
 
+    async obtenerHorasDia() {
+        const horasCargadas = await this.requesterHoras.obtenerHorasCargadasEnUnDia(
+            this.props.match.params.legajo, 
+            this.state.fechaSeleccionada, 
+            this.props.mostrarAlerta
+        );
+        return horasCargadas;
+    }
+
     async obtenerHorasSemana() {
         const fecha = this.state.fechaSeleccionada ? new Date(this.state.fechaSeleccionada) : new Date();
         const horasCargadas = await this.requesterHoras.obtenerHorasCargadasSemana(
             this.props.match.params.legajo, 
-            fecha
+            fecha,
+            this.props.mostrarAlerta
         );
         return horasCargadas;
     }
@@ -115,13 +103,13 @@ class TabEstadisticas extends Component {
         let fechaFormatoDate = this.state.fechaSeleccionada ? 
                 new Date(this.state.fechaSeleccionada) : new Date();
         
-        let chart = <ChartDiario></ChartDiario>
+        let chart = null;
         let label = '';
 
         if (this.state.frecuencia === 0) {
             chart = <ChartDiario
                         fechaSeleccionada={ fecha }
-                        data={ this.state.data }
+                        obtenerHorasDia={ this.obtenerHorasDia }
                     ></ChartDiario>
             label = `Ocupación del empleado en el día ${ fecha }`;
         } else if (this.state.frecuencia === 1) {
@@ -210,9 +198,8 @@ const frecuencias = [
     }
 ]
 
-class ChartDiario extends Component {
-
-    procesarDataDiaria(data) {
+function ChartDiario(props) {
+    function procesarDataDiaria(data) {
         let horasOcupadas = 0;
         
         const totalHorasDia = 9;
@@ -230,16 +217,18 @@ class ChartDiario extends Component {
         ];
     }
 
-    componentDidUpdate() {
+    const obtenerChart = async () => {
         let chart = am4core.create("chart-diario", am4charts.PieChart);
 
+        let data = await props.obtenerHorasDia();
+        console.log("data", data);
         // Add data
-        chart.data = this.procesarDataDiaria(this.props.data);
+        chart.data = procesarDataDiaria(data);
         
         // Add label
         chart.innerRadius = 100;
         let label = chart.seriesContainer.createChild(am4core.Label);
-        label.text = this.props.fechaSeleccionada;
+        label.text = props.fechaSeleccionada;
         label.horizontalCenter = "middle";
         label.verticalCenter = "middle";
         label.fontSize = 30;
@@ -248,22 +237,17 @@ class ChartDiario extends Component {
         let pieSeries = chart.series.push(new am4charts.PieSeries());
         pieSeries.dataFields.value = "size";
         pieSeries.dataFields.category = "actividad";
-  
-        this.chart = chart;
+
+        return chart;
     }
 
-    componentWillUnmount() {
-        if (this.chart) {
-            this.chart.dispose();
-        }
-    }
-    
-    render() {
-        return (
-            <div className="chart-diario"></div>
-        );
-    }
-    
+    useEffect(() => {
+        obtenerChart();
+    });
+
+    return (
+        <div className="chart-diario"></div>
+    );
 }
 
 function ChartSemanal(props) {
@@ -337,52 +321,6 @@ function ChartSemanal(props) {
         <div className="chart-semanal"></div>
     );
 }
-/*
-class ChartSemanal extends Component {
-    
-    
-
-    async componentDidUpdate() {
-        let chart = am4core.create("chart-semanal", am4charts.PieChart);
-
-        let data = await this.props.obtenerHorasSemana();
-        // Add data
-        chart.data = this.procesarDataSemanal(data);
-        
-        // Add label
-        chart.innerRadius = 90;
-        let label = chart.seriesContainer.createChild(am4core.Label);
-        
-        let fechaSeleccionada = this.props.fechaSeleccionada;
-        // TODO mostrar inicio y fin semana
-        console.log("Horas ", this.props.horasCargadas)
-
-        label.text = fechaSeleccionada;
-        label.horizontalCenter = "middle";
-        label.verticalCenter = "middle";
-        label.fontSize = 30;
-        
-        // Add and configure Series
-        let pieSeries = chart.series.push(new am4charts.PieSeries());
-        pieSeries.dataFields.value = "size";
-        pieSeries.dataFields.category = "actividad";
-  
-        this.chart = chart;
-    }
-    
-    componentWillUnmount() {
-        if (this.chart) {
-            this.chart.dispose();
-        }
-    }
-    
-    render() {
-        return (
-            <div className="chart-semanal"></div>
-        );
-    }
-    
-}*/
 
 class ChartMensual extends Component {
 

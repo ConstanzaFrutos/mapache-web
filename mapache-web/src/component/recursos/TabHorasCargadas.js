@@ -40,6 +40,7 @@ class TabHorasCargadas extends Component {
     }
 
     async componentDidMount() {
+        //Pedir las del mes entero
         const horasCargadas = await this.requesterHoras.obtenerHorasCargadasSemana(
             this.props.match.params.legajo, 
             this.state.fechaActual,
@@ -62,7 +63,7 @@ class TabHorasCargadas extends Component {
     }
 
     async obtenerNombreTarea(codigoProyecto, codigoTarea) {
-        let tarea = await this.requesterProyectos.get(`/proyectos/${1}/tareas/${11}`)
+        let tarea = await this.requesterProyectos.get(`/proyectos/${codigoProyecto}/tareas/${codigoTarea}`)
                         .then(response => {
                             if (response.ok){
                                 return response.json();
@@ -236,7 +237,7 @@ class Dia extends Component {
 
 }
 
-class Fecha {
+export class Fecha {
     constructor(fecha) {
         this.diaSemana = this.obtenerDiaSemana(fecha);
         this.fechaProcesadaBarra = this.procesarFecha(fecha, '/');

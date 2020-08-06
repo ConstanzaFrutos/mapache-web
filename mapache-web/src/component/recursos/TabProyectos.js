@@ -41,10 +41,7 @@ class TabProyectos extends Component {
 
     componentDidMount() {
         let legajo = this.props.match.params.legajo;
-        this.setState({
-            data: asignaciones
-        });
-        /*
+        
         this.requesterRecursos.get(`/empleados/${legajo}/proyectos/`)
             .then(response => {
                 if (response.ok){
@@ -69,7 +66,7 @@ class TabProyectos extends Component {
                         data: data
                     });
                 }
-            });*/
+            });
     }
 
     requestDataProyecto(codigoProyecto) {
@@ -197,7 +194,7 @@ const columns = [
     }
 ]
 
-const asignaciones = [
+/*const asignaciones = [
     {
         nombre: "ERP Cloud",
         titulo: "UX",
@@ -212,4 +209,4 @@ const asignaciones = [
         fechaFin: null,
         progreso: 30
     }
-]
+]*/

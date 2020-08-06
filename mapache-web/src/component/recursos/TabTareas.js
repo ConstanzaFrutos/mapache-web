@@ -70,6 +70,7 @@ class TabTareas extends Component {
 
     async obtenerProgresoDelEmpleado(legajo, tareas) {
         let progreso = await Promise.all(tareas.map(async (tarea) => {
+            console.log("Tarea ", tarea)
             let horas = await this.requesterHoras.obtenerHorasCargadasEnTarea(
                 legajo, 1, tarea.id, this.props.mostrarAlerta
             );
@@ -131,11 +132,17 @@ const title = `Tareas del empleado`;
 const columns = [
     {
         title: "Nombre", 
-        field: "nombre"
+        field: "nombreTarea",
+        cellStyle: {
+            minWidth: '27em'
+        }
     },
     {
         title: "Proyecto", 
-        field: "proyecto"
+        field: "nombreProyecto",
+        cellStyle: {
+            minWidth: '20em'
+        }
     },
     {
         title: "Progreso", 
@@ -144,6 +151,9 @@ const columns = [
     },
     {
         title: "Estado", 
-        field: "estado"
+        field: "estado",
+        cellStyle: {
+            minWidth: '13em'
+        }
     }
 ]

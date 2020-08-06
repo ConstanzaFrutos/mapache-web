@@ -173,15 +173,24 @@ const columns = [
         title: "Código", 
         field: "id",
         editable: "never",
-        defaultSort: "asc"
+        defaultSort: "asc",
+        cellStyle: {
+            minWidth: '2em'
+        }
     },
     {
         title: "Nombre", 
         field: "nombre",
-        editable: "never"
+        editable: "never",
+        cellStyle: {
+            minWidth: '20em'
+        }
     },
     {
-        title: "Estado", 
+        title: "Estado",
+        cellStyle: {
+            minWidth: '15em'
+        },
         field: "estado",
         render: rowData => <p 
                     style={{
@@ -194,7 +203,10 @@ const columns = [
     {
         title: "Tipo de proyecto", 
         field: "tipoDeProyecto",
-        editable: "never"
+        editable: "never",
+        cellStyle: {
+            minWidth: '15em'
+        }
     }
 ];
 

@@ -15,7 +15,7 @@ class Tarea extends Component {
 
     estadoInicial = {id:'', nombre:'', descripcion: '', fechaDeInicio: '',
         fechaDeFinalizacion: '', estado: 'No iniciado', responsable: -1, recursos: [], duracionEstimada: 0, idsTickets: [],
-        prioridad: 'Sin especificar'};
+        prioridad: 'Sin especificar', iteracion: ''};
 
     componentDidMount() {
         const proyectoId = +this.props.match.params.id;
@@ -42,7 +42,8 @@ class Tarea extends Component {
                         responsable: respuesta.data.responsable,
                         duracionEstimada: respuesta.data.duracionEstimada,
                         idsTickets: respuesta.data.idsTickets,
-                        prioridad: respuesta.data.prioridad
+                        prioridad: respuesta.data.prioridad,
+                        iteracion: respuesta.data.iteracion
                     });
                 }
             }).catch(function(err){
@@ -159,7 +160,8 @@ class Tarea extends Component {
             responsable: this.state.responsable,
             duracionEstimada: this.state.duracionEstimada,
             idsTickets: this.state.idsTickets,
-            prioridad: this.state.prioridad
+            prioridad: this.state.prioridad,
+            iteracion: this.state.iteracion
         };
         const proyectoId = +this.props.match.params.id;
         axios.put(URL+proyectoId+"/tareas/"+tarea.id, tarea)

@@ -179,16 +179,25 @@ const columns = [
         title: "Código", 
         field: "id",
         editable: "never",
-        defaultSort: "asc"
+        defaultSort: "asc",
+        cellStyle: {
+            minWidth: '2em'
+        }
     },
     {
         title: "Nombre", 
         field: "nombre",
-        editable: "never"
+        editable: "never",
+        cellStyle: {
+            minWidth: '20em'
+        }
     },
     {
         title: "Estado", 
         field: "estado",
+        cellStyle: {
+            minWidth: '10em'
+        },
         render: rowData => <p 
                     style={{
                         color:`${coloresEstado.find((estado) => estado.estado === rowData.estado).color}`,
@@ -201,6 +210,9 @@ const columns = [
         title: "Fecha de finalización", 
         field: "fechaDeFinalizacion",
         editable: "never",
+        cellStyle: {
+            minWidth: '10em'
+        },
         render: rowData => <p>
                                 { rowData.fechaDeFinalizacion ?
                                     rowData.fechaDeFinalizacion.split('T')[0] :
@@ -210,6 +222,9 @@ const columns = [
     {
         title: "Prioridad",
         field: "prioridad",
+        cellStyle: {
+            minWidth: '10em'
+        },
         editable: "never",
         customSort: (a,b) => ordenarPrioridades(a,b)
     }

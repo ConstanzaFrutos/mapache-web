@@ -339,6 +339,18 @@ class Iteraciones extends Component {
         return '#000000';
     }
 
+    colorEstado(iteracion) {
+        if(!iteracion){
+            return "#FFFFFF";
+        } else if(iteracion.estado === "Activa") {
+            return "#7A7AE8";
+        } else if(iteracion.estado === "Finalizada"){
+            return "#E17979";
+        } else{
+            return "#9BF0B2";
+        }
+    }
+
     abrirConfirm = event => {
         event.preventDefault();
         this.setState({confirm : true})
@@ -352,8 +364,8 @@ class Iteraciones extends Component {
         const proyectoId = +this.props.match.params.id;
         const {iteraciones, iteracionActual, iteracionActualDropdown, tareasDropdown, tareaAgregar} = this.state;
         return (
-            <div className="tablaIteraciones">
-                <Card className="tablaCrearIteracion" style={{width:"70%"}}>
+            <div className="tablaIteraciones" >
+                <Card className="tablaCrearIteracion" style={{width:"70%", borderColor: this.colorEstado(this.state.iteracionActual), borderWidth: "10px"}}>
                     <Dropdown
                         renderDropdown={ true }
                         label="Iteraciones"

@@ -49,74 +49,49 @@ class TabCargarHoras extends Component {
 
         this.handleCargaHoras = this.handleCargaHoras.bind(this);
 
-        this.obtenerTareasDropdown = this.obtenerTareasDropdown.bind(this);
-        this.requestTareas = this.requestTareas.bind(this);
-        this.obtenerTareasDeProyecto = this.obtenerTareasDeProyecto.bind(this);
-        this.obtenerProyecto = this.obtenerProyecto.bind(this);
+        this.obtenerTareasDeEmpleado = this.obtenerTareasDeEmpleado.bind(this);
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         let legajo = this.props.match.params.legajo;
         let contrato = this.props.match.params.contrato;
 
+        let tareas = await this.obtenerTareasDeEmpleado(legajo);
+        
+        let tareasDropdown = tareas.map((tarea) => {
+            return {
+                name: tarea.nombreTarea,
+                value: tarea.id
+            }
+        })
+
         if (this.props.tarea){
             this.setState({
-                tareaSeleccionada: this.props.tarea.codigoTarea,
+                tareasDropdown: tareasDropdown,
+                tareaSeleccionada: this.props.tarea.id,
                 legajoEmpleado: legajo,
-                contratoEmpleado: contrato
+                contratoEmpleado: contrato,
+                tareas: tareas
             });
         } else {
-            this.obtenerTareasDropdown(legajo);
+            this.setState({
+                tareasDropdown: tareasDropdown,
+                tareaSeleccionada: tareasDropdown[0].value,
+                legajoEmpleado: legajo,
+                contratoEmpleado: contrato,
+                tareas: tareas
+            });
         }
     }
 
-    obtenerTareasDropdown(legajo) {
-        this.requesterRecursos.get(`/empleados/${legajo}/proyectos/`)
-                .then(response => {
-                    if (response.ok){
-                        return response.json();
-                    } else {
-                        this.props.mostrarAlerta(
-                            `Error al consultar asignaciones del empleado ${legajo}`,
-                            "error"
-                        )
-                    }
-                }).then(response => {
-                    if (response) {
-                        return response;
-                    }
-                }).then(async (asignacionProyectos) => {
-                    if(asignacionProyectos) {
-                        let tareas = await this.requestTareas(asignacionProyectos);
-                        console.log("Tareas", tareas);
-                        if (tareas.length > 0) {
-                            let tareasDropdown = tareas.map((tarea) => {
-                                return {
-                                    name: tarea.nombre,
-                                    value: tarea.codigoTarea
-                                }
-                            })
-    
-                            this.setState({
-                                tareas: tareas,
-                                tareaSeleccionada: tareasDropdown[0].value,
-                                tareasDropdown: tareasDropdown,
-                                legajoEmpleado: legajo,
-                                contratoEmpleado: this.props.match.params.contrato
-                            });
-                        }
-                    }
-                });
-    }
-
-    obtenerTareasDeProyecto(codigoProyecto) {
-        return this.requesterProyectos.get(`/proyectos/${codigoProyecto}/tareas`)
+    async obtenerTareasDeEmpleado(legajo) {
+        let tareas = await this.requesterProyectos.get(`/responsables/${legajo}/tareas`)
             .then(response => {
                 if (response.ok){
                     return response.json();
                 } else {
                     this.props.mostrarAlerta(
-                        `Error al consultar tareas del proyecto ${codigoProyecto}`,
+                        `Error al consultar tareas del empleado ${legajo}`,
                         "error"
                     )
                 }
@@ -125,50 +100,7 @@ class TabCargarHoras extends Component {
                     return response;
                 }
             });
-    }
-
-    obtenerProyecto(codigoProyecto) {
-        return this.requesterProyectos.get(`/proyectos/${codigoProyecto}`)
-            .then(response => {
-                if (response.ok){
-                    return response.json();
-                } else {
-                    this.props.mostrarAlerta(
-                        `Error al consultar tareas del proyecto ${codigoProyecto}`,
-                        "error"
-                    )
-                }
-            }).then(response => {
-                if (response) {
-                    return response;
-                }
-            });
-    }
-
-    async requestTareas(asignacionProyectos) {
-        let array = await Promise.all(
-            asignacionProyectos.map(async (asignacion) => {
-                const tareas = await this.obtenerTareasDeProyecto(asignacion.codigoProyecto); 
-                const proyecto = await this.obtenerProyecto(asignacion.codigoProyecto);
-
-                if (tareas) {
-                    return tareas.map( (tarea) => {                    
-                        return {
-                            codigoTarea: tarea.id,
-                            codigoProyecto: proyecto.id,
-                            nombre: tarea.nombre,
-                            proyecto: proyecto.nombre,
-                            progreso: 10,
-                            estado: tarea.estado
-                        }
-                    })
-                } else {
-                    return [];
-                }
-            })
-        );    
-        
-        return array.flatMap(aux => aux);;
+        return tareas;
     }
     
     seleccionarActividad(event) {
@@ -251,12 +183,14 @@ class TabCargarHoras extends Component {
 
     render() {
         let actividad = this.state.actividadSeleccionada ? this.state.actividadSeleccionada : actividades[0].value;
-        let tarea = 0;
-        if (this.state.tareaSeleccionada) {
+        let tarea = this.state.tareaSeleccionada;
+        console.log("seleccionada ", this.state.tareaSeleccionada);
+        console.log("Tareas drop ", this.state.tareasDropdown)
+        /*if (this.state.tareaSeleccionada) {
             tarea = this.state.tareaSeleccionada;
         } else if (this.state.tareasDropdown[0]) {
             tarea = this.state.tareasDropdown[0].value;
-        }
+        }*/
         let hora = this.state.horaSeleccionada ? this.state.horaSeleccionada : horasDropdown[0].value;
         let cantidadSemanas = this.state.semanaSeleccionada ? this.state.semanaSeleccionada : semanasDropdown[0].value;
 
@@ -338,6 +272,10 @@ const actividades = [
     {
         name: "Vacaciones",
         value: "VACACIONES"
+    },
+    {
+        name: "Día de estudio",
+        value: "DIA_DE_ESTUDIO"
     }
 ]
 

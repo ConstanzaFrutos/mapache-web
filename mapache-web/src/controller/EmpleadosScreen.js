@@ -218,17 +218,26 @@ const columns = [
     {
         title: "Nombre", 
         field: "nombre",
-        editable: "never"
+        editable: "never",
+        cellStyle: {
+            minWidth: '20em'
+        }
     },
     {
         title: "Apellido", 
         field: "apellido",
-        editable: "never"
+        editable: "never",
+        cellStyle: {
+            minWidth: '20em'
+        }
     },
     {
         title: "Rol", 
         field: "rol",
-        editable: "never"
+        editable: "never",
+        cellStyle: {
+            minWidth: '10em'
+        }
     }
 ];
 

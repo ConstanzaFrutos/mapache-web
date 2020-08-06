@@ -150,7 +150,7 @@ class Semana extends Component {
         });
 
         let gridSemana = <Grid container justify="center" spacing={2}>
-            {[0, 1, 2, 3, 4, 5, 6].map((value) => (
+            {[1, 2, 3, 4, 5].map((value) => (
                 <Dia 
                     key = { value }
                     value={ value }
@@ -196,6 +196,14 @@ Date.prototype.obtenerFechasSemana = function(){
 class Dia extends Component {    
 
     render() {
+        if (this.props.horasCargadasDia.length > 0) {
+            let horasTotalesDia = this.props.horasCargadasDia.reduce(
+                (horasAcumuladas, hora) => {
+                    return horasAcumuladas.cantidadHoras + hora.cantidadHoras;
+                }
+            );
+            console.log("Horas totales ", horasTotalesDia);
+        }
 
         return (
             <Grid key={this.props.value} item>
@@ -269,21 +277,25 @@ class HoraCargada extends Component {
         const alturaPorHora = 2;
         let nombreTarea = this.props.nombreTarea;
 
+        let altura = (this.props.cantidadHoras > 1) ? this.props.cantidadHoras * alturaPorHora : 2;
+        let texto = horasDropdown.find((hora) => hora.value === this.props.cantidadHoras).name;
+
         return (
             <div 
                 className="hora-cargada-div"
                 style={{
                     "backgroundColor": this.props.color, 
-                    "height": `${this.props.cantidadHoras * alturaPorHora}em`
+                    "height": `${ altura }em`
                 }}
             >
-            
-                { this.props.icono }
-                <Typography variant="subtitle1">
-                    { this.props.cantidadHoras } horas
-                </Typography>
-            
-                <Typography variant="subtitle1">
+                <div className="icono-y-cantidad-horas">
+                    { this.props.icono }
+                    <Typography variant="subtitle1" wrap="wrap">
+                        { texto }
+                    </Typography>
+                </div>
+                
+                <Typography variant="subtitle1" wrap="wrap">
                     { nombreTarea } 
                 </Typography>
             
@@ -316,3 +328,40 @@ const actividades = [
     }
 ]
 
+
+let horas = [];
+for (let i=0; i<10; i++) {
+    horas[i] = {
+        name: i > 1 ? `${i} horas ` : `${i} hora`,
+        value: i
+    }
+}
+
+let minutos = [];
+minutos[0] = {
+    name: "",
+    value: 0
+}
+for (let i=0; i<2; i++) {
+    minutos[i+1] = {
+        name: `${60/(4-2*i)} minutos`,
+        value: 1/(4-2*i)
+    }
+}
+
+let horasDropdown = [];
+
+horas.forEach((hora) => {
+    minutos.forEach((minuto) => {
+        let aux = {};
+        aux.name = hora.value > 0 ? hora.name + ' ' + minuto.name : minuto.name;
+        aux.value = hora.value + minuto.value;
+        horasDropdown.push(aux);
+        if (
+            (hora.value === 0 && minuto.value === 0) ||
+            (hora.value === 9 && minuto.value > 0)
+        ) {
+            horasDropdown.pop();
+        }
+    })
+});

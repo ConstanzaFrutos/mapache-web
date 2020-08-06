@@ -49,6 +49,7 @@ class InfoCliente extends Component {
                 mensaje: ""
             },
             formularioCerrado: false,
+            error: false
         };
 
         this.mostrarAlerta = this.mostrarAlerta.bind(this);
@@ -83,6 +84,7 @@ class InfoCliente extends Component {
     }
 
     handleChangeCUIT = event => {
+        this.setState({error:false});
         this.setState({ CUIT: event.target.value });
     }
 
@@ -95,6 +97,11 @@ class InfoCliente extends Component {
         let mensaje = "";
         let tipo = "";
         let duracion = null;
+
+        if (!this.validateCuit(this.state.CUIT)) {
+            this.setState({error: true})
+            return
+        }
 
         if (this.state.page !== '/clientes/nuevo') {
             this.requester.put(`/clientes/${this.state.id}`, this.state)
@@ -178,6 +185,11 @@ class InfoCliente extends Component {
         return this.state.formularioCerrado;
     }
 
+    validateCuit() {
+        const regexCuit = /^(20|23|27|30|33)([0-9]{9}|-[0-9]{8}-[0-9]{1})$/g;
+        return regexCuit.test(this.state.CUIT);
+    }
+
     render() {
         let alerta = null;
         if (this.state.alerta.mostrar) {
@@ -193,7 +205,11 @@ class InfoCliente extends Component {
             <div>
                 {alerta}
                 <div class='form-cliente'>
-                    <h2 class="centrado">Crear Cliente</h2>
+                    {this.state.page !== '/clientes/nuevo' ?
+                        <h2 class="centrado">Editar Cliente</h2>
+                    :
+                        <h2 class="centrado">Crear Cliente</h2>
+                    }
                     <br />
                     <form noValidate autoComplete="off" onSubmit={this.handleSubmit}>
                         <Grid container spacing={3} direction="row" justify="flex-start" alignItems="flex-start">
@@ -213,7 +229,7 @@ class InfoCliente extends Component {
                                 </Grid>
                                 : null}
                             <Grid item lg={6} xl={6}>
-                                <TextField id="CUIT" value={this.state.CUIT} fullWidth variant="outlined" name="CUIT" label="CUIT"
+                                <TextField error={this.state.error} helperText={this.state.error ? "CUIT Inválido" : ""} id="CUIT" value={this.state.CUIT} fullWidth variant="outlined" name="CUIT" label="CUIT"
                                     disabled={this.isFormDisabled()} onChange={this.handleChangeCUIT} />
                             </Grid>
 

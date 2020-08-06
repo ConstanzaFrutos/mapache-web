@@ -41,7 +41,10 @@ class TabProyectos extends Component {
 
     componentDidMount() {
         let legajo = this.props.match.params.legajo;
-        
+        this.setState({
+            data: asignaciones
+        });
+        /*
         this.requesterRecursos.get(`/empleados/${legajo}/proyectos/`)
             .then(response => {
                 if (response.ok){
@@ -66,7 +69,7 @@ class TabProyectos extends Component {
                         data: data
                     });
                 }
-            });
+            });*/
     }
 
     requestDataProyecto(codigoProyecto) {
@@ -158,16 +161,55 @@ const title = "Proyectos";
 const columns = [
     {
         title: "Nombre", 
-        field: "nombre"
+        field: "nombre",
+        cellStyle: {
+            minWidth: '27em'
+        }
     },
     {
         title: "Título", 
-        field: "titulo"
+        field: "titulo",
+        cellStyle: {
+            minWidth: '10em'
+        }
+    },
+    {
+        title: "Desde", 
+        field: "fechaInicio",
+        cellStyle: {
+            minWidth: '9em'
+        }
+    },
+    {
+        title: "Hasta", 
+        field: "fechaFin",
+        cellStyle: {
+            minWidth: '9em'
+        }
     },
     {
         title: "Progreso", 
         field: "progreso",
-        render: rowData => <LinearProgress variant="buffer" value={rowData.progreso}/> 
+        render: rowData => <LinearProgress variant="buffer" value={rowData.progreso}/> ,
+        cellStyle: {
+            minWidth: '15em'
+        }
     }
 ]
 
+const asignaciones = [
+    {
+        nombre: "ERP Cloud",
+        titulo: "UX",
+        fechaInicio: "2020-07-01",
+        fechaFin: "2020-08-05",
+        progreso: 100
+    },
+    {
+        nombre: "Gestión",
+        titulo: "ARQUITECTO",
+        fechaInicio: "2020-08-06",
+        fechaFin: null,
+        progreso: 30
+    }
+]

@@ -84,25 +84,33 @@ class TabHorasCargadas extends Component {
                         fechaPivote={ this.state.fechaPivote }
                         cambiarASemanaAnterior={ this.cambiarASemanaAnterior }
                         cambiarASemanaPosterior={ this.cambiarASemanaPosterior }
-                        horasCargadasSemana={ horasCargadas }
+                        horasCargadasSemana={ this.state.horasCargadasSemana }
                     ></Semana>
                 </Grid>
                 { this.props.alerta }
             </div>
         )
     }
-    //horasCargadasSemana={ this.state.horasCargadasSemana }
+    
 }
 
 export default withRouter(TabHorasCargadas);
 
 class Semana extends Component {
+    procesarFecha(fecha) {
+        let mes = fecha[1];
+        if (mes <= 9) {
+            mes = `0${mes}`;
+        }
+        let dia = fecha[2];
+        if (dia <= 9) {
+            dia = `0${dia}`;
+        }
+        return `${fecha[0]}-${mes}-${dia}`;
+    }
 
     obtenerHorasCargadasDia(dia) {
-        //console.log("Obteniendo las horas cargadas del dia ", dia);
-        //console.log(this.props.horasCargadasSemana.filter(hora => hora.fecha === dia));
-        //let horasCargadasDia = this.props.horasCargadasSemana.filter(dia => dia.fecha > 6);
-        return this.props.horasCargadasSemana.filter(hora => hora.fecha === dia);
+        return this.props.horasCargadasSemana.filter(hora => this.procesarFecha(hora.fecha) === dia);
     }
 
     render() {
@@ -158,7 +166,6 @@ Date.prototype.obtenerFechasSemana = function(){
 class Dia extends Component {    
 
     render() {
-        //console.log("Horas cargadas dia ", this.props.horasCargadasDia );
 
         return (
             <Grid key={this.props.value} item>
@@ -269,40 +276,3 @@ const actividades = [
     }
 ]
 
-const horasCargadas = [
-    {
-        fecha: "2020-07-29",
-        cantidadHoras: 2,
-        actividad: "TAREA"
-    },
-    {
-        fecha: "2020-07-29",
-        cantidadHoras: 2,
-        actividad: "DIA_DE_ESTUDIO"
-    },
-    {
-        fecha: "2020-07-28",
-        cantidadHoras: 1,
-        actividad: "TAREA"
-    },
-    {
-        fecha: "2020-07-28",
-        cantidadHoras: 2,
-        actividad: "ENFERMEDAD"
-    },
-    {
-        fecha: "2020-07-26",
-        cantidadHoras: 5,
-        actividad: "VACACIONES"
-    },
-    {
-        fecha: "2020-07-19",
-        cantidadHoras: 4,
-        actividad: "ENFERMEDAD"
-    },
-    {
-        fecha: "2020-07-15",
-        cantidadHoras: 9,
-        actividad: "TAREA"
-    }
-]

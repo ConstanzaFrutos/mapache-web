@@ -191,9 +191,6 @@ class TabCargarHoras extends Component {
             "tareaId": this.state.tareaSeleccionada
         }
 
-        console.log("Uri ", uri);
-        console.log("Payload ", payload);
-
         this.requesterRecursos.post(uri, payload)
             .then(response => {
                 if (response.ok){
@@ -214,6 +211,14 @@ class TabCargarHoras extends Component {
     handleCargaHorasVacaciones() {
         let cantidadHoras = this.state.contrato === 'PART_TIME' ? 4 : 9;
         let fechasSemana = new Date(this.state.fechaSeleccionada).obtenerFechasSemana();
+        console.log("fechas semana", fechasSemana)
+        for (let i=1; i<this.state.semanaSeleccionada; ++i){
+            let fechaSemanaSiguiente = new Date(fechasSemana[fechasSemana.length-1]);
+            fechaSemanaSiguiente.setDate(fechaSemanaSiguiente.getDate() + 1);
+            let fechasSemanaSiguiente = new Date(fechaSemanaSiguiente).obtenerFechasSemana();
+            fechasSemana = fechasSemana.concat(fechasSemanaSiguiente);
+        }
+        
         const fechas = fechasSemana.map((fecha) => {
             return new Fecha(fecha);
         });
@@ -229,8 +234,6 @@ class TabCargarHoras extends Component {
                 "tareaId": null
             }
 
-            console.log("Uri ", uri);
-            console.log("Payload ", payload);
             this.requesterRecursos.post(uri, payload)
                 .then(response => {
                     if (response.ok){
@@ -258,9 +261,7 @@ class TabCargarHoras extends Component {
             "proyectoid": null,
             "tareaId": null
         }
-
-        console.log("Uri ", uri);
-        console.log("Payload ", payload);
+        
         this.requesterRecursos.post(uri, payload)
             .then(response => {
                 if (response.ok){

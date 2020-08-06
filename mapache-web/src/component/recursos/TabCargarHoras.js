@@ -250,7 +250,31 @@ class TabCargarHoras extends Component {
     }
 
     handleCargaHorasOtras() {
+        const uri = `/empleados/${this.state.legajoEmpleado}/horas`;
+        let payload = {
+            "actividad": this.state.actividadSeleccionada,
+            "cantidadHoras": this.state.horaSeleccionada,
+            "fecha": this.state.fechaSeleccionada,
+            "proyectoid": null,
+            "tareaId": null
+        }
 
+        console.log("Uri ", uri);
+        console.log("Payload ", payload);
+        this.requesterRecursos.post(uri, payload)
+            .then(response => {
+                if (response.ok){
+                    this.props.mostrarAlerta(
+                        `Carga de horas exitosa`,
+                        "success"
+                    );
+                } else {
+                    this.props.mostrarAlerta(
+                        `Error al cargar horas al empleado con legajo ${this.state.legajoEmpleado}`,
+                        "error"
+                    );
+                }
+            });
     }
 
     handleCargaHoras() {

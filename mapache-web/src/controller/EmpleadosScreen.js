@@ -58,8 +58,6 @@ class EmpleadosScreen extends Component {
     handleEdit(oldData) {
         // Esta funcion en el caso de los empleados 
         // se usa para redirigir el perfil
-        console.log("En edit");
-        console.log(oldData);
         
         this.props.history.push({
             pathname: `/empleados/${oldData.legajo}`,
@@ -71,7 +69,6 @@ class EmpleadosScreen extends Component {
     }
 
     handleDelete(newData) {
-        console.log("En delete");
         this.setState({
             confirmarEliminacion: true,
             empleadoSeleccionado: newData
@@ -80,21 +77,23 @@ class EmpleadosScreen extends Component {
 
     componentDidMount() {
         this.requester.get('/empleados/')
-        .then(response => {
-            if (response.ok){
-                return response.json();
-            } else {
-                console.log("Error al consultar empleados");
-            }
-        })
-        .then(response => {
-            console.log(response);
-            if (response) {
-                this.setState({
-                    empleados: response
-                });
-            }
-        });
+            .then(response => {
+                if (response.ok){
+                    return response.json();
+                } else {
+                    this.mostrarAlerta(
+                        "Error al consultar empleados",
+                        error
+                    );                
+                }
+            })
+            .then(response => {
+                if (response) {
+                    this.setState({
+                        empleados: response
+                    });
+                }
+            });
     }
 
     mostrarAlerta(mensaje, tipo) {
@@ -237,7 +236,8 @@ const columns = [
         editable: "never",
         cellStyle: {
             minWidth: '10em'
-        }
+        },
+        render: rowData => <div>{ roles.find((rol) => rol.value === rowData.rol).name }</div>
     }
 ];
 
@@ -247,3 +247,34 @@ const editIcon = InfoOutlined;
 
 const success = "success";
 const error = "error";
+
+const roles = [
+    {
+        'name': "No asignado",
+        'value': "SIN_ROL"
+    },
+    {
+        'name': "UX",
+        'value': "UX"
+    },
+    {
+        'name': "QA",
+        'value': "QA"
+    },
+    {
+        'name': "Desarrollador",
+        'value': "DESARROLLADOR"
+    },
+    {
+        'name': "Líder de Proyecto",
+        'value': "LIDER_PROYECTO"
+    },
+    {
+        'name': "Arquitecto",
+        'value': "ARQUITECTO"
+    },
+    {
+        'name': "Líder de RRHH",
+        'value': "LIDER_RRHH"
+    }
+]

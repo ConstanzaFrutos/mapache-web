@@ -563,8 +563,6 @@ class Tabinformacion extends Component {
 
 export default withRouter(Tabinformacion);
 
-
-
 const roles = [
     {
         'name': "No asignado",

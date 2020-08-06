@@ -84,7 +84,7 @@ class ListadoFases extends Component {
         const {nombre} = this.state.nuevaFase;
         return(
             <div className="proyectos-screen-div">
-                <div className="tablaProyectos" style={{height:"80%"}}>
+                <div className="tablaProyectos" style={{height:"100%", width:"70%"}}>
                     <TableContainer component={Paper}>
                         <Table  aria-label="simple table" >
                             {this.state.fases.length === 0 ?

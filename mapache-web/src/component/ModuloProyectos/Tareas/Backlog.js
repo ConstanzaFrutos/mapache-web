@@ -154,6 +154,24 @@ function ordenarTareas(tarea1, tarea2) {
     }
 }
 
+function ordenarPrioridades(tarea1, tarea2) {
+    if(tarea1.prioridad === tarea2.prioridad){
+        return tarea2.id - tarea1.id;
+    } else if(tarea1.prioridad === "Alta"){
+        return -1;
+    } else if(tarea2.prioridad === "Alta"){
+        return 1;
+    } else if(tarea1.prioridad === "Media"){
+        return -1;
+    } else if(tarea2.prioridad === "Media"){
+        return 1;
+    } else if(tarea1.prioridad === "Baja"){
+        return -1;
+    } else if(tarea2.prioridad === "Baja"){
+        return 1;
+    }
+}
+
 const title = "Backlog";
 
 const columns = [
@@ -186,8 +204,14 @@ const columns = [
         render: rowData => <p>
                                 { rowData.fechaDeFinalizacion ?
                                     rowData.fechaDeFinalizacion.split('T')[0] :
-                                    "No contiene" }
+                                    "" }
                             </p>
+    },
+    {
+        title: "Prioridad",
+        field: "prioridad",
+        editable: "never",
+        customSort: (a,b) => ordenarPrioridades(a,b)
     }
 ];
 

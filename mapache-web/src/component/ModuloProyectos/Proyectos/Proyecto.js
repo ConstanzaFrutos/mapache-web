@@ -307,9 +307,14 @@ class Proyecto extends Component {
                                     </Form.Control>
                                 </Form.Group>
                                 <Form.Group as={Col}>
-                                    {tipo === "Implementación" ? null :
-                                        <Form.Label>Producto</Form.Label>
-                                    }
+                                    <Form.Label>Producto</Form.Label>
+                                    <Form.Control
+                                        value={producto}
+                                        onChange={this.cambioProyecto}
+                                        autoComplete="off"
+                                        type="text" name="producto"
+                                    >
+                                    </Form.Control>
                                     {tipo === "Implementación" ?
                                         <Dropdown
                                             renderDropdown={ true }
@@ -318,15 +323,7 @@ class Proyecto extends Component {
                                             values={ this.state.clientes }
                                             handleChange={ this.seleccionarCliente }
                                         >
-                                        </Dropdown> :
-                                        <Form.Control
-                                            value={producto}
-                                            onChange={this.cambioProyecto}
-                                            autoComplete="off"
-                                            type="text" name="producto"
-                                        >
-                                        </Form.Control>
-                                    }
+                                        </Dropdown> : null}
                                 </Form.Group>
                             </Form.Row>
                             <Form.Group>

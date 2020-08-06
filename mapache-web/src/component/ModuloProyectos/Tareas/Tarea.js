@@ -15,7 +15,7 @@ class Tarea extends Component {
 
     estadoInicial = {id:'', nombre:'', descripcion: '', fechaDeInicio: '',
         fechaDeFinalizacion: '', estado: 'No iniciado', responsable: -1, recursos: [], duracionEstimada: 0, idsTickets: [],
-        prioridad: ''};
+        prioridad: 'Sin especificar'};
 
     componentDidMount() {
         const proyectoId = +this.props.match.params.id;
@@ -126,6 +126,7 @@ class Tarea extends Component {
             .then(respuesta => {
                 if(respuesta.data){
                     alert("La tarea se creo exitosamente");
+                    this.props.history.goBack();
                 }
             }).catch(function(err){
                 if(err.response){
@@ -165,6 +166,7 @@ class Tarea extends Component {
             .then(respuesta=> {
                 if(respuesta.data != null){
                     alert("La tarea: " + tarea.nombre+ " se actualizo exitosamente");
+                    this.props.history.goBack();
                 }
             }).catch(function(err){
                 if(err.response){
@@ -218,9 +220,10 @@ class Tarea extends Component {
 
         return(
             <div className="proyectos-screen-div" style={{width:"100%", height:"100%"}}>
-                <Card className="tablaCrearProyectos">
+                <Card className="tablaCrearProyectos" style={{width: "70%"}}>
                     <Form id="formularioProyecto" onSubmit={this.state.id ? this.actualizarTarea : this.crearTarea}>
-                        <Card.Header>{this.state.id ? "Editar Tarea": "Crear Tarea"}</Card.Header>
+                        <Card.Header>{this.state.id ? "Editar Tarea: " : "Crear Tarea"}
+                            {this.state.id ? this.state.id : null}</Card.Header>
                         <Card.Body>
                             <Form.Row>
                                 <Form.Group as={Col}>
@@ -245,11 +248,17 @@ class Tarea extends Component {
                                 <Form.Group as={Col}>
                                     <Form.Label>Prioridad</Form.Label>
                                     <Form.Control
+                                        as="select" custom
                                         autoComplete="off"
                                         type="text" name="prioridad"
                                         value={prioridad}
                                         onChange={this.cambioTarea}
-                                    />
+                                    >
+                                        <option value="Sin especificar">Sin especificar</option>
+                                        <option value="Alta">Alta</option>
+                                        <option  value="Media">Media</option>
+                                        <option value="Baja">Baja</option>
+                                    </Form.Control>
                                 </Form.Group>
                             </Form.Row>
                             <Form.Group>
@@ -318,7 +327,7 @@ class Tarea extends Component {
                         </Card.Body>
                         <Card.Footer>
                             <ButtonGroup>
-                                <Button variant="outline-success" type="submit" onClick={this.props.history.goBack}>
+                                <Button variant="outline-success" type="submit">
                                     {this.state.id ? "Actualizar" : "Crear Tarea"}
                                 </Button>
                                 {this.state.id ?

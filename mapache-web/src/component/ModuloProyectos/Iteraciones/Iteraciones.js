@@ -353,7 +353,7 @@ class Iteraciones extends Component {
         const {iteraciones, iteracionActual, iteracionActualDropdown, tareasDropdown, tareaAgregar} = this.state;
         return (
             <div className="tablaIteraciones">
-                <Card className="tablaCrearIteracion" style={{width:"30%"}}>
+                <Card className="tablaCrearIteracion" style={{width:"70%"}}>
                     <Dropdown
                         renderDropdown={ true }
                         label="Iteraciones"
@@ -457,9 +457,7 @@ class Iteraciones extends Component {
                                                 style={{color: this.definirColor(tarea.estado)}}>
                                                 {tarea.estado}
                                             </td>
-                                            <td>
-                                                {tarea.prioridad ? tarea.prioridad : "Sin especificar"}
-                                            </td>
+                                            <td>{tarea.prioridad}</td>
                                             <td>
                                                 <ButtonGroup>
                                                     <Link to={"/proyectos/"+proyectoId+'/tareas/'+tarea.id}>

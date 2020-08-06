@@ -1,7 +1,6 @@
 import React, { Component }  from 'react';
 import { withRouter } from 'react-router';
 import axios from 'axios';
-
 import { TablaAdministracion } from "../../general/TablaAdministracion";
 import InfoOutlined from '@material-ui/icons/InfoOutlined';
 import Add from '@material-ui/icons/Add';
@@ -77,7 +76,7 @@ class ListadoProyectos extends Component {
                     data={ this.state.proyectos }
                     handleAdd={ this.handleAdd }
                     handleEdit={ this.handleEdit }
-                    handleDelete={ this.handleDelete } 
+                    handleDelete={ this.handleDelete }
                     editable = { null }
                     actions={[
                         {
@@ -92,7 +91,7 @@ class ListadoProyectos extends Component {
                             icon: editIcon,
                             tooltip: "Abrir",
                             onClick: (event, rowData) => {
-                                this.handleEdit(rowData)  
+                                this.handleEdit(rowData)
                                 console.log(rowData)
                             }
                         },
@@ -100,7 +99,7 @@ class ListadoProyectos extends Component {
                             icon: Reorder,
                             tooltip: "Backlog",
                             onClick: (event, rowData) => {
-                                this.handleDelete(rowData)  
+                                this.handleDelete(rowData)
                                 console.log(rowData)
                             }
                         }

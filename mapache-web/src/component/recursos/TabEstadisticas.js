@@ -276,7 +276,6 @@ function ChartDiario(props) {
 
 function ChartSemanal(props) {
     function procesarDataSemanal(data) {
-        const totalHorasDia = 9;
         console.log("Horas recibidas semana ", data)
 
         let horasVacaciones = 0;
@@ -352,7 +351,7 @@ function ChartMensual(props) {
         console.log("data mes", data);
 
 
-        const d = [
+        /*const d = [
             {
                 category: "One",
                 Vacaciones: 0,
@@ -361,7 +360,7 @@ function ChartMensual(props) {
                 Tarea: 29,
                 NoOcupado: 2
             }
-        ];
+        ];*/
     }
 
     const obtenerChart = async () => {
@@ -517,7 +516,7 @@ function ChartAnual(props) {
         series2.stroke = am4core.color("#555");
 
         // Add a triangle for arrow tip
-        var arrow = series2.bullets.push(new am4core.Triangle);
+        let arrow = series2.bullets.push(new am4core.Triangle());
         arrow.width = 10;
         arrow.height = 10;
         arrow.horizontalCenter = "middle";
@@ -535,7 +534,7 @@ function ChartAnual(props) {
         });
 
         // Add a label
-        var label = series2.bullets.push(new am4core.Label);
+        var label = series2.bullets.push(new am4core.Label());
         label.padding(10, 10, 10, 10);
         label.text = "";
         label.fill = am4core.color("#0c0");

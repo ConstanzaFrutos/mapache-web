@@ -312,9 +312,8 @@ class Tabinformacion extends Component {
                      >
                      </Alerta>
         }
-        console.log("EN TAB INFORMACION ", this.props.modo);
+        
         if (this.props.modo === "info") {
-            console.log("En info");
             let nombreYApellido = this.state.empleado.apellido + ", " + this.state.empleado.nombre;
             avatar = <div className={"foto-y-nombre"}>
                         <Avatar className="avatar">
@@ -562,8 +561,6 @@ class Tabinformacion extends Component {
 }
 
 export default withRouter(Tabinformacion);
-
-
 
 const roles = [
     {

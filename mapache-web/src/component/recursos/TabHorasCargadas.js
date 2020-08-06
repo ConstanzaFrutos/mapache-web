@@ -12,8 +12,12 @@ import ArrowForward from '@material-ui/icons/ArrowForward';
 import Work from '@material-ui/icons/Work';
 import BeachAccess from '@material-ui/icons/BeachAccess';
 import SentimentDissatisfied from '@material-ui/icons/SentimentDissatisfied';
+import School from '@material-ui/icons/School';
 
+import Requester from "../../communication/Requester";
 import RequesterHoras from "../../communication/RequesterHoras";
+
+const mapacheProyectosBaseUrl = 'https://mapache-proyectos.herokuapp.com/';
 
 class TabHorasCargadas extends Component {
 
@@ -26,22 +30,53 @@ class TabHorasCargadas extends Component {
             horasCargadasSemana: []
         }
 
+        this.requesterProyectos = new Requester(mapacheProyectosBaseUrl);
         this.requesterHoras = new RequesterHoras();
 
         this.cambiarASemanaAnterior = this.cambiarASemanaAnterior.bind(this);
         this.cambiarASemanaPosterior = this.cambiarASemanaPosterior.bind(this);
+
+        this.obtenerNombreTarea = this.obtenerNombreTarea.bind(this);
     }
 
     async componentDidMount() {
-        /*const horasCargadas = await this.requesterHoras.obtenerHorasCargadasSemana(
+        //Pedir las del mes entero
+        const horasCargadas = await this.requesterHoras.obtenerHorasCargadasSemana(
             this.props.match.params.legajo, 
             this.state.fechaActual,
             this.props.mostrarAlerta
-        );*/
-        /*console.log("Horas cargadas ", horasCargadas);
+        );
+        console.log("Horas cargadas ", horasCargadas);
+        let aux = await Promise.all(horasCargadas.map(async (hora) => {
+            let nombreTarea = '';
+            if (hora.actividad === "TAREA") {
+                let tarea = await this.obtenerNombreTarea(hora.proyectoId, hora.tareaId);
+                nombreTarea = tarea.nombre
+            }
+            hora.nombreTarea = nombreTarea;
+            return hora;
+        }));
+
         this.setState({
-            horasCargadasSemana: horasCargadas
-        })*/
+            horasCargadasSemana: aux
+        })
+    }
+
+    async obtenerNombreTarea(codigoProyecto, codigoTarea) {
+        let tarea = await this.requesterProyectos.get(`/proyectos/${codigoProyecto}/tareas/${codigoTarea}`)
+                        .then(response => {
+                            if (response.ok){
+                                return response.json();
+                            } else {
+                                alert("error al consultar tarea");
+                            }
+                        }).then(response => {
+                            if (response) {
+                                return response;
+                            }
+                        });
+        console.log("Tarea", tarea);
+        return tarea;
     }
 
     cambiarASemanaAnterior() {
@@ -52,7 +87,6 @@ class TabHorasCargadas extends Component {
             let fechaPivoteAnterior = this.state.fechaPivote;
             const nuevoDia = this.state.fechaPivote.getDate() - 7;
             fechaPivoteAnterior.setDate(nuevoDia);
-            console.log("Fecha Pivote anteiror", fechaPivoteAnterior);
 
             this.setState({
                 fechaPivote: fechaPivoteAnterior
@@ -61,13 +95,10 @@ class TabHorasCargadas extends Component {
     }
 
     cambiarASemanaPosterior() {
-        console.log("Diferencia entre fechas avanzar ", this.state.fechaPivote < this.state.fechaActual);
-        console.log("Fecha pivote anterior ", this.state.fechaPivote);
         if (this.state.fechaPivote < this.state.fechaActual){
             let fechaPivotePosterior = this.state.fechaPivote;
             const nuevoDia = this.state.fechaPivote.getDate() + 7;
             fechaPivotePosterior.setDate(nuevoDia);
-            console.log("Fecha Pivote posterior", fechaPivotePosterior);
 
             this.setState({
                 fechaPivote: fechaPivotePosterior
@@ -83,25 +114,33 @@ class TabHorasCargadas extends Component {
                         fechaPivote={ this.state.fechaPivote }
                         cambiarASemanaAnterior={ this.cambiarASemanaAnterior }
                         cambiarASemanaPosterior={ this.cambiarASemanaPosterior }
-                        horasCargadasSemana={ horasCargadas }
+                        horasCargadasSemana={ this.state.horasCargadasSemana }
                     ></Semana>
                 </Grid>
                 { this.props.alerta }
             </div>
         )
     }
-    //horasCargadasSemana={ this.state.horasCargadasSemana }
+    
 }
 
 export default withRouter(TabHorasCargadas);
 
 class Semana extends Component {
+    procesarFecha(fecha) {
+        let mes = fecha[1];
+        if (mes <= 9) {
+            mes = `0${mes}`;
+        }
+        let dia = fecha[2];
+        if (dia <= 9) {
+            dia = `0${dia}`;
+        }
+        return `${fecha[0]}-${mes}-${dia}`;
+    }
 
     obtenerHorasCargadasDia(dia) {
-        //console.log("Obteniendo las horas cargadas del dia ", dia);
-        //console.log(this.props.horasCargadasSemana.filter(hora => hora.fecha === dia));
-        //let horasCargadasDia = this.props.horasCargadasSemana.filter(dia => dia.fecha > 6);
-        return this.props.horasCargadasSemana.filter(hora => hora.fecha === dia);
+        return this.props.horasCargadasSemana.filter(hora => this.procesarFecha(hora.fecha) === dia);
     }
 
     render() {
@@ -111,7 +150,7 @@ class Semana extends Component {
         });
 
         let gridSemana = <Grid container justify="center" spacing={2}>
-            {[0, 1, 2, 3, 4, 5, 6].map((value) => (
+            {[1, 2, 3, 4, 5].map((value) => (
                 <Dia 
                     key = { value }
                     value={ value }
@@ -157,7 +196,14 @@ Date.prototype.obtenerFechasSemana = function(){
 class Dia extends Component {    
 
     render() {
-        //console.log("Horas cargadas dia ", this.props.horasCargadasDia );
+        if (this.props.horasCargadasDia.length > 0) {
+            let horasTotalesDia = this.props.horasCargadasDia.reduce(
+                (horasAcumuladas, hora) => {
+                    return horasAcumuladas.cantidadHoras + hora.cantidadHoras;
+                }
+            );
+            console.log("Horas totales ", horasTotalesDia);
+        }
 
         return (
             <Grid key={this.props.value} item>
@@ -181,12 +227,14 @@ class Dia extends Component {
                             let actividad = actividades.find(
                                 actividad => actividad.nombre === horas.actividad
                             );
+
                             let color = actividad.color;
                             let icono = actividad.icono;
                             return <HoraCargada
                                         color={ color }
                                         cantidadHoras={ horas.cantidadHoras }
                                         icono={ icono }
+                                        nombreTarea={ horas.nombreTarea }
                                     ></HoraCargada>
                         })}
                     </div>
@@ -197,7 +245,7 @@ class Dia extends Component {
 
 }
 
-class Fecha {
+export class Fecha {
     constructor(fecha) {
         this.diaSemana = this.obtenerDiaSemana(fecha);
         this.fechaProcesadaBarra = this.procesarFecha(fecha, '/');
@@ -227,18 +275,30 @@ class HoraCargada extends Component {
     
     render() {
         const alturaPorHora = 2;
+        let nombreTarea = this.props.nombreTarea;
+
+        let altura = (this.props.cantidadHoras > 1) ? this.props.cantidadHoras * alturaPorHora : 2;
+        let texto = horasDropdown.find((hora) => hora.value === this.props.cantidadHoras).name;
+
         return (
             <div 
                 className="hora-cargada-div"
                 style={{
                     "backgroundColor": this.props.color, 
-                    "height": `${this.props.cantidadHoras * alturaPorHora}em`
+                    "height": `${ altura }em`
                 }}
             >
-                { this.props.icono }
-                <Typography variant="subtitle1" align="center">
-                    { this.props.cantidadHoras } horas
+                <div className="icono-y-cantidad-horas">
+                    { this.props.icono }
+                    <Typography variant="subtitle1" wrap="wrap">
+                        { texto }
+                    </Typography>
+                </div>
+                
+                <Typography variant="subtitle1" wrap="wrap">
+                    { nombreTarea } 
                 </Typography>
+            
             </div>
         )
     }
@@ -260,38 +320,48 @@ const actividades = [
         nombre: "ENFERMEDAD",
         color: "#CCFFFF",
         icono: <SentimentDissatisfied/>
+    },
+    {
+        nombre: "DIA_DE_ESTUDIO",
+        color: "#FFE4B5",
+        icono: <School/>
     }
 ]
 
-const horasCargadas = [
-    {
-        fecha: "2020-07-29",
-        cantidadHoras: 2,
-        actividad: "TAREA"
-    },
-    {
-        fecha: "2020-07-28",
-        cantidadHoras: 1,
-        actividad: "TAREA"
-    },
-    {
-        fecha: "2020-07-28",
-        cantidadHoras: 2,
-        actividad: "ENFERMEDAD"
-    },
-    {
-        fecha: "2020-07-26",
-        cantidadHoras: 5,
-        actividad: "VACACIONES"
-    },
-    {
-        fecha: "2020-07-19",
-        cantidadHoras: 4,
-        actividad: "ENFERMEDAD"
-    },
-    {
-        fecha: "2020-07-15",
-        cantidadHoras: 9,
-        actividad: "TAREA"
+
+let horas = [];
+for (let i=0; i<10; i++) {
+    horas[i] = {
+        name: i > 1 ? `${i} horas ` : `${i} hora`,
+        value: i
     }
-]
+}
+
+let minutos = [];
+minutos[0] = {
+    name: "",
+    value: 0
+}
+for (let i=0; i<2; i++) {
+    minutos[i+1] = {
+        name: `${60/(4-2*i)} minutos`,
+        value: 1/(4-2*i)
+    }
+}
+
+let horasDropdown = [];
+
+horas.forEach((hora) => {
+    minutos.forEach((minuto) => {
+        let aux = {};
+        aux.name = hora.value > 0 ? hora.name + ' ' + minuto.name : minuto.name;
+        aux.value = hora.value + minuto.value;
+        horasDropdown.push(aux);
+        if (
+            (hora.value === 0 && minuto.value === 0) ||
+            (hora.value === 9 && minuto.value > 0)
+        ) {
+            horasDropdown.pop();
+        }
+    })
+});

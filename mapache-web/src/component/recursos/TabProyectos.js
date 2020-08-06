@@ -109,18 +109,17 @@ class TabProyectos extends Component {
     async createData(asignacionProyectos) {
         let array = await Promise.all(
             asignacionProyectos.map(async (asignacion) => {
-                console.log(asignacion);
-                
-                const proyecto = await this.requestDataProyecto(asignacion.codigo);
+                const proyecto = await this.requestDataProyecto(asignacion.codigoProyecto);
                 const horas = await this.requestHorasProyecto(
                     this.props.legajo, 
-                    asignacion.codigo
+                    asignacion.codigoProyecto
                 );
+
                 if (proyecto && horas) {
                     let aux = {
                         nombre: proyecto.nombre,
                         titulo: asignacion.rolEmpleado,
-                        progreso: horas.cantidadDeHorasTrabajadas,
+                        progreso: horas.horasTrabajadas,
                     }
                     return aux;
                 } else {
@@ -159,16 +158,55 @@ const title = "Proyectos";
 const columns = [
     {
         title: "Nombre", 
-        field: "nombre"
+        field: "nombre",
+        cellStyle: {
+            minWidth: '27em'
+        }
     },
     {
         title: "Título", 
-        field: "titulo"
+        field: "titulo",
+        cellStyle: {
+            minWidth: '10em'
+        }
+    },
+    {
+        title: "Desde", 
+        field: "fechaInicio",
+        cellStyle: {
+            minWidth: '9em'
+        }
+    },
+    {
+        title: "Hasta", 
+        field: "fechaFin",
+        cellStyle: {
+            minWidth: '9em'
+        }
     },
     {
         title: "Progreso", 
         field: "progreso",
-        render: rowData => <LinearProgress variant="buffer" value={rowData.progreso}/> 
+        render: rowData => <LinearProgress variant="buffer" value={rowData.progreso}/> ,
+        cellStyle: {
+            minWidth: '15em'
+        }
     }
 ]
 
+/*const asignaciones = [
+    {
+        nombre: "ERP Cloud",
+        titulo: "UX",
+        fechaInicio: "2020-07-01",
+        fechaFin: "2020-08-05",
+        progreso: 100
+    },
+    {
+        nombre: "Gestión",
+        titulo: "ARQUITECTO",
+        fechaInicio: "2020-08-06",
+        fechaFin: null,
+        progreso: 30
+    }
+]*/

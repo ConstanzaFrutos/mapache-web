@@ -73,6 +73,9 @@ class PerfilEmpleado extends Component {
     }
 
     render() {
+        let navBar = <NavBarPerfilEmpleado 
+            legajo={ this.state.empleado.legajo }
+        />
         
         let alerta = null;
         if (this.state.mostrarAlerta) {
@@ -90,6 +93,9 @@ class PerfilEmpleado extends Component {
         console.log("Modo ", modo);
         console.log("Tab ", this.props.location.state.tab);
         if (this.props.location.state.tab === "informacion") {
+            if (modo === "add") {
+                navBar = null;
+            }
             tab = <TabInformacion 
                       legajo={this.state.empleado.legajo} 
                       modo={ modo }
@@ -131,9 +137,7 @@ class PerfilEmpleado extends Component {
 
         return (
             <div className="perfil-empleado">
-                <NavBarPerfilEmpleado 
-                    legajo={ this.state.empleado.legajo }
-                />
+                { navBar }
                 { tab }
             </div>
         )

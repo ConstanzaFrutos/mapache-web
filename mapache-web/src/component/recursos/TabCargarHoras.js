@@ -9,6 +9,8 @@ import Save from '@material-ui/icons/Save'
 import { Dropdown } from "../general/Dropdown";
 import { DatePicker } from "../general/DatePicker";
 
+import { Fecha } from "./TabHorasCargadas";
+
 import Requester from "../../communication/Requester";
 
 const mapacheRecursosBaseUrl = "https://mapache-recursos.herokuapp.com";
@@ -30,9 +32,9 @@ class TabCargarHoras extends Component {
             proyectos: {},
             tareas: [],
             tareasDropdown: [],
-            actividadSeleccionada: '',
+            actividadSeleccionada: actividades[0].value,
             mostrarDropdownTareas: true,
-            tareaSeleccionada: '',
+            tareaSeleccionada: 0,
             fechaSeleccionada: '',
             horaSeleccionada: horasDropdown[0].value,
             semanaSeleccionada: semanasDropdown[0].value,
@@ -48,75 +50,68 @@ class TabCargarHoras extends Component {
         this.handleDateInput = this.handleDateInput.bind(this);
 
         this.handleCargaHoras = this.handleCargaHoras.bind(this);
+        this.handleCargaHorasTarea = this.handleCargaHorasTarea.bind(this);
+        this.handleCargaHorasVacaciones = this.handleCargaHorasVacaciones.bind(this);
+        this.handleCargaHorasOtras = this.handleCargaHorasOtras.bind(this);
 
-        this.obtenerTareasDropdown = this.obtenerTareasDropdown.bind(this);
-        this.requestTareas = this.requestTareas.bind(this);
-        this.obtenerTareasDeProyecto = this.obtenerTareasDeProyecto.bind(this);
-        this.obtenerProyecto = this.obtenerProyecto.bind(this);
+        this.obtenerTareasDeEmpleado = this.obtenerTareasDeEmpleado.bind(this);
+        this.obtenerProyectos = this.obtenerProyectos.bind(this);
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         let legajo = this.props.match.params.legajo;
         let contrato = this.props.match.params.contrato;
 
+        let tareas = await this.obtenerTareasDeEmpleado(legajo);
+        let proyectos = await this.obtenerProyectos();
+
+        let tareasDropdown = [{
+            name: "No tiene tareas asignadas",
+            value: -1
+        }]
+        
+        if (tareas.length > 0) {
+            tareas.map((tarea) => {
+                let proyecto = proyectos.find(proyecto => proyecto.nombre === tarea.nombreProyecto);
+                tarea.codigoProyecto = proyecto.id;
+                return tarea;
+            })
+    
+            tareasDropdown = tareas.map((tarea) => {
+                return {
+                    name: tarea.nombreTarea,
+                    value: tarea.id
+                }
+            })
+        }
+
         if (this.props.tarea){
             this.setState({
-                tareaSeleccionada: this.props.tarea.codigoTarea,
+                tareasDropdown: tareasDropdown,
+                tareaSeleccionada: this.props.tarea.id,
                 legajoEmpleado: legajo,
-                contratoEmpleado: contrato
+                contratoEmpleado: contrato,
+                tareas: tareas
             });
         } else {
-            this.obtenerTareasDropdown(legajo);
+            this.setState({
+                tareasDropdown: tareasDropdown,
+                tareaSeleccionada: tareasDropdown[0].value,
+                legajoEmpleado: legajo,
+                contratoEmpleado: contrato,
+                tareas: tareas
+            });
         }
     }
 
-    obtenerTareasDropdown(legajo) {
-        this.requesterRecursos.get(`/empleados/${legajo}/proyectos/`)
-                .then(response => {
-                    if (response.ok){
-                        return response.json();
-                    } else {
-                        this.props.mostrarAlerta(
-                            `Error al consultar asignaciones del empleado ${legajo}`,
-                            "error"
-                        )
-                    }
-                }).then(response => {
-                    if (response) {
-                        return response;
-                    }
-                }).then(async (asignacionProyectos) => {
-                    if(asignacionProyectos) {
-                        let tareas = await this.requestTareas(asignacionProyectos);
-                        console.log("Tareas", tareas);
-                        if (tareas.length > 0) {
-                            let tareasDropdown = tareas.map((tarea) => {
-                                return {
-                                    name: tarea.nombre,
-                                    value: tarea.codigoTarea
-                                }
-                            })
-    
-                            this.setState({
-                                tareas: tareas,
-                                tareaSeleccionada: tareasDropdown[0].value,
-                                tareasDropdown: tareasDropdown,
-                                legajoEmpleado: legajo,
-                                contratoEmpleado: this.props.match.params.contrato
-                            });
-                        }
-                    }
-                });
-    }
-
-    obtenerTareasDeProyecto(codigoProyecto) {
-        return this.requesterProyectos.get(`/proyectos/${codigoProyecto}/tareas`)
+    async obtenerTareasDeEmpleado(legajo) {
+        let tareas = await this.requesterProyectos.get(`/responsables/${legajo}/tareas`)
             .then(response => {
                 if (response.ok){
                     return response.json();
                 } else {
                     this.props.mostrarAlerta(
-                        `Error al consultar tareas del proyecto ${codigoProyecto}`,
+                        `Error al consultar tareas del empleado ${legajo}`,
                         "error"
                     )
                 }
@@ -125,16 +120,17 @@ class TabCargarHoras extends Component {
                     return response;
                 }
             });
+        return tareas;
     }
 
-    obtenerProyecto(codigoProyecto) {
-        return this.requesterProyectos.get(`/proyectos/${codigoProyecto}`)
+    async obtenerProyectos() {
+        let proyectos = this.requesterProyectos.get(`/proyectos`)
             .then(response => {
                 if (response.ok){
                     return response.json();
                 } else {
                     this.props.mostrarAlerta(
-                        `Error al consultar tareas del proyecto ${codigoProyecto}`,
+                        `Error al consultar proyectos`,
                         "error"
                     )
                 }
@@ -143,34 +139,9 @@ class TabCargarHoras extends Component {
                     return response;
                 }
             });
+        return proyectos;
     }
 
-    async requestTareas(asignacionProyectos) {
-        let array = await Promise.all(
-            asignacionProyectos.map(async (asignacion) => {
-                const tareas = await this.obtenerTareasDeProyecto(asignacion.codigo); 
-                const proyecto = await this.obtenerProyecto(asignacion.codigo);
-
-                if (tareas) {
-                    return tareas.map( (tarea) => {                    
-                        return {
-                            codigoTarea: tarea.id,
-                            codigoProyecto: proyecto.id,
-                            nombre: tarea.nombre,
-                            proyecto: proyecto.nombre,
-                            progreso: 10,
-                            estado: tarea.estado
-                        }
-                    })
-                } else {
-                    return [];
-                }
-            })
-        );    
-        
-        return array.flatMap(aux => aux);;
-    }
-    
     seleccionarActividad(event) {
         let mostrarDropdownTareas = event.target.value === "TAREA" ? true : false;
         
@@ -214,29 +185,120 @@ class TabCargarHoras extends Component {
         });
     }
 
-    handleCargaHoras() {
+    handleCargaHorasTarea() {
         let tareaId = this.state.tareaSeleccionada;
-        let proyectoId = this.state.tareas.find(tarea => tarea.codigoTarea === tareaId).codigoProyecto;
+        let proyectoId = this.state.tareas.find(tarea => tarea.id === tareaId).codigoProyecto;
+
+        const uri = `/empleados/${this.state.legajoEmpleado}/horas`;
+        const payload = {
+            "actividad": this.state.actividadSeleccionada,
+            "cantidadHoras": this.state.horaSeleccionada,
+            "fecha": this.state.fechaSeleccionada,
+            "proyectoid": proyectoId,
+            "tareaId": this.state.tareaSeleccionada
+        }
+
+        this.requesterRecursos.post(uri, payload)
+            .then(response => {
+                if (response.ok){
+                    this.props.mostrarAlerta(
+                        `Carga de horas exitosa`,
+                        "success"
+                    );
+                } else {
+                    this.props.mostrarAlerta(
+                        `Error al cargar horas al empleado con legajo ${this.state.legajoEmpleado}`,
+                        "error"
+                    );
+                }
+            });
+    }
+
+
+    handleCargaHorasVacaciones() {
+        let cantidadHoras = this.state.contrato === 'PART_TIME' ? 4 : 9;
+        let fechasSemana = new Date(this.state.fechaSeleccionada).obtenerFechasSemana();
+        console.log("fechas semana", fechasSemana)
+        for (let i=1; i<this.state.semanaSeleccionada; ++i){
+            let fechaSemanaSiguiente = new Date(fechasSemana[fechasSemana.length-1]);
+            fechaSemanaSiguiente.setDate(fechaSemanaSiguiente.getDate() + 1);
+            let fechasSemanaSiguiente = new Date(fechaSemanaSiguiente).obtenerFechasSemana();
+            fechasSemana = fechasSemana.concat(fechasSemanaSiguiente);
+        }
         
-        this.requesterRecursos.post(
-            `/empleados/${this.state.legajoEmpleado}/proyectos/${proyectoId}/tareas/${tareaId}/horas?fecha=${this.state.fechaSeleccionada}&horas=${this.state.horaSeleccionada}`
-        ).then(response => {
-            if (response.ok){
-                console.log("ok");
-            } else {
-                console.log(`Error al cargar horas al empleado con legajo ${this.state.empleado.legajo}`);
-            }
+        const fechas = fechasSemana.map((fecha) => {
+            return new Fecha(fecha);
         });
+        fechasSemana = fechas.map((fecha) => fecha.fechaProcesadaGuion)
+
+        const uri = `/empleados/${this.state.legajoEmpleado}/horas`;
+        fechasSemana.forEach((fecha) => {
+            let payload = {
+                "actividad": this.state.actividadSeleccionada,
+                "cantidadHoras": cantidadHoras,
+                "fecha": fecha,
+                "proyectoid": null,
+                "tareaId": null
+            }
+
+            this.requesterRecursos.post(uri, payload)
+                .then(response => {
+                    if (response.ok){
+                        this.props.mostrarAlerta(
+                            `Carga de horas exitosa`,
+                            "success"
+                        );
+                    } else {
+                        this.props.mostrarAlerta(
+                            `Error al cargar horas al empleado con legajo ${this.state.legajoEmpleado}`,
+                            "error"
+                        );
+                    }
+                });
+        })
+
+    }
+
+    handleCargaHorasOtras() {
+        const uri = `/empleados/${this.state.legajoEmpleado}/horas`;
+        let payload = {
+            "actividad": this.state.actividadSeleccionada,
+            "cantidadHoras": this.state.horaSeleccionada,
+            "fecha": this.state.fechaSeleccionada,
+            "proyectoid": null,
+            "tareaId": null
+        }
+        
+        this.requesterRecursos.post(uri, payload)
+            .then(response => {
+                if (response.ok){
+                    this.props.mostrarAlerta(
+                        `Carga de horas exitosa`,
+                        "success"
+                    );
+                } else {
+                    this.props.mostrarAlerta(
+                        `Error al cargar horas al empleado con legajo ${this.state.legajoEmpleado}`,
+                        "error"
+                    );
+                }
+            });
+    }
+
+    handleCargaHoras() {
+        if (this.state.actividadSeleccionada === "TAREA") {
+            this.handleCargaHorasTarea();
+        } else if (this.state.actividadSeleccionada === "VACACIONES") {
+            this.handleCargaHorasVacaciones();
+        } else {
+            this.handleCargaHorasOtras();
+        }
     }
 
     render() {
         let actividad = this.state.actividadSeleccionada ? this.state.actividadSeleccionada : actividades[0].value;
-        let tarea = 0;
-        if (this.state.tareaSeleccionada) {
-            tarea = this.state.tareaSeleccionada;
-        } else if (this.state.tareasDropdown[0]) {
-            tarea = this.state.tareasDropdown[0].value;
-        }
+        let tarea = this.state.tareaSeleccionada;
+        
         let hora = this.state.horaSeleccionada ? this.state.horaSeleccionada : horasDropdown[0].value;
         let cantidadSemanas = this.state.semanaSeleccionada ? this.state.semanaSeleccionada : semanasDropdown[0].value;
 
@@ -318,6 +380,10 @@ const actividades = [
     {
         name: "Vacaciones",
         value: "VACACIONES"
+    },
+    {
+        name: "Día de estudio",
+        value: "DIA_DE_ESTUDIO"
     }
 ]
 

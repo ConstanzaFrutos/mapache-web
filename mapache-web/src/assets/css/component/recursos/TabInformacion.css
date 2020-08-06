@@ -46,19 +46,19 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    width: 90%;
+    
 }
 
 .fechas-paragraph {
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: space-between;
 }
 
 .dropdown-paragraph {
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: space-between;
 }
 
 .contrato-paragraph {

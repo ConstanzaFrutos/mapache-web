@@ -82,7 +82,7 @@ class TabTareas extends Component {
                 })
             }
             
-            tarea.progreso = 100;
+            tarea.progreso = 0;
             if (tarea.duracionEstimada > 0) {
                 tarea.progreso = (totalHoras * 100) / tarea.duracionEstimada;
             }
@@ -93,8 +93,6 @@ class TabTareas extends Component {
     }
 
     handleCargaHoras(tarea) {
-        console.log("Tarea a la cual cargar horas: ", tarea);
-
         this.props.history.push({
             pathname: `/empleados/${this.props.match.params.legajo}`,
             state: {

@@ -5,18 +5,23 @@ import { Redirect } from "react-router-dom";
 import axios from "axios";
 import "../../../assets/css/controller/ProyectosScreen.css";
 import "../../../assets/css/ModuloProyectos/TablaCrearProyecto.css";
+import {Dropdown} from "../../general/Dropdown";
 const URL = 'https://mapache-proyectos.herokuapp.com/';
 
 class Proyecto extends Component {
     constructor(props) {
         super(props);
         this.state = this.estadoInicial;
+        
         this.crearProyecto = this.crearProyecto.bind(this);
         this.cambioProyecto = this.cambioProyecto.bind(this);
     }
 
-    estadoInicial = {id:'', nombre:'', tipo:"Implementación", descripcion: '', fechaDeInicio: '',
-        fechaDeFinalizacion: '', estado: 'No iniciado', redirectListado: false, redirectFases: false, fases : []};
+    estadoInicial = {
+        id:'', nombre:'', tipo:"Implementación", descripcion: '', fechaDeInicio: '',
+        fechaDeFinalizacion: '', estado: 'No iniciado', redirectListado: false, redirectFases: false, fases : [],
+        recursos: [], liderDeProyecto: -1, cliente: '', producto: '', clientes: []
+    };
 
     crearProyecto = event => {
         event.preventDefault();
@@ -26,14 +31,11 @@ class Proyecto extends Component {
             descripcion: this.state.descripcion,
             fechaDeInicio: this.state.fechaDeInicio,
             fechaDeFinalizacion: this.state.fechaDeFinalizacion,
-            estado: this.state.estado
+            estado: this.state.estado,
+            liderDeProyecto: this.state.liderDeProyecto,
+            cliente: this.state.cliente,
+            producto: this.state.producto
         };
-        if(!proyecto.fechaDeFinalizacion || proyecto.fechaDeFinalizacion < '0000-00-00'){
-            proyecto.fechaDeFinalizacion = '0000-00-00';
-        }
-        if(!proyecto.fechaDeInicio || proyecto.fechaDeInicio < '0000-00-00'){
-            proyecto.fechaDeInicio = '0000-00-00';
-        }
         axios.post(URL+"proyectos", proyecto)
             .then(respuesta => {
                 if(respuesta.data){
@@ -42,16 +44,16 @@ class Proyecto extends Component {
                     this.setState({redirectListado: true});
                 }
             }).catch(function(err){
-                if(err.response){
-                    let mensaje = "Error: " + err.response.data.status;
-                    if(err.response.data.error){
-                        mensaje += '\n' + err.response.data.error;
-                    }
-                    alert(mensaje);
-                } else {
-                    alert("Ocurrio un error desconocido");
+            if(err.response){
+                let mensaje = "Error: " + err.response.data.status;
+                if(err.response.data.error){
+                    mensaje += '\n' + err.response.data.error;
                 }
-            });
+                alert(mensaje);
+            } else {
+                alert("Ocurrio un error desconocido");
+            }
+        });
     }
 
     cambioProyecto = event => {
@@ -63,6 +65,8 @@ class Proyecto extends Component {
     componentDidMount() {
         const proyectoId = +this.props.match.params.id;
         if(!proyectoId){
+            this.obtenerRecursos();
+            this.obtenerClientes();
             return;
         }
         axios.get(URL+"proyectos/"+proyectoId)
@@ -76,16 +80,81 @@ class Proyecto extends Component {
                             fechaDeInicio: respuesta.data.fechaDeInicio,
                             fechaDeFinalizacion: respuesta.data.fechaDeFinalizacion,
                             estado: respuesta.data.estado,
-                            fases: respuesta.data.fases
+                            fases: respuesta.data.fases,
+                            liderDeProyecto: respuesta.data.liderDeProyecto,
+                            cliente: respuesta.data.cliente,
+                            producto: respuesta.data.producto
                         });
+                        if(!this.state.liderDeProyecto) {
+                            this.setState({lideDeProyecto: -1});
+                        }
+                        if(!this.state.cliente){
+                            this.setState({cliente: "Sin cliente"});
+                        }
+                        this.obtenerRecursos();
+                        this.obtenerClientes();
                     }
-                }).catch((error) => {
-                    console.error("Error - "+error);
-            }).catch(function(err){
+                }).catch(function(err){
             if(err.response){
                 let mensaje = "Error: " + err.response.data.status;
                 if(err.response.data.error){
                     mensaje += '\n' + err.response.data.error;
+                }
+                alert(mensaje);
+            } else {
+                alert("Ocurrio un error desconocido");
+            }
+        });
+    }
+
+    obtenerRecursos(){
+        axios.get("https://mapache-recursos.herokuapp.com/empleados/")
+            .then(respuesta => {
+                if(respuesta.data != null){
+                    let recursosDropdown = respuesta.data.map((recurso) => {
+                        return {
+                            name: recurso.apellido + ', ' + recurso.nombre,
+                            value: recurso.legajo
+                        }
+                    });
+                    recursosDropdown.push({name: "Sin responsable", value: -1});
+                    this.setState({
+                        recursos: [...recursosDropdown, "Sin responsable"]
+                    });
+                }
+            }).catch(function(err){
+            if(err.response){
+                let mensaje = "Error: " + err.response.data.status;
+                if(err.response.data.error){
+                    mensaje += ': ' + err.response.data.error;
+                }
+                alert(mensaje);
+            } else {
+                alert("Ocurrio un error desconocido");
+            }
+        });
+    }
+
+    obtenerClientes() {
+        axios.get("https://psa-api-support.herokuapp.com/clientes")
+            .then(respuesta => {
+                if(respuesta.data != null){
+                    let clientesDropdown = respuesta.data.map((cliente) => {
+                        return {
+                            name: cliente.razon_social,
+                            value: cliente.razon_social
+                        }
+                    });
+                    clientesDropdown.push({name: "Sin cliente", value: "Sin cliente"});
+                    this.setState({
+                        clientes: clientesDropdown
+                    });
+                }
+            }).catch(function(err){
+            if(err.response){
+                let mensaje = "Error: " + err.response.data.status;
+                if(err.response.data.error){
+                    mensaje += ': ' + err.response.data.error;
                 }
                 alert(mensaje);
             } else {
@@ -103,7 +172,10 @@ class Proyecto extends Component {
             descripcion: this.state.descripcion,
             fechaDeInicio: this.state.fechaDeInicio,
             fechaDeFinalizacion: this.state.fechaDeFinalizacion,
-            estado: this.state.estado
+            estado: this.state.estado,
+            liderDeProyecto: this.state.liderDeProyecto,
+            cliente: this.state.cliente,
+            producto: this.state.producto
         };
         axios.patch(URL+"proyectos/"+proyecto.id, proyecto)
             .then(respuesta=> {
@@ -128,6 +200,15 @@ class Proyecto extends Component {
         });
     };
 
+    seleccionarLider = event => {
+        event.preventDefault();
+        this.setState({liderDeProyecto: event.target.value});
+    }
+
+    seleccionarCliente = event => {
+        event.preventDefault();
+        this.setState({cliente: event.target.value});
+    }
 
     eliminarProyecto = event => {
         event.preventDefault();
@@ -196,7 +277,7 @@ class Proyecto extends Component {
         } else if(this.state.redirectFases){
             return <Redirect to={"/proyectos/" + this.state.id + "/fases"}/>
         }
-        const {nombre, tipo, descripcion, fechaDeInicio, fechaDeFinalizacion, estado} = this.state;
+        const {nombre, tipo, descripcion, fechaDeInicio, fechaDeFinalizacion, estado, recursos, liderDeProyecto, cliente, producto} = this.state;
         return(
             <div className="proyectos-screen-div" style={{width:"100%", height:"100%"}}>
                 <Card className="tablaCrearProyectos">
@@ -216,14 +297,33 @@ class Proyecto extends Component {
                                 <Form.Group as={Col}>
                                     <Form.Label>Tipo de proyecto</Form.Label>
                                     <Form.Control as="select" custom
-                                                  value={tipo}
+                                                  required value={tipo}
                                                   onChange={this.cambioProyecto}
-                                                  required autoComplete="off"
+                                                  autoComplete="off"
                                                   type="text" name="tipo"
                                     >
                                         <option value="Implementación">Implementación</option>
                                         <option value="Desarrollo">Desarrollo</option>
                                     </Form.Control>
+                                </Form.Group>
+                                <Form.Group as={Col}>
+                                    <Form.Label>Producto</Form.Label>
+                                    <Form.Control
+                                        value={producto}
+                                        onChange={this.cambioProyecto}
+                                        autoComplete="off"
+                                        type="text" name="producto"
+                                    >
+                                    </Form.Control>
+                                    {tipo === "Implementación" ?
+                                        <Dropdown
+                                            renderDropdown={ true }
+                                            label="Cliente"
+                                            value={ cliente }
+                                            values={ this.state.clientes }
+                                            handleChange={ this.seleccionarCliente }
+                                        >
+                                        </Dropdown> : null}
                                 </Form.Group>
                             </Form.Row>
                             <Form.Group>
@@ -272,6 +372,14 @@ class Proyecto extends Component {
                                     </Form.Control>
                                 </Form.Group>
                             </Form.Row>
+                            <Dropdown
+                                renderDropdown={ true }
+                                label="Lider de proyecto"
+                                value={ liderDeProyecto }
+                                values={ recursos }
+                                handleChange={ this.seleccionarLider }
+                            >
+                            </Dropdown>
                         </Card.Body>
                         <Card.Footer>
                             <ButtonGroup>

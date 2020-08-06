@@ -1,0 +1,13 @@
+.tablaIteraciones {
+    display: flex;
+    flex-direction: row;
+    align-self: center;
+    justify-content: center;
+}
+
+.tablaCreariteracion {
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    justify-content: center;
+}

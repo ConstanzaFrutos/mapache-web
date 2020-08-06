@@ -9,6 +9,8 @@ import Save from '@material-ui/icons/Save'
 import { Dropdown } from "../general/Dropdown";
 import { DatePicker } from "../general/DatePicker";
 
+import { Fecha } from "./TabHorasCargadas";
+
 import Requester from "../../communication/Requester";
 
 const mapacheRecursosBaseUrl = "https://mapache-recursos.herokuapp.com";
@@ -48,8 +50,12 @@ class TabCargarHoras extends Component {
         this.handleDateInput = this.handleDateInput.bind(this);
 
         this.handleCargaHoras = this.handleCargaHoras.bind(this);
+        this.handleCargaHorasTarea = this.handleCargaHorasTarea.bind(this);
+        this.handleCargaHorasVacaciones = this.handleCargaHorasVacaciones.bind(this);
+        this.handleCargaHorasOtras = this.handleCargaHorasOtras.bind(this);
 
         this.obtenerTareasDeEmpleado = this.obtenerTareasDeEmpleado.bind(this);
+        this.obtenerProyectos = this.obtenerProyectos.bind(this);
     }
 
     async componentDidMount() {
@@ -57,7 +63,14 @@ class TabCargarHoras extends Component {
         let contrato = this.props.match.params.contrato;
 
         let tareas = await this.obtenerTareasDeEmpleado(legajo);
+        let proyectos = await this.obtenerProyectos();
         
+        tareas.map((tarea) => {
+            let proyecto = proyectos.find(proyecto => proyecto.nombre === tarea.nombreProyecto);
+            tarea.codigoProyecto = proyecto.id;
+            return tarea;
+        })
+
         let tareasDropdown = tareas.map((tarea) => {
             return {
                 name: tarea.nombreTarea,
@@ -102,7 +115,26 @@ class TabCargarHoras extends Component {
             });
         return tareas;
     }
-    
+
+    async obtenerProyectos() {
+        let proyectos = this.requesterProyectos.get(`/proyectos`)
+            .then(response => {
+                if (response.ok){
+                    return response.json();
+                } else {
+                    this.props.mostrarAlerta(
+                        `Error al consultar proyectos`,
+                        "error"
+                    )
+                }
+            }).then(response => {
+                if (response) {
+                    return response;
+                }
+            });
+        return proyectos;
+    }
+
     seleccionarActividad(event) {
         let mostrarDropdownTareas = event.target.value === "TAREA" ? true : false;
         
@@ -146,19 +178,16 @@ class TabCargarHoras extends Component {
         });
     }
 
-    handleCargaHoras() {
+    handleCargaHorasTarea() {
         let tareaId = this.state.tareaSeleccionada;
-        let proyectoId = this.state.tareas.find(tarea => tarea.codigoTarea === tareaId).codigoProyecto;
-        
+        let proyectoId = this.state.tareas.find(tarea => tarea.id === tareaId).codigoProyecto;
+
         const uri = `/empleados/${this.state.legajoEmpleado}/horas`;
         const payload = {
             "actividad": this.state.actividadSeleccionada,
             "cantidadHoras": this.state.horaSeleccionada,
-            "contrato": "PART_TIME",
             "fecha": this.state.fechaSeleccionada,
-            "horas": {},
-            "horasTotales": 0,
-            "proyectoid": "string",
+            "proyectoid": proyectoId,
             "tareaId": this.state.tareaSeleccionada
         }
 
@@ -181,16 +210,63 @@ class TabCargarHoras extends Component {
             });
     }
 
+
+    handleCargaHorasVacaciones() {
+        let cantidadHoras = this.state.contrato === 'PART_TIME' ? 4 : 9;
+        let fechasSemana = new Date(this.state.fechaSeleccionada).obtenerFechasSemana();
+        const fechas = fechasSemana.map((fecha) => {
+            return new Fecha(fecha);
+        });
+        fechasSemana = fechas.map((fecha) => fecha.fechaProcesadaGuion)
+
+        const uri = `/empleados/${this.state.legajoEmpleado}/horas`;
+        fechasSemana.forEach((fecha) => {
+            let payload = {
+                "actividad": this.state.actividadSeleccionada,
+                "cantidadHoras": cantidadHoras,
+                "fecha": fecha,
+                "proyectoid": null,
+                "tareaId": null
+            }
+
+            console.log("Uri ", uri);
+            console.log("Payload ", payload);
+            this.requesterRecursos.post(uri, payload)
+                .then(response => {
+                    if (response.ok){
+                        this.props.mostrarAlerta(
+                            `Carga de horas exitosa`,
+                            "success"
+                        );
+                    } else {
+                        this.props.mostrarAlerta(
+                            `Error al cargar horas al empleado con legajo ${this.state.legajoEmpleado}`,
+                            "error"
+                        );
+                    }
+                });
+        })
+
+    }
+
+    handleCargaHorasOtras() {
+
+    }
+
+    handleCargaHoras() {
+        if (this.state.actividadSeleccionada === "TAREA") {
+            this.handleCargaHorasTarea();
+        } else if (this.state.actividadSeleccionada === "VACACIONES") {
+            this.handleCargaHorasVacaciones();
+        } else {
+            this.handleCargaHorasOtras();
+        }
+    }
+
     render() {
         let actividad = this.state.actividadSeleccionada ? this.state.actividadSeleccionada : actividades[0].value;
         let tarea = this.state.tareaSeleccionada;
-        console.log("seleccionada ", this.state.tareaSeleccionada);
-        console.log("Tareas drop ", this.state.tareasDropdown)
-        /*if (this.state.tareaSeleccionada) {
-            tarea = this.state.tareaSeleccionada;
-        } else if (this.state.tareasDropdown[0]) {
-            tarea = this.state.tareasDropdown[0].value;
-        }*/
+        
         let hora = this.state.horaSeleccionada ? this.state.horaSeleccionada : horasDropdown[0].value;
         let cantidadSemanas = this.state.semanaSeleccionada ? this.state.semanaSeleccionada : semanasDropdown[0].value;
 

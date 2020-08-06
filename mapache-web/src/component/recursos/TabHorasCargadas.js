@@ -14,7 +14,10 @@ import BeachAccess from '@material-ui/icons/BeachAccess';
 import SentimentDissatisfied from '@material-ui/icons/SentimentDissatisfied';
 import School from '@material-ui/icons/School';
 
+import Requester from "../../communication/Requester";
 import RequesterHoras from "../../communication/RequesterHoras";
+
+const mapacheProyectosBaseUrl = 'https://mapache-proyectos.herokuapp.com/';
 
 class TabHorasCargadas extends Component {
 
@@ -27,10 +30,13 @@ class TabHorasCargadas extends Component {
             horasCargadasSemana: []
         }
 
+        this.requesterProyectos = new Requester(mapacheProyectosBaseUrl);
         this.requesterHoras = new RequesterHoras();
 
         this.cambiarASemanaAnterior = this.cambiarASemanaAnterior.bind(this);
         this.cambiarASemanaPosterior = this.cambiarASemanaPosterior.bind(this);
+
+        this.obtenerNombreTarea = this.obtenerNombreTarea.bind(this);
     }
 
     async componentDidMount() {
@@ -40,9 +46,36 @@ class TabHorasCargadas extends Component {
             this.props.mostrarAlerta
         );
         console.log("Horas cargadas ", horasCargadas);
+        let aux = await Promise.all(horasCargadas.map(async (hora) => {
+            let nombreTarea = '';
+            if (hora.actividad === "TAREA") {
+                let tarea = await this.obtenerNombreTarea(hora.proyectoId, hora.tareaId);
+                nombreTarea = tarea.nombre
+            }
+            hora.nombreTarea = nombreTarea;
+            return hora;
+        }));
+
         this.setState({
-            horasCargadasSemana: horasCargadas
+            horasCargadasSemana: aux
         })
+    }
+
+    async obtenerNombreTarea(codigoProyecto, codigoTarea) {
+        let tarea = await this.requesterProyectos.get(`/proyectos/${1}/tareas/${11}`)
+                        .then(response => {
+                            if (response.ok){
+                                return response.json();
+                            } else {
+                                alert("error al consultar tarea");
+                            }
+                        }).then(response => {
+                            if (response) {
+                                return response;
+                            }
+                        });
+        console.log("Tarea", tarea);
+        return tarea;
     }
 
     cambiarASemanaAnterior() {
@@ -53,7 +86,6 @@ class TabHorasCargadas extends Component {
             let fechaPivoteAnterior = this.state.fechaPivote;
             const nuevoDia = this.state.fechaPivote.getDate() - 7;
             fechaPivoteAnterior.setDate(nuevoDia);
-            console.log("Fecha Pivote anteiror", fechaPivoteAnterior);
 
             this.setState({
                 fechaPivote: fechaPivoteAnterior
@@ -62,13 +94,10 @@ class TabHorasCargadas extends Component {
     }
 
     cambiarASemanaPosterior() {
-        console.log("Diferencia entre fechas avanzar ", this.state.fechaPivote < this.state.fechaActual);
-        console.log("Fecha pivote anterior ", this.state.fechaPivote);
         if (this.state.fechaPivote < this.state.fechaActual){
             let fechaPivotePosterior = this.state.fechaPivote;
             const nuevoDia = this.state.fechaPivote.getDate() + 7;
             fechaPivotePosterior.setDate(nuevoDia);
-            console.log("Fecha Pivote posterior", fechaPivotePosterior);
 
             this.setState({
                 fechaPivote: fechaPivotePosterior
@@ -189,12 +218,14 @@ class Dia extends Component {
                             let actividad = actividades.find(
                                 actividad => actividad.nombre === horas.actividad
                             );
+
                             let color = actividad.color;
                             let icono = actividad.icono;
                             return <HoraCargada
                                         color={ color }
                                         cantidadHoras={ horas.cantidadHoras }
                                         icono={ icono }
+                                        nombreTarea={ horas.nombreTarea }
                                     ></HoraCargada>
                         })}
                     </div>
@@ -235,6 +266,8 @@ class HoraCargada extends Component {
     
     render() {
         const alturaPorHora = 2;
+        let nombreTarea = this.props.nombreTarea;
+
         return (
             <div 
                 className="hora-cargada-div"
@@ -243,10 +276,16 @@ class HoraCargada extends Component {
                     "height": `${this.props.cantidadHoras * alturaPorHora}em`
                 }}
             >
+            
                 { this.props.icono }
-                <Typography variant="subtitle1" align="center">
+                <Typography variant="subtitle1">
                     { this.props.cantidadHoras } horas
                 </Typography>
+            
+                <Typography variant="subtitle1">
+                    { nombreTarea } 
+                </Typography>
+            
             </div>
         )
     }

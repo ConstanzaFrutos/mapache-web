@@ -64,19 +64,26 @@ class TabCargarHoras extends Component {
 
         let tareas = await this.obtenerTareasDeEmpleado(legajo);
         let proyectos = await this.obtenerProyectos();
-        
-        tareas.map((tarea) => {
-            let proyecto = proyectos.find(proyecto => proyecto.nombre === tarea.nombreProyecto);
-            tarea.codigoProyecto = proyecto.id;
-            return tarea;
-        })
 
-        let tareasDropdown = tareas.map((tarea) => {
-            return {
-                name: tarea.nombreTarea,
-                value: tarea.id
-            }
-        })
+        let tareasDropdown = [{
+            name: "No tiene tareas asignadas",
+            value: -1
+        }]
+        
+        if (tareas.length > 0) {
+            tareas.map((tarea) => {
+                let proyecto = proyectos.find(proyecto => proyecto.nombre === tarea.nombreProyecto);
+                tarea.codigoProyecto = proyecto.id;
+                return tarea;
+            })
+    
+            tareasDropdown = tareas.map((tarea) => {
+                return {
+                    name: tarea.nombreTarea,
+                    value: tarea.id
+                }
+            })
+        }
 
         if (this.props.tarea){
             this.setState({

@@ -70,11 +70,23 @@ class TabTareas extends Component {
 
     async obtenerProgresoDelEmpleado(legajo, tareas) {
         let progreso = await Promise.all(tareas.map(async (tarea) => {
-            console.log("Tarea ", tarea)
+            
             let horas = await this.requesterHoras.obtenerHorasCargadasEnTarea(
                 legajo, 1, tarea.id, this.props.mostrarAlerta
             );
-            tarea.progreso = horas.length === 0 ? 0 : horas;
+            
+            let totalHoras = 0;
+            if (horas.length > 0) {
+                totalHoras = horas.reduce(function(valorAnterior, valorActual, indice, vector){
+                    return valorAnterior.horas + valorActual.horas;
+                })
+            }
+            
+            tarea.progreso = 100;
+            if (tarea.duracionEstimada > 0) {
+                tarea.progreso = (totalHoras * 100) / tarea.duracionEstimada;
+            }
+            
             return tarea;
         }));
         return progreso;

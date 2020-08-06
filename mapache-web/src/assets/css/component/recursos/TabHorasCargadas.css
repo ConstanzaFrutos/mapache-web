@@ -16,15 +16,21 @@
 
 .dia-paper {
     padding: 1em;
-    height: 60vh;
+    min-width: 12em;
+    min-height: 60vh;
+    height: auto;
 }
 
 .back-arrow {
-    margin: 3em;
+    margin-top: 3em;
+    margin-left: 2em;
+    margin-right: 1em;
 }
 
 .forward-arrow {
-    margin: 3em;
+    margin-top: 3em;
+    margin-left: 1em;
+    margin-right: 2em;
 }
 
 .semana-div {
@@ -41,4 +47,9 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+.icono-y-cantidad-horas {
+    display: flex;
+    flex-direction: row;
 }

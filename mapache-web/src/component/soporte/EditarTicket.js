@@ -92,7 +92,7 @@ class VisualizarTicket extends Component {
                 "id_proyecto": "",
                 "prioridad": "",
                 "descripcion": "",
-                "id_ticket": ""
+                "idsTickets": ""
             },
             "responsables": [{ "legajo": "-1", "nombre": "Ninguno", "apellido": "" }],
             "modal": false,
@@ -283,7 +283,7 @@ class VisualizarTicket extends Component {
 
         // Le pego a proyectos para crear una tarea asociada a este ticket
         let tarea = this.state.tarea
-        tarea.id_ticket = this.state.ticket.id
+        tarea.idsTickets = this.state.ticket.id
         console.log(tarea)
         this.requesterProyectos.post('/proyectos/' + this.state.tarea.id_proyecto + '/tareas', tarea)
             .then(response => {

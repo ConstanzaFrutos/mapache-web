@@ -27,6 +27,10 @@ const mapacheProyectosBaseUrl = "https://mapache-proyectos.herokuapp.com"
 const mapacheSoporteBaseUrl = "https://psa-api-support.herokuapp.com";
 //const mapacheSoporteBaseUrl = "http://localhost:5000"
 
+function sleep (time) {
+    return new Promise((resolve) => setTimeout(resolve, time));
+  }
+
 const tipos = [
     {
         value: "error",
@@ -306,10 +310,14 @@ class VisualizarTicket extends Component {
                                 console.log("Error al crear el ticket");
                             }
                         })
+                    
+                    this.handleCloseTareas()
 
-                    this.props.history.push({
-                        pathname: `/soporte`
-                    });
+                    this.mostrarAlerta("Tarea generada con éxito", "success", 7000)
+                    
+                    sleep(2000)
+
+                    window.location.reload()
                 }
             });
     }

@@ -279,7 +279,7 @@ class HoraCargada extends Component {
 
         let altura = (this.props.cantidadHoras > 1) ? this.props.cantidadHoras * alturaPorHora : 2;
         let texto = horasDropdown.find((hora) => hora.value === this.props.cantidadHoras).name;
-        console.log("Horas dropdown ", horasDropdown)
+        
         return (
             <div 
                 className="hora-cargada-div"

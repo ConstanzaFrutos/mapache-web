@@ -27,6 +27,10 @@ const mapacheProyectosBaseUrl = "https://mapache-proyectos.herokuapp.com"
 const mapacheSoporteBaseUrl = "https://psa-api-support.herokuapp.com";
 //const mapacheSoporteBaseUrl = "http://localhost:5000"
 
+function sleep (time) {
+    return new Promise((resolve) => setTimeout(resolve, time));
+  }
+
 const tipos = [
     {
         value: "error",
@@ -53,6 +57,22 @@ const severidades = [
     },
     {
         value: "baja",
+        label: "Baja"
+    }
+];
+
+
+const prioridades = [
+    {
+        value: "Alta",
+        label: "Alta"
+    },
+    {
+        value: "Media",
+        label: "Media"
+    },
+    {
+        value: "Baja",
         label: "Baja"
     }
 ];
@@ -92,7 +112,7 @@ class VisualizarTicket extends Component {
                 "id_proyecto": "",
                 "prioridad": "",
                 "descripcion": "",
-                "id_ticket": ""
+                "idsTickets": ""
             },
             "responsables": [{ "legajo": "-1", "nombre": "Ninguno", "apellido": "" }],
             "modal": false,
@@ -283,7 +303,7 @@ class VisualizarTicket extends Component {
 
         // Le pego a proyectos para crear una tarea asociada a este ticket
         let tarea = this.state.tarea
-        tarea.id_ticket = this.state.ticket.id
+        tarea.idsTickets = this.state.ticket.id
         console.log(tarea)
         this.requesterProyectos.post('/proyectos/' + this.state.tarea.id_proyecto + '/tareas', tarea)
             .then(response => {
@@ -306,10 +326,14 @@ class VisualizarTicket extends Component {
                                 console.log("Error al crear el ticket");
                             }
                         })
+                    
+                    this.handleCloseTareas()
 
-                    this.props.history.push({
-                        pathname: `/soporte`
-                    });
+                    this.mostrarAlerta("Tarea generada con éxito", "success", 7000)
+                    
+                    sleep(10000)
+
+                    window.location.reload()
                 }
             });
     }
@@ -515,8 +539,14 @@ class VisualizarTicket extends Component {
                                 <Grid item lg={12} xl={12} sm={12} md={12} xs={12}>
                                     <TextField id="nombre" fullWidth value={this.state.tarea.nombre} variant="outlined" name="nombre" label="Nombre" onChange={this.handleChangeNombreTarea} />
                                 </Grid>
-                                <Grid item lg={6} xl={6} sm={6} md={6} xs={6}>
-                                    <TextField id="prioridad" fullWidth value={this.state.tarea.prioridad} variant="outlined" name="prioridad" label="Prioridad" onChange={this.handleChangePrioridad} />
+                                <Grid item sm={6} md={6} xl={6} lg={4} xs={6}>
+                                    <TextField id="prioridad" fullWidth name="prioridad" label="Prioridad" variant="outlined" select value={this.state.tarea.prioridad} onChange={this.handleChangePrioridad}>
+                                        {prioridades.map((option) => (
+                                            <MenuItem key={option.value} value={option.value}>
+                                                {option.label}
+                                            </MenuItem>
+                                        ))}
+                                    </TextField>
                                 </Grid>
                                 <Grid item sm={6} md={6} xl={6} lg={6} xs={6}>
                                     <TextField id="proyecto" fullWidth name="proyecto" variant="outlined" select label="Proyecto" value={this.state.tarea.id_proyecto} onChange={this.handleChangeProyecto}>

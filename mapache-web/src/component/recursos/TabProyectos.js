@@ -120,6 +120,8 @@ class TabProyectos extends Component {
                         nombre: proyecto.nombre,
                         titulo: asignacion.rolEmpleado,
                         progreso: horas.horasTrabajadas,
+                        fechaInicio: asignacion.fechaInicio,
+                        fechaFin: asignacion.fechaFin
                     }
                     return aux;
                 } else {

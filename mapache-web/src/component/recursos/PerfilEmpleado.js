@@ -91,8 +91,7 @@ class PerfilEmpleado extends Component {
 
         let tab = null;
         let modo = this.props.location.state.modo ? this.props.location.state.modo : "info";
-        console.log("Modo ", modo);
-        console.log("Tab ", this.props.location.state.tab);
+        
         if (this.props.location.state.tab === "informacion") {
             if (modo === "add") {
                 navBar = null;

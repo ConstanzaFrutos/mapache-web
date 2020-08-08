@@ -150,10 +150,11 @@ class TabEstadisticas extends Component {
             label = `Ocupación del empleado en la semana ${ fecha }`;
         } else if (this.state.frecuencia === 2) {
             chart = <ChartMensual
-                        mesSeleccionado={ fechaFormatoDate.getMonth() + 1 }
+                        mesSeleccionado={ nombreMeses[fechaFormatoDate.getMonth()] }
                         obtenerHorasMes={ this.obtenerHorasMes }
+                        horasDia={ this.state.horasDia }
                     ></ChartMensual>
-            label = `Ocupación del empleado en el mes ${ fechaFormatoDate.getMonth() + 1 }`;
+            label = `Ocupación del empleado en el mes ${ nombreMeses[fechaFormatoDate.getMonth()] }`;
         } else if (this.state.frecuencia === 3) {
             chart = <ChartAnual
                         fechaSeleccionada={ this.state.fechaSeleccionada }
@@ -232,6 +233,11 @@ const frecuencias = [
         value: 3
     }
 ]
+
+const nombreMeses = [
+    "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+    "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+];
 
 function ChartDiario(props) {
     function procesarDataDiaria(data, totalHorasDia) {

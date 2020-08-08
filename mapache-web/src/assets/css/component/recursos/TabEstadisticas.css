@@ -1,0 +1,40 @@
+.tab-estadisticas-div {
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    justify-content: center;
+    margin-top: 1em;
+    height: 100%;
+    width: 90%;
+}
+
+.header-div {
+    display: flex;
+    flex-direction: row;
+    width: auto;
+    display: flex;
+    justify-content: space-between;
+    margin: 1em;
+    align-items: baseline;
+}
+
+.chart-div {
+    height: 23em;
+    justify-content: center;
+}
+
+.chart-diario {
+    height: 100%;
+}
+
+.chart-semanal {
+    height: 100%;
+}
+
+.chart-mensual {
+    height: 100%;
+}
+
+.chart-anual {
+    height: 100%;
+}

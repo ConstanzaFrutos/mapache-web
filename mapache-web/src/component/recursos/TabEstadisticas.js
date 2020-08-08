@@ -28,7 +28,9 @@ class TabEstadisticas extends Component {
 
         this.state = {
             legajo: '',
+            contrato: '',
             data: [],
+            horasDia: 0,
             frecuencia: frecuencias[0].value,
             fechaSeleccionada: this.fechaHoy.fechaProcesadaGuion
         }
@@ -46,6 +48,8 @@ class TabEstadisticas extends Component {
 
     async componentDidMount() {
         let legajo = this.props.match.params.legajo;
+        let contrato = this.props.contrato;
+        const horasDia = this.props.contrato === "FULL_TIME" ? 9 : 4;
         let horas = [];
         
         if (this.state.frecuencia === 0) {
@@ -60,7 +64,9 @@ class TabEstadisticas extends Component {
         console.log("Horas cargadas ", horas);
         this.setState({
             legajo: legajo,
-            data: horas
+            contrato: contrato,
+            data: horas,
+            horasDia: horasDia
         })
     }
 
@@ -132,6 +138,7 @@ class TabEstadisticas extends Component {
             chart = <ChartDiario
                         fechaSeleccionada={ fecha }
                         obtenerHorasDia={ this.obtenerHorasDia }
+                        horasDia={ this.state.horasDia }
                     ></ChartDiario>
             label = `Ocupación del empleado en el día ${ fecha }`;
         } else if (this.state.frecuencia === 1) {
@@ -165,8 +172,8 @@ class TabEstadisticas extends Component {
                      </Alerta>
         }
 
-        const contrato = this.props.contrato === "FULL_TIME" ? "Full-Time" : "Part-Time";
-        const horasContrato = this.props.contrato === "FULL_TIME" ? "40" : "20";
+        const contrato = this.state.contrato === "FULL_TIME" ? "Full-Time" : "Part-Time";
+        const horasContrato = this.state.contrato === "FULL_TIME" ? "40" : "20";
 
         return (
             <div className="tab-estadisticas-div">
@@ -226,21 +233,18 @@ const frecuencias = [
 ]
 
 function ChartDiario(props) {
-    function procesarDataDiaria(data) {
+    function procesarDataDiaria(data, totalHorasDia) {
         let horasOcupadas = 0;
         
-        const totalHorasDia = 9;
         data.forEach((data) => {
             horasOcupadas += data.cantidadHoras;
         });
 
         let horasNoOcupadas = totalHorasDia - horasOcupadas;
-        let horasDisponibles = 0;
 
         return [
             { "actividad": "Ocupado", "size": horasOcupadas },
-            { "actividad": "No ocupado", "size": horasNoOcupadas },
-            { "actividad": "Disponible", "size": horasDisponibles }
+            { "actividad": "No ocupado", "size": horasNoOcupadas }
         ];
     }
 
@@ -250,7 +254,7 @@ function ChartDiario(props) {
         let data = await props.obtenerHorasDia();
         console.log("data", data);
         // Add data
-        chart.data = procesarDataDiaria(data);
+        chart.data = procesarDataDiaria(data, props.horasDia);
         
         // Add label
         chart.innerRadius = 100;

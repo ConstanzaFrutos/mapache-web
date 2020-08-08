@@ -165,12 +165,15 @@ class TabEstadisticas extends Component {
                      </Alerta>
         }
 
+        const contrato = this.props.contrato === "FULL_TIME" ? "Full-Time" : "Part-Time";
+        const horasContrato = this.props.contrato === "FULL_TIME" ? "40" : "20";
+
         return (
             <div className="tab-estadisticas-div">
                 <Paper square> 
                     <div className="header-div">
                         <Typography variant="h6">
-                            Disponibilidad: Full-Time (40 hs semanales)
+                            Disponibilidad: { contrato } ({ horasContrato } hs semanales)
                         </Typography>                        
                         <DatePicker 
                             label="Fecha"

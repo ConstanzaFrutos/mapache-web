@@ -145,11 +145,12 @@ class TabEstadisticas extends Component {
             chart = <ChartSemanal
                         fechaSeleccionada={ this.state.fechaSeleccionada }
                         obtenerHorasSemana={ this.obtenerHorasSemana }
+                        horasDia={ this.state.horasDia }
                     ></ChartSemanal>
-            label = `Ocupación del empleado en la semana ${ fecha } - ${ fecha }`;
+            label = `Ocupación del empleado en la semana ${ fecha }`;
         } else if (this.state.frecuencia === 2) {
             chart = <ChartMensual
-                        fechaSeleccionada={ this.state.fechaSeleccionada }
+                        mesSeleccionado={ fechaFormatoDate.getMonth() + 1 }
                         obtenerHorasMes={ this.obtenerHorasMes }
                     ></ChartMensual>
             label = `Ocupación del empleado en el mes ${ fechaFormatoDate.getMonth() + 1 }`;
@@ -282,15 +283,14 @@ function ChartDiario(props) {
 }
 
 function ChartSemanal(props) {
-    function procesarDataSemanal(data) {
-        console.log("Horas recibidas semana ", data)
+    function procesarDataSemanal(data, totalHorasDia) {
 
         let horasVacaciones = 0;
         let horasEnfermedad = 0;
         let horasDiaDeEstudio = 0;
         let horasTarea = 0;
-        let horasNoOcupadas = 40;
-        let horasDisponibles = 0;
+        let horasNoOcupadas = totalHorasDia * 5;
+        
         data.forEach((data) => {
             if (data.actividad === "VACACIONES"){
                 horasVacaciones += data.cantidadHoras;
@@ -310,8 +310,7 @@ function ChartSemanal(props) {
             { "actividad": "Enfermedad", "size": horasEnfermedad },
             { "actividad": "Día de estudio", "size": horasDiaDeEstudio },
             { "actividad": "Tarea", "size": horasTarea },
-            { "actividad": "No ocupado", "size": horasNoOcupadas },
-            { "actividad": "Disponible", "size": horasDisponibles }
+            { "actividad": "No ocupado", "size": horasNoOcupadas }
         ];
     }
 
@@ -320,7 +319,7 @@ function ChartSemanal(props) {
 
         let data = await props.obtenerHorasSemana();
         // Add data
-        chart.data = procesarDataSemanal(data);
+        chart.data = procesarDataSemanal(data, props.horasDia);
         
         // Add label
         chart.innerRadius = 90;
@@ -354,67 +353,60 @@ function ChartSemanal(props) {
 
 function ChartMensual(props) {
 
-    function procesarDataMensual(data) {
-        console.log("data mes", data);
-
-
-        /*const d = [
-            {
-                category: "One",
-                Vacaciones: 0,
-                Enfermedad: 0,
-                DíaDeEstudio: 9,
-                Tarea: 29,
-                NoOcupado: 2
+    function procesarDataMensual(data, totalHorasDia) {
+        let horasVacaciones = 0;
+        let horasEnfermedad = 0;
+        let horasDiaDeEstudio = 0;
+        let horasTarea = 0;
+        let horasNoOcupadas = totalHorasDia * 21;
+        
+        data.forEach((data) => {
+            if (data.actividad === "VACACIONES"){
+                horasVacaciones += data.cantidadHoras;
+            } else if (data.actividad === "ENFERMEDAD"){
+                horasEnfermedad += data.cantidadHoras;
+            } else if (data.actividad === "DIA_DE_ESTUDIO"){
+                horasDiaDeEstudio += data.cantidadHoras;
+            } else if (data.actividad === "TAREA"){
+                horasTarea += data.cantidadHoras;
+            } else {
+                horasNoOcupadas -= data.cantidadHoras;
             }
-        ];*/
+        });
+
+        return [
+            { "actividad": "Vacaciones", "size": horasVacaciones },
+            { "actividad": "Enfermedad", "size": horasEnfermedad },
+            { "actividad": "Día de estudio", "size": horasDiaDeEstudio },
+            { "actividad": "Tarea", "size": horasTarea },
+            { "actividad": "No ocupado", "size": horasNoOcupadas }
+        ];
     }
 
     const obtenerChart = async () => {
-        let chart = am4core.create("chart-mensual", am4charts.XYChart);
+        let chart = am4core.create("chart-mensual", am4charts.PieChart);
 
         let data = await props.obtenerHorasMes();
+        
         // Add data
-        chart.data = procesarDataMensual(data);
+        chart.data = procesarDataMensual(data, props.horasDia);
         
-        chart.legend = new am4charts.Legend();
-        chart.legend.position = "right";
+        // Add label
+        chart.innerRadius = 90;
+        let label = chart.seriesContainer.createChild(am4core.Label);
         
-        // Create axes
-        var categoryAxis = chart.yAxes.push(new am4charts.CategoryAxis());
-        categoryAxis.dataFields.category = "category";
-        categoryAxis.renderer.grid.template.opacity = 0;
-        
-        var valueAxis = chart.xAxes.push(new am4charts.ValueAxis());
-        valueAxis.min = 0;
-        valueAxis.renderer.grid.template.opacity = 0;
-        valueAxis.renderer.ticks.template.strokeOpacity = 0.5;
-        valueAxis.renderer.ticks.template.stroke = am4core.color("#495C43");
-        valueAxis.renderer.ticks.template.length = 10;
-        valueAxis.renderer.line.strokeOpacity = 0.5;
-        valueAxis.renderer.baseGrid.disabled = true;
-        valueAxis.renderer.minGridDistance = 40;
-        
-        // Create series
-        function createSeries(field, name) {
-            var series = chart.series.push(new am4charts.ColumnSeries());
-            series.dataFields.valueX = field;
-            series.dataFields.categoryY = "category";
-            series.stacked = true;
-            series.name = name;
-            
-            var labelBullet = series.bullets.push(new am4charts.LabelBullet());
-            labelBullet.locationX = 0.5;
-            labelBullet.label.text = "{valueX}";
-            labelBullet.label.fill = am4core.color("#fff");
-        }
-        
-        createSeries("Vacaciones", "Vacaciones");
-        createSeries("Enfermedad", "Enfermedad");
-        createSeries("DiaDeEstudio", "Día de estudio");
-        createSeries("Tarea", "Tarea");
-        createSeries("NoOcupado", "No ocupado");
+        let mesSeleccionado = props.mesSeleccionado;
 
+        label.text = mesSeleccionado;
+        label.horizontalCenter = "middle";
+        label.verticalCenter = "middle";
+        label.fontSize = 30;
+        
+        // Add and configure Series
+        let pieSeries = chart.series.push(new am4charts.PieSeries());
+        pieSeries.dataFields.value = "size";
+        pieSeries.dataFields.category = "actividad";
+        
         return chart;
     }
 

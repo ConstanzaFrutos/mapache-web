@@ -137,6 +137,7 @@ class PerfilEmpleado extends Component {
         } else if (this.props.location.state.tab === "estadisticas") {
             tab = <TabEstadisticas 
                       legajo={this.state.empleado.legajo}
+                      contrato={this.state.empleado.contrato}
                       mostrarAlerta={ this.mostrarAlerta }
                       handleCloseAlerta={ this.handleCloseAlerta }
                       alerta={ alerta }

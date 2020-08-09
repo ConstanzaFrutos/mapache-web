@@ -122,7 +122,7 @@ class TabProyectos extends Component {
                 if (proyecto && horas) {
                     let aux = {
                         nombre: proyecto.nombre,
-                        titulo: asignacion.rolEmpleado,
+                        titulo: roles.find((rol) => rol.value === asignacion.rolEmpleado).name,
                         progreso: `${horas.horasTrabajadas} hs`,
                         fechaInicio: asignacion.fechaInicio ? this.procesarFecha(asignacion.fechaInicio) : '-',
                         fechaFin: asignacion.fechaFin ? this.procesarFecha(asignacion.fechaFin) : '-'
@@ -173,7 +173,7 @@ const columns = [
         title: "Título", 
         field: "titulo",
         cellStyle: {
-            minWidth: '10em'
+            minWidth: '12em'
         }
     },
     {
@@ -196,5 +196,36 @@ const columns = [
         cellStyle: {
             minWidth: '12em'
         }
+    }
+]
+
+const roles = [
+    {
+        'name': "No asignado",
+        'value': "SIN_ROL"
+    },
+    {
+        'name': "UX",
+        'value': "UX"
+    },
+    {
+        'name': "QA",
+        'value': "QA"
+    },
+    {
+        'name': "Desarrollador",
+        'value': "DESARROLLADOR"
+    },
+    {
+        'name': "Líder de Proyecto",
+        'value': "LIDER_PROYECTO"
+    },
+    {
+        'name': "Arquitecto",
+        'value': "ARQUITECTO"
+    },
+    {
+        'name': "Líder de RRHH",
+        'value': "LIDER_RRHH"
     }
 ]

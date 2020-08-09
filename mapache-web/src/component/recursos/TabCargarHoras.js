@@ -194,7 +194,7 @@ class TabCargarHoras extends Component {
             "actividad": this.state.actividadSeleccionada,
             "cantidadHoras": this.state.horaSeleccionada,
             "fecha": this.state.fechaSeleccionada,
-            "proyectoid": proyectoId,
+            "proyectoId": proyectoId,
             "tareaId": this.state.tareaSeleccionada
         }
 
@@ -400,10 +400,11 @@ minutos[0] = {
     name: "",
     value: 0
 }
-for (let i=0; i<2; i++) {
+
+for (let i=1; i<4; i++) {
     minutos[i+1] = {
-        name: `${60/(4-2*i)} minutos`,
-        value: 1/(4-2*i)
+        name: `${60*(i/4)} minutos`,
+        value: i/4
     }
 }
 

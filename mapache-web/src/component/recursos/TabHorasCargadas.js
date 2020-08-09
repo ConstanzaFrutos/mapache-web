@@ -59,7 +59,7 @@ class TabHorasCargadas extends Component {
 
         this.setState({
             horasCargadasSemana: aux
-        })
+        })        
     }
 
     async obtenerNombreTarea(codigoProyecto, codigoTarea) {
@@ -279,7 +279,7 @@ class HoraCargada extends Component {
 
         let altura = (this.props.cantidadHoras > 1) ? this.props.cantidadHoras * alturaPorHora : 2;
         let texto = horasDropdown.find((hora) => hora.value === this.props.cantidadHoras).name;
-
+        
         return (
             <div 
                 className="hora-cargada-div"
@@ -342,10 +342,10 @@ minutos[0] = {
     name: "",
     value: 0
 }
-for (let i=0; i<2; i++) {
+for (let i=1; i<4; i++) {
     minutos[i+1] = {
-        name: `${60/(4-2*i)} minutos`,
-        value: 1/(4-2*i)
+        name: `${60*(i/4)} minutos`,
+        value: i/4
     }
 }
 

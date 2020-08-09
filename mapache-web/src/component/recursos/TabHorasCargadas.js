@@ -309,22 +309,22 @@ const actividades = [
     {
         nombre: "TAREA",
         color: "#FFCCCC",
-        icono: <Work/>
+        icono: <Work style={{ paddingRight: '5%'}}/>
     },
     {
         nombre: "VACACIONES",
         color: "#FFFF99",
-        icono: <BeachAccess/>
+        icono: <BeachAccess style={{ paddingRight: '5%'}}/>
     },
     {
         nombre: "ENFERMEDAD",
         color: "#CCFFFF",
-        icono: <SentimentDissatisfied/>
+        icono: <SentimentDissatisfied style={{ paddingRight: '5%'}}/>
     },
     {
         nombre: "DIA_DE_ESTUDIO",
         color: "#FFE4B5",
-        icono: <School/>
+        icono: <School style={{ paddingRight: '5%'}}/>
     }
 ]
 

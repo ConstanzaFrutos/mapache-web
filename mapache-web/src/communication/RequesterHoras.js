@@ -67,7 +67,7 @@ class RequesterHoras {
     }
 
     async obtenerHorasCargadasSemana(legajo, fechaFin, mostrarAlerta){
-        let fechaInicio = new Date();
+        let fechaInicio = new Date(fechaFin);
         const nuevoDia = fechaFin.getDate() - 7;
         fechaInicio.setDate(nuevoDia);
 

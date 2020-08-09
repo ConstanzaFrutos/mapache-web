@@ -106,6 +106,10 @@ class TabProyectos extends Component {
             });
     }
 
+    procesarFecha(fecha) {
+        return `${fecha[0]}/${fecha[1]}/${fecha[2]}`;
+    }
+
     async createData(asignacionProyectos) {
         let array = await Promise.all(
             asignacionProyectos.map(async (asignacion) => {
@@ -120,8 +124,8 @@ class TabProyectos extends Component {
                         nombre: proyecto.nombre,
                         titulo: asignacion.rolEmpleado,
                         progreso: horas.horasTrabajadas,
-                        fechaInicio: asignacion.fechaInicio,
-                        fechaFin: asignacion.fechaFin
+                        fechaInicio: asignacion.fechaInicio ? this.procesarFecha(asignacion.fechaInicio) : '-',
+                        fechaFin: asignacion.fechaFin ? this.procesarFecha(asignacion.fechaFin) : '-'
                     }
                     return aux;
                 } else {

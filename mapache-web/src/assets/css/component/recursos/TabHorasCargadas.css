@@ -16,7 +16,7 @@
 
 .dia-paper {
     padding: 1em;
-    min-width: 12em;
+    width: 12em;
     min-height: 61vh;
     height: auto;
 }

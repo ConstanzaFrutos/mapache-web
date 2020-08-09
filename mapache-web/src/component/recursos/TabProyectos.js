@@ -123,7 +123,7 @@ class TabProyectos extends Component {
                     let aux = {
                         nombre: proyecto.nombre,
                         titulo: asignacion.rolEmpleado,
-                        progreso: horas.horasTrabajadas,
+                        progreso: `${horas.horasTrabajadas} hs`,
                         fechaInicio: asignacion.fechaInicio ? this.procesarFecha(asignacion.fechaInicio) : '-',
                         fechaFin: asignacion.fechaFin ? this.procesarFecha(asignacion.fechaFin) : '-'
                     }
@@ -191,28 +191,10 @@ const columns = [
         }
     },
     {
-        title: "Progreso", 
+        title: "Horas trabajadas", 
         field: "progreso",
-        render: rowData => <LinearProgress variant="buffer" value={rowData.progreso}/> ,
         cellStyle: {
-            minWidth: '15em'
+            minWidth: '12em'
         }
     }
 ]
-
-/*const asignaciones = [
-    {
-        nombre: "ERP Cloud",
-        titulo: "UX",
-        fechaInicio: "2020-07-01",
-        fechaFin: "2020-08-05",
-        progreso: 100
-    },
-    {
-        nombre: "Gestión",
-        titulo: "ARQUITECTO",
-        fechaInicio: "2020-08-06",
-        fechaFin: null,
-        progreso: 30
-    }
-]*/

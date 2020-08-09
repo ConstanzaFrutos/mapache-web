@@ -91,8 +91,7 @@ class PerfilEmpleado extends Component {
 
         let tab = null;
         let modo = this.props.location.state.modo ? this.props.location.state.modo : "info";
-        console.log("Modo ", modo);
-        console.log("Tab ", this.props.location.state.tab);
+        
         if (this.props.location.state.tab === "informacion") {
             if (modo === "add") {
                 navBar = null;
@@ -137,6 +136,7 @@ class PerfilEmpleado extends Component {
         } else if (this.props.location.state.tab === "estadisticas") {
             tab = <TabEstadisticas 
                       legajo={this.state.empleado.legajo}
+                      contrato={this.state.empleado.contrato}
                       mostrarAlerta={ this.mostrarAlerta }
                       handleCloseAlerta={ this.handleCloseAlerta }
                       alerta={ alerta }

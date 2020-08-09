@@ -9,6 +9,7 @@ class RequesterHoras {
         this.obtenerHorasCargadas = this.obtenerHorasCargadas.bind(this);
         this.obtenerHorasCargadasEnUnDia = this.obtenerHorasCargadasEnUnDia.bind(this);
         this.obtenerHorasCargadasSemana = this.obtenerHorasCargadasSemana.bind(this);
+        this.obtenerHorasCargadasEnCantDias = this.obtenerHorasCargadasEnCantDias.bind(this);
         this.obtenerHorasCargadasMes = this.obtenerHorasCargadasMes.bind(this);
 
         this.obtenerHorasCargadasEnTarea = this.obtenerHorasCargadasEnTarea.bind(this);
@@ -67,7 +68,7 @@ class RequesterHoras {
     }
 
     async obtenerHorasCargadasSemana(legajo, fechaFin, mostrarAlerta){
-        let fechaInicio = new Date();
+        let fechaInicio = new Date(fechaFin);
         const nuevoDia = fechaFin.getDate() - 7;
         fechaInicio.setDate(nuevoDia);
 
@@ -84,8 +85,34 @@ class RequesterHoras {
                     "error"
                 )
             }
-        }).then(response => {
-            console.log("response ",response);
+        }).then(response => {            
+            if (response) {
+                return response;
+            }
+        });
+        return horasCargadas;
+    }
+
+    async obtenerHorasCargadasEnCantDias(legajo, fechaFin, dias, mostrarAlerta){
+        let fechaInicio = new Date(fechaFin);
+        const nuevoDia = fechaFin.getDate() - dias;
+        fechaInicio.setDate(nuevoDia);
+
+        const fechaIniFormateada = this.procesarFecha(fechaInicio);
+        const fechaFinFormateada = this.procesarFecha(fechaFin);
+        
+        let horasCargadas = await this.requester.get(`/empleados/${legajo}/horas?fechaFin=${fechaFinFormateada}&fechaInicio=${fechaIniFormateada}`)
+        .then(response => {
+            if (response.ok){
+                return response.json();
+            } else {                
+                mostrarAlerta(
+                    `Error al consultar horas del empleado ${legajo}`,
+                    "error"
+                )
+            }
+        }).then(response => {  
+            console.log("Carga de horas: ", response);          
             if (response) {
                 return response;
             }
@@ -109,7 +136,6 @@ class RequesterHoras {
                     )
                 }
             }).then(response => {
-                console.log("response ",response);
                 if (response) {
                     return response;
                 }
@@ -134,7 +160,6 @@ class RequesterHoras {
                     )
                 }
             }).then(response => {
-                console.log("response ",response);
                 if (response) {
                     return response;
                 }

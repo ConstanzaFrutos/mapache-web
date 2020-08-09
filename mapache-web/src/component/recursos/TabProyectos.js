@@ -3,8 +3,6 @@ import { withRouter } from 'react-router';
 
 import "../../assets/css/component/recursos/TabProyectos.css";
 
-import LinearProgress from '@material-ui/core/LinearProgress';
-
 import { TablaAdministracion } from "../general/TablaAdministracion";
 
 import Requester from "../../communication/Requester";
@@ -106,6 +104,10 @@ class TabProyectos extends Component {
             });
     }
 
+    procesarFecha(fecha) {
+        return `${fecha[0]}/${fecha[1]}/${fecha[2]}`;
+    }
+
     async createData(asignacionProyectos) {
         let array = await Promise.all(
             asignacionProyectos.map(async (asignacion) => {
@@ -118,10 +120,10 @@ class TabProyectos extends Component {
                 if (proyecto && horas) {
                     let aux = {
                         nombre: proyecto.nombre,
-                        titulo: asignacion.rolEmpleado,
-                        progreso: horas.horasTrabajadas,
-                        fechaInicio: asignacion.fechaInicio,
-                        fechaFin: asignacion.fechaFin
+                        titulo: roles.find((rol) => rol.value === asignacion.rolEmpleado).name,
+                        progreso: `${horas.horasTrabajadas} hs`,
+                        fechaInicio: asignacion.fechaInicio ? this.procesarFecha(asignacion.fechaInicio) : '-',
+                        fechaFin: asignacion.fechaFin ? this.procesarFecha(asignacion.fechaFin) : '-'
                     }
                     return aux;
                 } else {
@@ -169,7 +171,7 @@ const columns = [
         title: "Título", 
         field: "titulo",
         cellStyle: {
-            minWidth: '10em'
+            minWidth: '12em'
         }
     },
     {
@@ -187,28 +189,41 @@ const columns = [
         }
     },
     {
-        title: "Progreso", 
+        title: "Horas trabajadas", 
         field: "progreso",
-        render: rowData => <LinearProgress variant="buffer" value={rowData.progreso}/> ,
         cellStyle: {
-            minWidth: '15em'
+            minWidth: '12em'
         }
     }
 ]
 
-/*const asignaciones = [
+const roles = [
     {
-        nombre: "ERP Cloud",
-        titulo: "UX",
-        fechaInicio: "2020-07-01",
-        fechaFin: "2020-08-05",
-        progreso: 100
+        'name': "No asignado",
+        'value': "SIN_ROL"
     },
     {
-        nombre: "Gestión",
-        titulo: "ARQUITECTO",
-        fechaInicio: "2020-08-06",
-        fechaFin: null,
-        progreso: 30
+        'name': "UX",
+        'value': "UX"
+    },
+    {
+        'name': "QA",
+        'value': "QA"
+    },
+    {
+        'name': "Desarrollador",
+        'value': "DESARROLLADOR"
+    },
+    {
+        'name': "Líder de Proyecto",
+        'value': "LIDER_PROYECTO"
+    },
+    {
+        'name': "Arquitecto",
+        'value': "ARQUITECTO"
+    },
+    {
+        'name': "Líder de RRHH",
+        'value': "LIDER_RRHH"
     }
-]*/
+]

@@ -322,12 +322,12 @@ class Tabinformacion extends Component {
                         <p className={"nombre"}>
                             {nombreYApellido}
                         </p>
+                        Legajo: {this.state.empleadoFormateado.legajo}
                     </div>
 
             let seniorityInfo = null;
             if (this.state.empleadoFormateado.seniority !== "No asignada") {
                 seniorityInfo = <div>
-                                    <br></br>
                                     <p>Seniority: { this.state.empleadoFormateado.seniority }</p>
                                 </div>
             }
@@ -336,15 +336,15 @@ class Tabinformacion extends Component {
                         <p>Nombre y Apellido: { this.state.empleado.nombre + ", " + this.state.empleado.apellido }</p>
                         <p>DNI: { this.state.empleado.dni }</p>
                         <p>Fecha de nacimiento: { this.state.empleadoFormateado.fechaNacimiento }</p>
+                        
                         <br></br>
-                        <p>Legajo: { this.state.empleadoFormateado.legajo }</p>
+                        <p>Rol: { this.state.empleadoFormateado.rol }</p>
                         { seniorityInfo }
                         <br></br>
                         <p>Contrato: { this.state.empleadoFormateado.contrato }</p>
                         <br></br>
                         <p>Antigüedad: { this.state.empleadoFormateado.antiguedad }</p>
-                        <br></br>
-                        <p>Rol: { this.state.empleadoFormateado.rol }</p>
+                        
                         <div className="iconos-informacion-empleado">
                             <Edit 
                                 className="edit-profile-icon" 

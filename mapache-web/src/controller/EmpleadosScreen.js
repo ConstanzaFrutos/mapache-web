@@ -235,7 +235,7 @@ const columns = [
         field: "rol",
         editable: "never",
         cellStyle: {
-            minWidth: '10em'
+            minWidth: '12em'
         },
         render: rowData => <div>{ roles.find((rol) => rol.value === rowData.rol).name }</div>
     }

@@ -120,7 +120,15 @@ class TabCargarHoras extends Component {
                     return response;
                 }
             });
-        return tareas;
+        
+        let tareasNoFinalizadas = [];
+        tareas.forEach((tarea) => {
+            if (tarea.estado !== "Finalizada") {
+                tareasNoFinalizadas.push(tarea);
+            }
+        })
+
+        return tareasNoFinalizadas;
     }
 
     async obtenerProyectos() {

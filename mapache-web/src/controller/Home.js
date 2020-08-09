@@ -12,13 +12,13 @@ export class Home extends Component {
                 <Card className={"psa-card"}>
                     <CardContent className={"content"}>
                         <Typography className={"title"} color="textSecondary" gutterBottom variant={"h4"}>
-                            Sistema Integral de Gestión <br/>
+                            Sistema Integral de Gestión <br />
                         </Typography>
                         <Typography className={"description"} variant="body1" component="p">
-                            <br/><br/>
+                            <br /><br />
                             Este es un sistema para gestionar proyectos, productos y sus versiones.
                             Facilitando la creación y seguimiento de las tareas y tickets que los componen.
-                            <br/><br/>
+                            <br /><br />
                             A su vez permite realizar un seguimiento de los empleados de la empresa,
                             las tareas que desempeñan y las horas que invierten en cada tarea.
                         </Typography>

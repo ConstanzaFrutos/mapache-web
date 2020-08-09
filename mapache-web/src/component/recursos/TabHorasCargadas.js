@@ -46,7 +46,7 @@ class TabHorasCargadas extends Component {
             28,
             this.props.mostrarAlerta
         );
-        console.log("Horas cargadas ", horasCargadas);
+        
         let aux = await Promise.all(horasCargadas.map(async (hora) => {
             let nombreTarea = '';
             if (hora.actividad === "TAREA") {

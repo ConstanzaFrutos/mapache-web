@@ -14,7 +14,7 @@ import "../assets/css/controller/ClientesScreen.css";
 
 
 const mapacheSoporteBaseUrl = "https://psa-api-support.herokuapp.com";
-//const mapacheSoporteBaseUrl = "http://localhost:5000";
+// const mapacheSoporteBaseUrl = "http://localhost:5000";
 
 class ClientesScreen extends Component {
     constructor(props) {
@@ -93,9 +93,6 @@ class ClientesScreen extends Component {
 
         this.requester.get('/clientes')
             .then(response => {
-                this.setState({
-                    loading: false
-                });
                 if (response.ok) {
                     return response.json();
                 } else {
@@ -104,10 +101,14 @@ class ClientesScreen extends Component {
             })
             .then(response => {
                 if (response) {
-                    this.setState({
-                        clientes: response
-                    });
+                    this.setState({ clientes: response });
                 }
+            }).catch((err) => {
+                console.error(err);
+                this.mostrarAlerta("Ocurrió un error al consultar los clientes", "error");
+            })
+            .finally(() => {
+                this.setState({ loading: false });
             });
     }
 

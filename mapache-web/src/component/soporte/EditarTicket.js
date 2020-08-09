@@ -326,11 +326,11 @@ class VisualizarTicket extends Component {
                                 console.log("Error al crear el ticket");
                             }
                         })
-                    
+
                     this.handleCloseTareas()
 
                     this.mostrarAlerta("Tarea generada con éxito", "success", 7000)
-                    
+
                     sleep(10000)
 
                     window.location.reload()

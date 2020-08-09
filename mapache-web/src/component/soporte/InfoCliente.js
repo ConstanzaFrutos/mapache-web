@@ -84,7 +84,7 @@ class InfoCliente extends Component {
     }
 
     handleChangeCUIT = event => {
-        this.setState({error:false});
+        this.setState({ error: false });
         this.setState({ CUIT: event.target.value });
     }
 
@@ -99,7 +99,7 @@ class InfoCliente extends Component {
         let duracion = null;
 
         if (!this.validateCuit(this.state.CUIT)) {
-            this.setState({error: true})
+            this.setState({ error: true })
             return
         }
 
@@ -207,7 +207,7 @@ class InfoCliente extends Component {
                 <div class='form-cliente'>
                     {this.state.page !== '/clientes/nuevo' ?
                         <h2 class="centrado">Editar Cliente</h2>
-                    :
+                        :
                         <h2 class="centrado">Crear Cliente</h2>
                     }
                     <br />

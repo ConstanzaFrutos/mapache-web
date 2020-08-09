@@ -24,8 +24,8 @@ import Requester from "../communication/Requester";
 import "../assets/css/controller/SoporteScreen.css";
 am4core.useTheme(am4themes_animated);
 
-const mapacheSoporteBaseUrl = "https://psa-api-support.herokuapp.com";
-//const mapacheSoporteBaseUrl = "http://localhost:5000"
+const mapacheSoporteBaseUrl = "https://psa-api-support.herokuapp.com"
+// const mapacheSoporteBaseUrl = "http://localhost:5000";
 const mapacheRecursosBaseUrl = "https://mapache-recursos.herokuapp.com";
 
 function TabPanel(props) {
@@ -145,8 +145,9 @@ class SoporteScreen extends Component {
 
     handleChangeValue = (event, data) => {
         this.setState({ value: data });
-        if (data === 1)
+        if (data === 1) {
             this.getCharts()
+        }
     }
 
     createSeries(chart, s, name, series_data, color) {
@@ -249,40 +250,45 @@ class SoporteScreen extends Component {
             this.mostrarAlerta(this.state.notificacion.mensaje, this.state.notificacion.tipo, 2000)
         }
 
-        this.recursosRequester.get('/empleados/')
+        let empleadosPromise = this.recursosRequester.get('/empleados/')
             .then((response) => {
                 if (response.ok) {
                     return response.json();
                 } else {
-                    console.error("Error al consultar empleados");
+                    Promise.reject("Ocurrió un error al consultar los empleados");
                 }
-            })
-            .then((recursos) => {
-                this.setState({ empleados: recursos })
-                this.requester.get('/tickets')
-                    .then(response => {
-                        this.setState({
-                            loading: false
-                        });
-                        if (response.ok) {
-                            return response.json();
+            });
+
+        let ticketsPromise = this.requester.get('/tickets')
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    Promise.reject("Ocurrió un error al consultar los tickets");
+                }
+            });
+
+        Promise.all([empleadosPromise, ticketsPromise])
+            .then((response) => {
+                let [empleados, tickets] = response;
+                this.setState({ empleados: empleados });
+
+                if (tickets) {
+                    tickets.forEach((ticket) => {
+                        if (ticket.legajo_responsable > 0) {
+                            let empleado = this.state.empleados.find((empleado) => parseInt(empleado.legajo) === ticket.legajo_responsable);
+                            ticket.responsable = `${empleado.nombre} ${empleado.apellido}`;
                         } else {
-                            console.error("Error al consultar tickets");
-                        }
-                    })
-                    .then(tickets => {
-                        if (tickets) {
-                            tickets.forEach((ticket) => {
-                                if (ticket.legajo_responsable > 0) {
-                                    let empleado = this.state.empleados.find((empleado) => parseInt(empleado.legajo) === ticket.legajo_responsable);
-                                    ticket.responsable = `${empleado.nombre} ${empleado.apellido}`;
-                                } else {
-                                    ticket.responsable = "-";
-                                }
-                            });
-                            this.setState({ tickets: tickets });
+                            ticket.responsable = "-";
                         }
                     });
+                    this.setState({ tickets: tickets });
+                }
+            }).catch((err) => {
+                console.error(err);
+                this.mostrarAlerta("Ocurrió un error al obtener los tickets", "error");
+            }).finally(() => {
+                this.setState({ loading: false });
             });
 
         this.getCharts();

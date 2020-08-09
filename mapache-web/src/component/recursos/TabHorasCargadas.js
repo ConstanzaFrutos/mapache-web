@@ -332,7 +332,7 @@ const actividades = [
 let horas = [];
 for (let i=0; i<10; i++) {
     horas[i] = {
-        name: i > 1 ? `${i} horas ` : `${i} hora`,
+        name: i > 1 ? `${i} hs ` : `${i} hora`,
         value: i
     }
 }
@@ -344,7 +344,7 @@ minutos[0] = {
 }
 for (let i=1; i<4; i++) {
     minutos[i+1] = {
-        name: `${60*(i/4)} minutos`,
+        name: `${60*(i/4)} min`,
         value: i/4
     }
 }

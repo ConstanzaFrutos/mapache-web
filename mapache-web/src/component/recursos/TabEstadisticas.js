@@ -249,6 +249,7 @@ function ChartDiario(props) {
         });
 
         let horasNoOcupadas = totalHorasDia - horasOcupadas;
+        horasNoOcupadas = horasNoOcupadas > 0 ? horasNoOcupadas : 0;
 
         return [
             { "actividad": "Ocupado", "size": horasOcupadas },
@@ -310,6 +311,7 @@ function ChartSemanal(props) {
             }
             horasNoOcupadas -= data.cantidadHoras;
         });
+        horasNoOcupadas = horasNoOcupadas > 0 ? horasNoOcupadas : 0;
 
         return [
             { "actividad": "Vacaciones", "size": horasVacaciones },
@@ -370,6 +372,7 @@ function ChartMensual(props) {
             } 
             horasNoOcupadas -= data.cantidadHoras; 
         });
+        horasNoOcupadas = horasNoOcupadas > 0 ? horasNoOcupadas : 0;
 
         return [
             { "actividad": "Vacaciones", "size": horasVacaciones },

@@ -41,9 +41,10 @@ class TabHorasCargadas extends Component {
 
     async componentDidMount() {
         //Pedir las del mes entero
-        const horasCargadas = await this.requesterHoras.obtenerHorasCargadasSemana(
+        const horasCargadas = await this.requesterHoras.obtenerHorasCargadasEnCantDias(
             this.props.match.params.legajo, 
             this.state.fechaActual,
+            28,
             this.props.mostrarAlerta
         );
         console.log("Horas cargadas ", horasCargadas);
@@ -68,14 +69,16 @@ class TabHorasCargadas extends Component {
                             if (response.ok){
                                 return response.json();
                             } else {
-                                alert("error al consultar tarea");
+                                this.props.mostrarAlerta(
+                                    `Error al consultar tarea ${codigoTarea}`,
+                                    "error"
+                                );
                             }
                         }).then(response => {
                             if (response) {
                                 return response;
                             }
                         });
-        console.log("Tarea", tarea);
         return tarea;
     }
 
@@ -295,7 +298,7 @@ class HoraCargada extends Component {
                     </Typography>
                 </div>
                 
-                <Typography variant="subtitle1" wrap="wrap">
+                <Typography variant="subtitle1" wrap="wrap" align="center">
                     { nombreTarea } 
                 </Typography>
             

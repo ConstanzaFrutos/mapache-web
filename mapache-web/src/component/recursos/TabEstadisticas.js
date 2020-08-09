@@ -151,6 +151,7 @@ class TabEstadisticas extends Component {
         } else if (this.state.frecuencia === 2) {
             chart = <ChartMensual
                         mesSeleccionado={ nombreMeses[fechaFormatoDate.getMonth()] }
+                        fechaSeleccionada={ fechaFormatoDate }
                         obtenerHorasMes={ this.obtenerHorasMes }
                         horasDia={ this.state.horasDia }
                     ></ChartMensual>
@@ -306,9 +307,8 @@ function ChartSemanal(props) {
                 horasDiaDeEstudio += data.cantidadHoras;
             } else if (data.actividad === "TAREA"){
                 horasTarea += data.cantidadHoras;
-            } else {
-                horasNoOcupadas -= data.cantidadHoras;
             }
+            horasNoOcupadas -= data.cantidadHoras;
         });
 
         return [
@@ -359,12 +359,14 @@ function ChartSemanal(props) {
 
 function ChartMensual(props) {
 
-    function procesarDataMensual(data, totalHorasDia) {
+    function procesarDataMensual(data, totalHorasDia, fechaSeleccionada) {
         let horasVacaciones = 0;
         let horasEnfermedad = 0;
         let horasDiaDeEstudio = 0;
         let horasTarea = 0;
-        let horasNoOcupadas = totalHorasDia * 21;
+        const diasMes = new Date(fechaSeleccionada.getFullYear(), fechaSeleccionada.getMonth() + 1, 0).getDate();
+        console.log("Dias mes ", diasMes)
+        let horasNoOcupadas = totalHorasDia * diasMes;
         
         data.forEach((data) => {
             if (data.actividad === "VACACIONES"){
@@ -375,9 +377,8 @@ function ChartMensual(props) {
                 horasDiaDeEstudio += data.cantidadHoras;
             } else if (data.actividad === "TAREA"){
                 horasTarea += data.cantidadHoras;
-            } else {
-                horasNoOcupadas -= data.cantidadHoras;
-            }
+            } 
+            horasNoOcupadas -= data.cantidadHoras; 
         });
 
         return [
@@ -395,7 +396,7 @@ function ChartMensual(props) {
         let data = await props.obtenerHorasMes();
         
         // Add data
-        chart.data = procesarDataMensual(data, props.horasDia);
+        chart.data = procesarDataMensual(data, props.horasDia, props.fechaSeleccionada);
         
         // Add label
         chart.innerRadius = 90;
@@ -569,7 +570,7 @@ function ChartAnual(props) {
                 let value = dataItem.valueY;
                 let openValue = dataItem.openValueY;
                 let change = value - openValue;
-                return Math.round(change / openValue * 100);
+                return openValue ? Math.round(change / openValue * 100) : 0;
             }
             return 0;
         }

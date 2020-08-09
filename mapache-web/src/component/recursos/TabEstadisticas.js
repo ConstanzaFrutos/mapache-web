@@ -331,15 +331,6 @@ function ChartSemanal(props) {
         chart.innerRadius = 90;
         let label = chart.seriesContainer.createChild(am4core.Label);
         
-        let fechaSeleccionada = props.fechaSeleccionada;
-        // TODO mostrar inicio y fin semana
-        console.log("Horas ", props.horasCargadas)
-
-        label.text = fechaSeleccionada;
-        label.horizontalCenter = "middle";
-        label.verticalCenter = "middle";
-        label.fontSize = 30;
-        
         // Add and configure Series
         let pieSeries = chart.series.push(new am4charts.PieSeries());
         pieSeries.dataFields.value = "size";

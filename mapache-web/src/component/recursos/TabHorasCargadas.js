@@ -40,7 +40,6 @@ class TabHorasCargadas extends Component {
     }
 
     async componentDidMount() {
-        //Pedir las del mes entero
         const horasCargadas = await this.requesterHoras.obtenerHorasCargadasEnCantDias(
             this.props.match.params.legajo, 
             this.state.fechaActual,
@@ -52,7 +51,9 @@ class TabHorasCargadas extends Component {
             let nombreTarea = '';
             if (hora.actividad === "TAREA") {
                 let tarea = await this.obtenerNombreTarea(hora.proyectoId, hora.tareaId);
-                nombreTarea = tarea.nombre
+                if (tarea) {
+                    nombreTarea = tarea.nombre
+                }
             }
             hora.nombreTarea = nombreTarea;
             return hora;
@@ -198,15 +199,32 @@ Date.prototype.obtenerFechasSemana = function(){
 
 class Dia extends Component {    
 
-    render() {
-        if (this.props.horasCargadasDia.length > 0) {
-            let horasTotalesDia = this.props.horasCargadasDia.reduce(
-                (horasAcumuladas, hora) => {
-                    return horasAcumuladas.cantidadHoras + hora.cantidadHoras;
+    procesarHoras(horasCargadas) {
+        let horasProcesadas = new Map();
+
+        horasCargadas.forEach((hora) => {
+            if (horasProcesadas.has(hora.actividad) && hora.actividad !== "TAREA") {
+                let aux = horasProcesadas.get(hora.actividad);
+                aux.cantidadHoras += hora.cantidadHoras;
+                horasProcesadas.set(hora.actividad, aux);
+            } else if (hora.actividad === "TAREA"){
+                if (horasProcesadas.has(hora.nombreTarea)) {
+                    let aux = horasProcesadas.get(hora.nombreTarea);
+                    aux.cantidadHoras += hora.cantidadHoras;
+                    horasProcesadas.set(hora.nombreTarea, aux);
+                } else {
+                    horasProcesadas.set(hora.nombreTarea, hora);
                 }
-            );
-            console.log("Horas totales ", horasTotalesDia);
-        }
+            } else {
+                horasProcesadas.set(hora.actividad, hora);
+            }
+        });
+
+        return Array.from(horasProcesadas.values());
+    }
+
+    render() {
+        const horasProcesadas = this.procesarHoras(this.props.horasCargadasDia);
 
         return (
             <Grid key={this.props.value} item>
@@ -226,7 +244,7 @@ class Dia extends Component {
                         { this.props.fecha }
                     </Typography>
                     <div className="horas-cargadas-en-el-dia-div">
-                        { this.props.horasCargadasDia.map((horas) => {
+                        { horasProcesadas.map((horas) => {
                             let actividad = actividades.find(
                                 actividad => actividad.nombre === horas.actividad
                             );
@@ -280,9 +298,9 @@ class HoraCargada extends Component {
         const alturaPorHora = 2;
         let nombreTarea = this.props.nombreTarea;
 
-        let altura = (this.props.cantidadHoras > 1) ? this.props.cantidadHoras * alturaPorHora : 2;
+        let altura = (this.props.cantidadHoras > 1) ? this.props.cantidadHoras * alturaPorHora : alturaPorHora;
         let texto = horasDropdown.find((hora) => hora.value === this.props.cantidadHoras).name;
-        
+
         return (
             <div 
                 className="hora-cargada-div"
@@ -298,7 +316,7 @@ class HoraCargada extends Component {
                     </Typography>
                 </div>
                 
-                <Typography variant="subtitle1" wrap="wrap" align="center">
+                <Typography variant="body2" wrap="wrap" align="center">
                     { nombreTarea } 
                 </Typography>
             

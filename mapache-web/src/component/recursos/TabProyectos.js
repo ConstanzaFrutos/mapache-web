@@ -3,8 +3,6 @@ import { withRouter } from 'react-router';
 
 import "../../assets/css/component/recursos/TabProyectos.css";
 
-import LinearProgress from '@material-ui/core/LinearProgress';
-
 import { TablaAdministracion } from "../general/TablaAdministracion";
 
 import Requester from "../../communication/Requester";

@@ -329,7 +329,6 @@ function ChartSemanal(props) {
         
         // Add label
         chart.innerRadius = 90;
-        let label = chart.seriesContainer.createChild(am4core.Label);
         
         // Add and configure Series
         let pieSeries = chart.series.push(new am4charts.PieSeries());

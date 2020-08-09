@@ -85,21 +85,31 @@ class TabTareas extends Component {
             tarea.progreso = 0;
             if (tarea.duracionEstimada > 0) {
                 tarea.progreso = (totalHoras * 100) / tarea.duracionEstimada;
+            } else if (tarea.estado === "Finalizada") {
+                tarea.progreso = 100;
             }
             
             return tarea;
         }));
+
         return progreso;
     }
 
     handleCargaHoras(tarea) {
-        this.props.history.push({
-            pathname: `/empleados/${this.props.match.params.legajo}`,
-            state: {
-                tab: "cargar-horas",
-                tarea: tarea
-            }
-        });
+        if (tarea.estado === "Finalizada") {
+            this.props.mostrarAlerta(
+                `No se le pueden cargar horas a una tarea finalizada`,
+                "error"
+            )
+        } else {
+            this.props.history.push({
+                pathname: `/empleados/${this.props.match.params.legajo}`,
+                state: {
+                    tab: "cargar-horas",
+                    tarea: tarea
+                }
+            });
+        }
     }
 
     render() {

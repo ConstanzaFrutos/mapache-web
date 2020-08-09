@@ -84,8 +84,7 @@ class RequesterHoras {
                     "error"
                 )
             }
-        }).then(response => {
-            console.log("response ",response);
+        }).then(response => {            
             if (response) {
                 return response;
             }
@@ -109,7 +108,6 @@ class RequesterHoras {
                     )
                 }
             }).then(response => {
-                console.log("response ",response);
                 if (response) {
                     return response;
                 }
@@ -134,7 +132,6 @@ class RequesterHoras {
                     )
                 }
             }).then(response => {
-                console.log("response ",response);
                 if (response) {
                     return response;
                 }

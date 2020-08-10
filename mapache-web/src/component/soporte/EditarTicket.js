@@ -318,10 +318,10 @@ class VisualizarTicket extends Component {
                     this.requester.post('/tickets/' + this.state.ticket.id + '/tareas', relacion)
                         .then(response => {
                             if (response.ok) {
-                                console.log("OK");
+//                                console.log("OK");
                                 this.handleCloseTareas();
-                                this.mostrarAlerta("Tarea generada con éxito", "success", 7000)
-                                setTimeout(window.location.reload(), 8000);
+//                                this.mostrarAlerta("Tarea generada con éxito", "success", 7000)
+                                setTimeout(window.location.reload(), 1000);
                             } else {
                                 console.log("Error al crear el ticket");
                             }

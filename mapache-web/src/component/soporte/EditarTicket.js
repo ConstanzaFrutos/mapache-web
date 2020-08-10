@@ -27,9 +27,6 @@ const mapacheProyectosBaseUrl = "https://mapache-proyectos.herokuapp.com"
 const mapacheSoporteBaseUrl = "https://psa-api-support.herokuapp.com";
 //const mapacheSoporteBaseUrl = "http://localhost:5000"
 
-function sleep (time) {
-    return new Promise((resolve) => setTimeout(resolve, time));
-  }
 
 const tipos = [
     {
@@ -321,19 +318,14 @@ class VisualizarTicket extends Component {
                     this.requester.post('/tickets/' + this.state.ticket.id + '/tareas', relacion)
                         .then(response => {
                             if (response.ok) {
-                                console.log("OK")
+                                console.log("OK");
+                                this.handleCloseTareas();
+                                this.mostrarAlerta("Tarea generada con éxito", "success", 7000)
+                                setTimeout(window.location.reload(), 8000);
                             } else {
                                 console.log("Error al crear el ticket");
                             }
-                        })
-
-                    this.handleCloseTareas()
-
-                    this.mostrarAlerta("Tarea generada con éxito", "success", 7000)
-
-                    sleep(10000)
-
-                    window.location.reload()
+                        });
                 }
             });
     }
@@ -421,7 +413,7 @@ class VisualizarTicket extends Component {
             <div class='form-crear-ticket'>
                 {alerta}
                 <div class="centrado">
-                  <h2>Editar Ticket N° {this.state.ticket.id}</h2>
+                    <h2>Editar Ticket N° {this.state.ticket.id}</h2>
                 </div>
                 <br />
                 <form autoComplete="off" onSubmit={this.handleSubmit}>

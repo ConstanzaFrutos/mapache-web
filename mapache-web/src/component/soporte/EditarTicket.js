@@ -321,7 +321,7 @@ class VisualizarTicket extends Component {
 //                                console.log("OK");
                                 this.handleCloseTareas();
 //                                this.mostrarAlerta("Tarea generada con éxito", "success", 7000)
-                                setTimeout(window.location.reload(), 1000);
+                                window.location.reload()
                             } else {
                                 console.log("Error al crear el ticket");
                             }
